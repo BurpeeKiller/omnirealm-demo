@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    @apply bg-gray-900 text-gray-100;
+    /* Réduction globale de 10% des tailles */
+    font-size: 90%; /* 16px → 14.4px */
+  }
+
+  body {
+    @apply font-sans antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  /* Optimisation des espacements pour interface plus compacte */
+  .compact-ui {
+    --spacing-scale: 0.9;
+  }
+}
+
+@layer components {
+  .exercise-card {
+    @apply bg-gray-800 rounded-2xl p-5 shadow-xl; /* p-6 → p-5 */
+    @apply border border-gray-700 transition-all duration-300;
+    @apply hover:border-primary-500 hover:shadow-2xl hover:shadow-primary-500/20;
+    @apply active:scale-95;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-secondary-500;
+    @apply text-white font-semibold px-5 py-2.5 rounded-xl; /* px-6 py-3 → px-5 py-2.5 */
+    @apply transition-all duration-300 shadow-lg;
+    @apply hover:shadow-xl hover:shadow-primary-500/25;
+    @apply active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .stat-card {
+    @apply bg-gray-800 rounded-xl p-3.5; /* p-4 → p-3.5 */
+    @apply border border-gray-700;
+  }
+
+  /* Nouvelles classes pour interface compacte */
+  .modal-header {
+    @apply p-5; /* au lieu de p-6 */
+  }
+  
+  .modal-content {
+    @apply p-5; /* au lieu de p-6 */
+  }
+  
+  .card-compact {
+    @apply p-4; /* au lieu de p-6 */
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-400 to-secondary-400;
+    @apply bg-clip-text text-transparent;
+  }
+
+  .animate-number {
+    @apply transition-all duration-500 ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+  
+  .animate-fade-out {
+    animation: fade-out 0.3s ease-out forwards;
+  }
+  
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}

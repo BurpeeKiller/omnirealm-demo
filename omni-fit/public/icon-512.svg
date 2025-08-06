@@ -1,0 +1,43 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F97316;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0.7" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="248" fill="url(#bg)" />
+  
+  <!-- Inner circle -->
+  <circle cx="256" cy="256" r="232" fill="none" stroke="url(#accent)" stroke-width="3" opacity="0.8"/>
+  
+  <!-- Exercise icons -->
+  <!-- Burpees icon (top) -->
+  <g transform="translate(244, 216)">
+    <circle cx="12" cy="8" r="3" fill="url(#accent)"/>
+    <rect x="8" y="12" width="8" height="12" rx="2" fill="url(#accent)"/>
+  </g>
+  
+  <!-- Pushups icon (bottom left) -->
+  <g transform="translate(221, 271)">
+    <circle cx="8" cy="4" r="2.5" fill="url(#accent)"/>
+    <rect x="3" y="7" width="10" height="8" rx="2" fill="url(#accent)"/>
+  </g>
+  
+  <!-- Squats icon (bottom right) -->
+  <g transform="translate(271, 271)">
+    <circle cx="8" cy="4" r="2.5" fill="url(#accent)"/>
+    <rect x="6" y="7" width="4" height="10" rx="1" fill="url(#accent)"/>
+    <rect x="2" y="13" width="12" height="4" rx="2" fill="url(#accent)"/>
+  </g>
+  
+  <!-- Central "F" for Fitness -->
+  <text x="256" y="262" font-family="Arial, sans-serif" font-size="76.8" 
+        font-weight="bold" text-anchor="middle" fill="url(#accent)">F</text>
+</svg>

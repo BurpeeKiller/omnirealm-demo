@@ -1,0 +1,15 @@
+Ceci est un document de test pour OmniScan.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+Ce document contient plusieurs paragraphes avec du contenu varié.
+
+Points importants :
+- Premier point : Test de l'extraction de texte
+- Deuxième point : Vérification de la mise en forme
+- Troisième point : Analyse par IA
+
+Date : 5 août 2025
+Référence : TEST-001
+Montant : 1234,56 €
+
+Conclusion : Ce document sert à tester les capacités d'OCR et d'analyse de l'application OmniScan.

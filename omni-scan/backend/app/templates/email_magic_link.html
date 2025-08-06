@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion OmniScan</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            color: #3B82F6;
+            font-size: 28px;
+            margin: 0;
+        }
+        .button {
+            display: inline-block;
+            background: #3B82F6;
+            color: white;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+        .button:hover {
+            background: #2563EB;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e5e5;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .security-notice {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .link-url {
+            word-break: break-all;
+            color: #3B82F6;
+            font-size: 12px;
+            background: #f3f4f6;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🔍 OmniScan</h1>
+            <p style="margin: 0; color: #666;">OCR Intelligent</p>
+        </div>
+
+        <h2>Bonjour,</h2>
+        
+        <p>Vous avez demandé à vous connecter à OmniScan. Cliquez sur le bouton ci-dessous pour accéder à votre compte :</p>
+        
+        <div style="text-align: center;">
+            <a href="{{ magic_link }}" class="button">Se connecter à OmniScan</a>
+        </div>
+        
+        <div class="security-notice">
+            ⚠️ <strong>Sécurité</strong> : Ce lien expire dans 15 minutes et ne peut être utilisé qu'une seule fois.
+        </div>
+        
+        <p style="font-size: 14px; color: #666;">
+            Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :
+        </p>
+        
+        <div class="link-url">
+            {{ magic_link }}
+        </div>
+        
+        <p style="font-size: 14px; color: #666; margin-top: 30px;">
+            Si vous n'avez pas demandé cette connexion, vous pouvez ignorer cet email en toute sécurité.
+        </p>
+        
+        <div class="footer">
+            <p>
+                © {{ year }} OmniScan - Tous droits réservés<br>
+                <a href="https://omniscan.app/privacy" style="color: #3B82F6;">Politique de confidentialité</a> • 
+                <a href="https://omniscan.app/terms" style="color: #3B82F6;">CGU</a>
+            </p>
+            <p style="font-size: 12px;">
+                Cet email a été envoyé à {{ email }}<br>
+                OmniScan ne stocke jamais vos documents.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

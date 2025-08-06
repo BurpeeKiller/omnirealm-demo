@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Simple OmniScan</title>
+</head>
+<body>
+    <h1>Test de connexion au backend</h1>
+    <button onclick="testHealth()">Test Health</button>
+    <button onclick="testUpload()">Test Upload</button>
+    <pre id="result"></pre>
+
+    <script>
+    async function testHealth() {
+        try {
+            console.log('Testing health endpoint...');
+            const response = await fetch('http://localhost:8001/api/v1/simple/health');
+            const data = await response.json();
+            document.getElementById('result').textContent = 'Health OK:\n' + JSON.stringify(data, null, 2);
+        } catch (error) {
+            console.error('Health error:', error);
+            document.getElementById('result').textContent = 'Health Error: ' + error.message;
+        }
+    }
+
+    async function testUpload() {
+        try {
+            console.log('Creating test data...');
+            // Créer un blob de test
+            const blob = new Blob(['Test content'], { type: 'text/plain' });
+            const file = new File([blob], 'test.txt', { type: 'text/plain' });
+            
+            const formData = new FormData();
+            formData.append('file', file);
+
+            console.log('Sending request to:', 'http://localhost:8001/api/v1/upload/simple');
+            const response = await fetch('http://localhost:8001/api/v1/upload/simple', {
+                method: 'POST',
+                body: formData
+            });
+
+            console.log('Response status:', response.status);
+            const data = await response.json();
+            document.getElementById('result').textContent = 'Upload response:\n' + JSON.stringify(data, null, 2);
+        } catch (error) {
+            console.error('Upload error:', error);
+            document.getElementById('result').textContent = 'Upload Error: ' + error.message + '\n\nCheck console for details';
+        }
+    }
+
+    // Test automatique au chargement
+    window.onload = () => {
+        console.log('Page loaded, testing health...');
+        testHealth();
+    };
+    </script>
+</body>
+</html>

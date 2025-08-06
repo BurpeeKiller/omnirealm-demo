@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test 127.0.0.1</title>
+</head>
+<body>
+    <h1>Test avec différentes URLs</h1>
+    <button onclick="test('http://localhost:8001')">Test localhost:8001</button>
+    <button onclick="test('http://127.0.0.1:8001')">Test 127.0.0.1:8001</button>
+    <button onclick="test('http://0.0.0.0:8001')">Test 0.0.0.0:8001</button>
+    <pre id="result"></pre>
+
+    <script>
+    async function test(baseUrl) {
+        const resultEl = document.getElementById('result');
+        resultEl.textContent = `Testing ${baseUrl}...\n`;
+        
+        try {
+            // Test 1: Simple GET
+            console.log(`Testing GET ${baseUrl}/`);
+            const response1 = await fetch(`${baseUrl}/`);
+            const data1 = await response1.json();
+            resultEl.textContent += `✓ GET /: ${JSON.stringify(data1)}\n\n`;
+            
+            // Test 2: API Health
+            console.log(`Testing GET ${baseUrl}/api/v1/simple/health`);
+            const response2 = await fetch(`${baseUrl}/api/v1/simple/health`);
+            const data2 = await response2.json();
+            resultEl.textContent += `✓ GET /api/v1/simple/health: ${JSON.stringify(data2)}\n\n`;
+            
+            // Test 3: OPTIONS (pour CORS)
+            console.log(`Testing OPTIONS ${baseUrl}/api/v1/upload/simple`);
+            const response3 = await fetch(`${baseUrl}/api/v1/upload/simple`, {
+                method: 'OPTIONS',
+                headers: {
+                    'Access-Control-Request-Method': 'POST',
+                    'Access-Control-Request-Headers': 'content-type'
+                }
+            });
+            resultEl.textContent += `✓ OPTIONS /api/v1/upload/simple: ${response3.status} ${response3.statusText}\n`;
+            
+        } catch (error) {
+            console.error('Error:', error);
+            resultEl.textContent += `✗ Error: ${error.message}\n`;
+            resultEl.textContent += `\nDétails:\n`;
+            resultEl.textContent += `- Type: ${error.name}\n`;
+            resultEl.textContent += `- Stack: ${error.stack}\n`;
+        }
+    }
+    </script>
+</body>
+</html>

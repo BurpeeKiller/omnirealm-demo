@@ -1,0 +1,31 @@
+/* Fix pour les z-index des composants Radix UI */
+
+/* DropdownMenu (menu utilisateur) */
+[data-radix-dropdown-menu-content] {
+  z-index: 999 !important;
+}
+
+/* Select Content (dropdowns du formulaire) */
+[data-radix-select-content] {
+  z-index: 1000 !important;
+}
+
+/* Popper Content (pour tous les poppers Radix) */
+[data-radix-popper-content-wrapper] {
+  z-index: 1000 !important;
+}
+
+/* Portal root */
+[data-radix-portal] {
+  z-index: 1000 !important;
+}
+
+/* Overlay pour les modals */
+[data-radix-dialog-overlay] {
+  z-index: 998 !important;
+}
+
+/* Contenu des modals */
+[data-radix-dialog-content] {
+  z-index: 999 !important;
+}

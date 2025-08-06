@@ -1,0 +1,21 @@
+{
+  "name": "omnirealm-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Demo repository for OmniRealm projects",
+  "scripts": {
+    "install:all": "npm install && cd omni-scan/frontend && npm install && cd ../backend && pip install -r requirements.txt && cd ../../omni-task && npm install && cd ../omni-fit && npm install",
+    "dev:scan": "cd omni-scan && npm run dev",
+    "dev:task": "cd omni-task && npm run dev",
+    "dev:fit": "cd omni-fit && npm run dev"
+  },
+  "workspaces": [
+    "packages/*",
+    "omni-scan/frontend",
+    "omni-task",
+    "omni-fit"
+  ],
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

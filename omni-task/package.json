@@ -1,0 +1,58 @@
+{
+  "name": "@omnirealm/omni-task",
+  "version": "3.0.0",
+  "description": "TaskMaster Pro - Gestion de tâches IA-augmentée",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo -p 3002",
+    "dev:slow": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf .next node_modules"
+  },
+  "dependencies": {
+    "@hello-pangea/dnd": "^17.0.0",
+    "@omnirealm/supabase-kit": "workspace:*",
+    "@omnirealm/ui": "workspace:*",
+    "@omnirealm/utils": "workspace:*",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.52.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "immer": "^10.1.1",
+    "next": "^14.2.30",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.9",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.30",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "task-management",
+    "kanban",
+    "productivity",
+    "nextjs",
+    "supabase"
+  ],
+  "author": "OmniRealm Team",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@10.12.1"
+}

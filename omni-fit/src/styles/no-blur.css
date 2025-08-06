@@ -1,0 +1,53 @@
+/* Suppression forcée de tous les effets de flou */
+
+* {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-filter: none !important;
+  filter: none !important;
+}
+
+/* S'assurer que les éléments principaux sont nets */
+body, 
+header, 
+main, 
+nav, 
+div, 
+section, 
+article {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+  transform: translateZ(0) !important; /* Force GPU rendering */
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Améliorer la netteté du texte */
+* {
+  text-rendering: optimizeLegibility !important;
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: crisp-edges !important;
+}
+
+/* S'assurer que les modals sont nets */
+.fixed {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Forcer les backgrounds opaques */
+.bg-gray-900 {
+  background-color: rgb(17, 24, 39) !important;
+  opacity: 1 !important;
+}
+
+.bg-gray-800 {
+  background-color: rgb(31, 41, 55) !important;
+  opacity: 1 !important;
+}
+
+.bg-white {
+  background-color: rgb(255, 255, 255) !important;
+  opacity: 1 !important;
+}

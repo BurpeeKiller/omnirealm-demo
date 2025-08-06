@@ -1,0 +1,1 @@
+export { StatsImproved as Stats } from './StatsImproved';

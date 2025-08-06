@@ -1,0 +1,25 @@
+services:
+  fitness-reminder:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+      - VITE_LEMONSQUEEZY_STORE_ID=${VITE_LEMONSQUEEZY_STORE_ID}
+      - VITE_APP_URL=https://fitnessreminder.omnirealm.tech
+      - VITE_PLAUSIBLE_DOMAIN=fitnessreminder.omnirealm.tech
+    labels:
+      - coolify.domain=fitnessreminder.omnirealm.tech
+      - coolify.https=true
+      - coolify.health.path=/
+      - coolify.health.interval=30s
+      - coolify.health.timeout=10s
+      - coolify.health.retries=3
+    ports:
+      - '3012:80'
+    volumes:
+      - fitness-reminder-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  fitness-reminder-data:

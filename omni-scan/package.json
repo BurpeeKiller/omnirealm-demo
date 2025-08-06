@@ -1,0 +1,34 @@
+{
+  "name": "@omnirealm/omni-scan",
+  "version": "2.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+    "dev:backend": "cd backend && ./start.sh",
+    "dev:frontend": "cd frontend && pnpm dev",
+    "build": "pnpm build:frontend",
+    "build:frontend": "cd frontend && pnpm build",
+    "test": "pnpm test:backend && pnpm test:frontend",
+    "test:backend": "cd backend && . venv/bin/activate && pytest",
+    "test:frontend": "cd frontend && pnpm test",
+    "lint": "pnpm lint:backend && pnpm lint:frontend",
+    "lint:backend": "cd backend && . venv/bin/activate && ruff check .",
+    "lint:frontend": "cd frontend && pnpm lint",
+    "format": "pnpm format:backend && pnpm format:frontend",
+    "format:backend": "cd backend && . venv/bin/activate && black . && ruff check . --fix",
+    "format:frontend": "cd frontend && pnpm format",
+    "setup": "pnpm install && cd backend && python3 -m venv venv && . venv/bin/activate && pip install -r requirements.txt",
+    "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '__pycache__' -type d -prune -exec rm -rf '{}' +"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

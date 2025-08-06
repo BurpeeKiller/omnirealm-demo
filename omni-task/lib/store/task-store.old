@@ -1,0 +1,166 @@
+import { create } from 'zustand'
+import { immer } from 'zustand/middleware/immer'
+import type { Task, TaskStore, TaskStatus, Project } from '@/lib/types'
+import { tasksApi } from '@/lib/api/tasks'
+import { projectsApi } from '@/lib/api/projects'
+
+const initialState = {
+  tasks: [],
+  projects: [],
+  selectedProjectId: null,
+  isLoading: false,
+  error: null,
+}
+
+export const useTaskStore = create<TaskStore>()(
+  immer((set, get) => ({
+    ...initialState,
+
+    setTasks: (tasks) => set((state) => {
+      state.tasks = tasks.sort((a, b) => a.position - b.position)
+    }),
+
+    addTask: async (taskData) => {
+      set((state) => {
+        state.isLoading = true
+        state.error = null
+      })
+
+      try {
+        const newTask = await tasksApi.createTask(taskData)
+        
+        set((state) => {
+          state.tasks.push(newTask)
+          state.isLoading = false
+        })
+
+        return newTask
+      } catch (error) {
+        set((state) => {
+          state.isLoading = false
+          state.error = error instanceof Error ? error.message : 'Erreur lors de la création'
+        })
+        throw error
+      }
+    },
+
+    updateTask: async (id, updates) => {
+      // Mise à jour optimiste
+      set((state) => {
+        const index = state.tasks.findIndex(t => t.id === id)
+        if (index !== -1) {
+          state.tasks[index] = {
+            ...state.tasks[index],
+            ...updates,
+            updatedAt: new Date().toISOString()
+          }
+        }
+      })
+
+      try {
+        await tasksApi.updateTask(id, updates)
+      } catch (error) {
+        // Rollback en cas d'erreur
+        await get().fetchTasks()
+        throw error
+      }
+    },
+
+    deleteTask: async (id) => {
+      // Sauvegarde pour rollback
+      const backup = get().tasks
+      
+      // Suppression optimiste
+      set((state) => {
+        state.tasks = state.tasks.filter(t => t.id !== id)
+      })
+
+      try {
+        await tasksApi.deleteTask(id)
+      } catch (error) {
+        // Rollback
+        set((state) => {
+          state.tasks = backup
+          state.error = error instanceof Error ? error.message : 'Erreur lors de la suppression'
+        })
+        throw error
+      }
+    },
+
+    moveTask: async (taskId, newStatus, newPosition) => {
+      set((state) => {
+        const taskIndex = state.tasks.findIndex(t => t.id === taskId)
+        if (taskIndex === -1) return
+
+        const task = state.tasks[taskIndex]
+        const oldStatus = task.status
+
+        // Retirer la tâche de sa position actuelle
+        state.tasks.splice(taskIndex, 1)
+
+        // Mettre à jour les positions des tâches dans l'ancienne colonne
+        state.tasks
+          .filter(t => t.status === oldStatus && t.position > task.position)
+          .forEach(t => t.position--)
+
+        // Mettre à jour la tâche
+        task.status = newStatus
+        task.position = newPosition
+        task.updatedAt = new Date().toISOString()
+
+        // Décaler les tâches dans la nouvelle colonne
+        state.tasks
+          .filter(t => t.status === newStatus && t.position >= newPosition)
+          .forEach(t => t.position++)
+
+        // Insérer la tâche à sa nouvelle position
+        state.tasks.push(task)
+        
+        // Trier par position
+        state.tasks.sort((a, b) => a.position - b.position)
+      })
+
+      try {
+        await tasksApi.moveTask(taskId, newStatus, newPosition)
+      } catch (error) {
+        // Rollback en cas d'erreur
+        await get().fetchTasks()
+        throw error
+      }
+    },
+
+    fetchTasks: async () => {
+      set((state) => {
+        state.isLoading = true
+        state.error = null
+      })
+
+      try {
+        const tasks = await tasksApi.fetchTasks(get().selectedProjectId ?? undefined)
+        set((state) => {
+          state.tasks = tasks
+          state.isLoading = false
+        })
+      } catch (error) {
+        set((state) => {
+          state.isLoading = false
+          state.error = error instanceof Error ? error.message : 'Erreur lors du chargement'
+        })
+      }
+    },
+
+    setProjects: (projects) => set((state) => {
+      state.projects = projects
+    }),
+
+    selectProject: (projectId) => set((state) => {
+      state.selectedProjectId = projectId
+    }),
+
+    clearError: () => set((state) => {
+      state.error = null
+    }),
+
+    reset: () => set(initialState),
+  }))
+)

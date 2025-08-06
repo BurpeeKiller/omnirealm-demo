@@ -1,0 +1,31 @@
+# Configuration Supabase pour OmniTask
+project_id = "omnitask"
+
+[api]
+# Port pour l'API locale
+port = 54321
+# Schemas exposés
+schemas = ["public", "omnitask"]
+
+[db]
+# Port PostgreSQL local
+port = 54322
+
+[studio]
+# Port pour Supabase Studio
+port = 54323
+
+[auth]
+# Configuration auth
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://task.omnirealm.tech"]
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+
+# Providers OAuth (à configurer si besoin)
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = ""

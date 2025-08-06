@@ -1,0 +1,4 @@
+Ceci est un test d'OmniScan.
+Cette application permet de scanner des documents et d'extraire du texte.
+Test OCR : 12345
+Date : 05/08/2025

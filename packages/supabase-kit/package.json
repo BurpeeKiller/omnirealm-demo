@@ -1,0 +1,89 @@
+{
+  "name": "@omnirealm/supabase-kit",
+  "version": "1.0.0",
+  "description": "Kit Supabase réutilisable pour l'écosystème OmniRealm - Hooks, composants et utilitaires",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./hooks": {
+      "require": "./dist/hooks/index.js",
+      "import": "./dist/hooks/index.mjs",
+      "types": "./dist/hooks/index.d.ts"
+    },
+    "./components": {
+      "require": "./dist/components/index.js",
+      "import": "./dist/components/index.mjs",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./utils": {
+      "require": "./dist/utils/index.js",
+      "import": "./dist/utils/index.mjs",
+      "types": "./dist/utils/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "prepack": "pnpm run build",
+    "journal": "node ../../../shared/scripts/journal-unified.cjs add",
+    "journal:search": "node ../../../shared/scripts/journal-unified.cjs search",
+    "journal:stats": "node ../../../shared/scripts/journal-unified.cjs stats",
+    "context:save": "node ../../../shared/scripts/journal-unified.cjs context save",
+    "context:load": "node ../../../shared/scripts/journal-unified.cjs context load",
+    "test:ci": "vitest"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.9",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "next": "^14.2.30",
+    "tsup": "^8.0.0",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omnirealm/monorepo.git",
+    "directory": "dev/packages/supabase-kit"
+  },
+  "keywords": [
+    "omnirealm",
+    "supabase",
+    "react",
+    "hooks",
+    "auth",
+    "realtime",
+    "offline-sync"
+  ],
+  "author": "OmniRealm Team",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
