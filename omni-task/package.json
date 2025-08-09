@@ -1,7 +1,7 @@
 {
   "name": "@omnirealm/omni-task",
   "version": "3.0.0",
-  "description": "TaskMaster Pro - Gestion de tâches IA-augmentée",
+  "description": "OmniTask Pro - Gestion de tâches IA-augmentée",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo -p 3002",

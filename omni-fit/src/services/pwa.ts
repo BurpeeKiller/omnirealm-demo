@@ -56,7 +56,7 @@ async function registerPeriodicSync() {
       });
       
       if (status.state === 'granted') {
-        await (registration as any).periodicSync.register('fitness-reminder', {
+        await (registration as any).periodicSync.register('omni-fit', {
           minInterval: 60 * 60 * 1000, // 1 heure
         });
         console.log('✅ Periodic Sync activé');

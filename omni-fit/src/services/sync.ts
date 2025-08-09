@@ -13,7 +13,7 @@ export interface SyncQueueItem {
 class SyncService {
   private static instance: SyncService;
   private syncQueue: SyncQueueItem[] = [];
-  private readonly SYNC_QUEUE_KEY = 'fitness-reminder-sync-queue';
+  private readonly SYNC_QUEUE_KEY = 'omni-fit-sync-queue';
   private readonly MAX_RETRIES = 3;
 
   static getInstance(): SyncService {

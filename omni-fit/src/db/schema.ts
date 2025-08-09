@@ -21,7 +21,7 @@ export class FitnessDB extends Dexie {
   analytics!: Table<AnalyticsEntry>;
 
   constructor() {
-    super('FitnessReminderDB');
+    super('OmniFitDB');
 
     this.version(1).stores({
       workouts: '++id, date, exercise, [date+exercise]',

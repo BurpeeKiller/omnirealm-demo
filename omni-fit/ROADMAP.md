@@ -1,4 +1,4 @@
-# 🚀 Fitness Reminder - Roadmap d'Améliorations
+# 🚀 OmniFit - Roadmap d'Améliorations
 
 **Version actuelle** : 1.0.0  
 **Objectif** : Production-ready selon les 13 Golden Rules OmniRealm  
@@ -11,7 +11,7 @@
 - [x] Backup complet créé (tar.gz sans node_modules)
 - [ ] Roadmap créée (ce fichier)
 
-### 🧪 Tests Vitest (Règle #6 - Best Practices)
+### 🧪 Tests Vitest (Règle  - Best Practices)
 
 **Priority** : HIGH | **Time** : 30 min | **Impact** : Stabilité production
 
@@ -32,7 +32,7 @@ pnpm add -D vitest @testing-library/react @testing-library/jest-dom @testing-lib
 
 ## 📊 Phase 2 : Analytics & Mesure (45 min)
 
-### 📈 Analytics Locales (Règle #7 - Mesure)
+### 📈 Analytics Locales (Règle  - Mesure)
 
 **Priority** : HIGH | **Time** : 45 min | **Impact** : Data-driven decisions
 
@@ -79,7 +79,7 @@ interface Analytics {
 
 ## 🤖 Phase 4 : Automation (30 min)
 
-### 💾 Auto-backup Hebdomadaire (Règle #8 - Automate)
+### 💾 Auto-backup Hebdomadaire (Règle  - Automate)
 
 **Priority** : MEDIUM | **Time** : 30 min | **Impact** : Data safety
 
@@ -95,7 +95,7 @@ interface Analytics {
 
 ## 🌐 Phase 5 : Production (15 min)
 
-### 🚀 Déploiement Production (Règle #9 - Ship Fast)
+### 🚀 Déploiement Production (Règle  - Ship Fast)
 
 **Priority** : HIGH | **Time** : 15 min | **Impact** : Go-live immediate
 
@@ -105,7 +105,7 @@ interface Analytics {
 2. **Cloudflare Pages** : drag & drop build (10 min)
 3. **VPS Hostinger** : rsync vers /var/www (20 min)
 
-**URL Target** : fitness-reminder.vercel.app
+**URL Target** : omni-fit.vercel.app
 
 ---
 

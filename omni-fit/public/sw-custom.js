@@ -32,7 +32,7 @@ async function syncData() {
 
 // Gestion des notifications périodiques
 self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'fitness-reminder') {
+  if (event.tag === 'omni-fit') {
     console.log('⏰ Vérification des rappels...');
     event.waitUntil(checkAndSendReminders());
   }
@@ -75,7 +75,7 @@ async function sendNotification() {
     icon: '/icon-192.png',
     badge: '/icon-192.png',
     vibrate: [200, 100, 200],
-    tag: 'fitness-reminder',
+    tag: 'omni-fit',
     renotify: true,
     requireInteraction: true,
     actions: [
@@ -89,7 +89,7 @@ async function sendNotification() {
     }
   };
   
-  await self.registration.showNotification('Fitness Reminder', options);
+  await self.registration.showNotification('OmniFit', options);
 }
 
 // Gestion des clics sur les notifications
@@ -124,7 +124,7 @@ async function scheduleSnooze(minutes) {
 // Ouvrir la base de données IndexedDB
 async function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('FitnessReminderDB', 2);
+    const request = indexedDB.open('OmniFitDB', 2);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });

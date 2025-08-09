@@ -25,8 +25,8 @@ export interface BackupSettings {
   lastBackupDate: string | null;
 }
 
-const BACKUP_STORAGE_KEY = 'fitness-reminder-backup-settings';
-const BACKUP_PREFIX = 'fitness-reminder-backup-';
+const BACKUP_STORAGE_KEY = 'omni-fit-backup-settings';
+const BACKUP_PREFIX = 'omni-fit-backup-';
 
 export class BackupService {
   private static instance: BackupService;
@@ -113,7 +113,7 @@ export class BackupService {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `fitness-reminder-backup-${new Date().toLocaleDateString('fr-CA')}.json`;
+      a.download = `omni-fit-backup-${new Date().toLocaleDateString('fr-CA')}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

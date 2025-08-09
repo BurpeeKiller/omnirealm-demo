@@ -1,5 +1,5 @@
 services:
-  fitness-reminder:
+  omni-fit:
     build: .
     environment:
       - NODE_ENV=production
@@ -18,8 +18,8 @@ services:
     ports:
       - '3012:80'
     volumes:
-      - fitness-reminder-data:/app/data
+      - omni-fit-data:/app/data
     restart: unless-stopped
 
 volumes:
-  fitness-reminder-data:
+  omni-fit-data:

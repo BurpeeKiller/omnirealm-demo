@@ -6,11 +6,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function testFitnessReminder() {
-  console.log('🚀 Démarrage des tests Fitness Reminder PWA');
+async function testOmniFit() {
+  console.log('🚀 Démarrage des tests OmniFit PWA');
   
   // Créer un dossier pour les screenshots
-  const screenshotDir = path.join(__dirname, 'fitness-reminder-test-results');
+  const screenshotDir = path.join(__dirname, 'omni-fit-test-results');
   try {
     await fs.mkdir(screenshotDir, { recursive: true });
   } catch (err) {
@@ -309,4 +309,4 @@ function generateReport(results, screenshotDir) {
 }
 
 // Lancer les tests
-testFitnessReminder().catch(console.error);
+testOmniFit().catch(console.error);

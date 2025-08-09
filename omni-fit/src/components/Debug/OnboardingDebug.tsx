@@ -33,7 +33,7 @@ export const OnboardingDebug = () => {
           onClick={() => {
             // Force absolue : effacer directement et recharger
             localStorage.setItem(
-              'fitness-reminder-onboarding',
+              'omni-fit-onboarding',
               JSON.stringify({
                 isCompleted: true,
                 currentStep: 3,

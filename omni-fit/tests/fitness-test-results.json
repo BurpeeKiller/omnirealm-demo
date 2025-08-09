@@ -25,7 +25,7 @@
     {
       "name": "Titre",
       "status": "passed",
-      "message": "Titre trouvé: Fitness Reminder",
+      "message": "Titre trouvé: OmniFit",
       "details": null,
       "timestamp": "2025-07-23T14:49:02.013Z"
     },
@@ -39,10 +39,10 @@
     {
       "name": "PWA Manifest",
       "status": "passed",
-      "message": "Manifest complet: Fitness Reminder - Rappels d'exercices",
+      "message": "Manifest complet: OmniFit - Rappels d'exercices",
       "details": {
         "manifest": {
-          "name": "Fitness Reminder - Rappels d'exercices",
+          "name": "OmniFit - Rappels d'exercices",
           "short_name": "FitReminder",
           "description": "Application de rappels programmables pour Burpees, Pompes et Squats avec suivi des performances et statistiques détaillées",
           "start_url": "/",

@@ -2,15 +2,15 @@
 
 ## 📋 Informations Générales
 
-**Feature** : Migration Fitness Reminder → OmniFit + Coach AI Premium  
-**Projet** : OmniFit (ex-Fitness Reminder)  
+**Feature** : Migration OmniFit → OmniFit + Coach AI Premium  
+**Projet** : OmniFit (ex-OmniFit)  
 **Date** : 2025-01-28  
 **Auteur** : Greg & Claude  
 **Score RICE+** : 92/100
 
 ## 🎯 Objectif Business
 
-Transformer Fitness Reminder en OmniFit Premium avec coach AI intégré pour générer 29€/user/mois. Objectif : 150 abonnés premium = 52K€ ARR dépassant l'objectif Q4 2025.
+Transformer OmniFit en OmniFit Premium avec coach AI intégré pour générer 29€/user/mois. Objectif : 150 abonnés premium = 52K€ ARR dépassant l'objectif Q4 2025.
 
 ## 📝 Requirements EARS
 
@@ -99,7 +99,7 @@ interface WorkoutProgram {
 
 ### Structure des dossiers après renommage
 ```
-/dev/apps/12-omnifit/  (renommé de fitness-reminder)
+/dev/apps/12-omnifit/  (renommé de omni-fit)
 ├── src/
 │   ├── services/
 │   │   ├── ai-coach.ts       (nouveau)
@@ -201,17 +201,17 @@ interface WorkoutProgram {
 #!/bin/bash
 # migrate-to-omnifit.sh
 
-echo "🚀 Migration Fitness Reminder → OmniFit"
+echo "🚀 Migration OmniFit → OmniFit"
 
 # 1. Renommer le dossier
-mv dev/apps/12-fitness-reminder dev/apps/12-omnifit
+mv dev/apps/12-omni-fit dev/apps/12-omnifit
 
 # 2. Mettre à jour les références
-find dev/apps/12-omnifit -type f -name "*.{js,ts,tsx,json,md}" -exec sed -i 's/fitness-reminder/omnifit/g' {} +
-find dev/apps/12-omnifit -type f -name "*.{js,ts,tsx,json,md}" -exec sed -i 's/Fitness Reminder/OmniFit/g' {} +
+find dev/apps/12-omnifit -type f -name "*.{js,ts,tsx,json,md}" -exec sed -i 's/omni-fit/omnifit/g' {} +
+find dev/apps/12-omnifit -type f -name "*.{js,ts,tsx,json,md}" -exec sed -i 's/OmniFit/OmniFit/g' {} +
 
 # 3. Mettre à jour package.json
-sed -i 's/@omnirealm\/fitness-reminder/@omnirealm\/omnifit/g' dev/apps/12-omnifit/package.json
+sed -i 's/@omnirealm\/omni-fit/@omnirealm\/omnifit/g' dev/apps/12-omnifit/package.json
 
 echo "✅ Migration terminée ! N'oubliez pas de :"
 echo "- Créer le nouveau logo"

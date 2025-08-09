@@ -51,7 +51,7 @@ export const useSettingsStore = create<SettingsState>()(
         })),
     }),
     {
-      name: 'fitness-reminder-settings',
+      name: 'omni-fit-settings',
     },
   ),
 );

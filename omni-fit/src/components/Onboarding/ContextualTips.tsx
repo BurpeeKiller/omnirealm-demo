@@ -56,7 +56,7 @@ export const ContextualTips = () => {
   // Charger les tips déjà montrés
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('fitness-reminder-tips');
+      const saved = localStorage.getItem('omni-fit-tips');
       if (saved) {
         setShownTips(JSON.parse(saved));
       }
@@ -72,7 +72,7 @@ export const ContextualTips = () => {
       // Marquer comme montré
       const newShownTips = [...shownTips, tipId];
       setShownTips(newShownTips);
-      localStorage.setItem('fitness-reminder-tips', JSON.stringify(newShownTips));
+      localStorage.setItem('omni-fit-tips', JSON.stringify(newShownTips));
     }
   };
 

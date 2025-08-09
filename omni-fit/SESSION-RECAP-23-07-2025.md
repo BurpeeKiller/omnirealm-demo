@@ -3,7 +3,7 @@
 ## 📋 **RÉSUMÉ EXÉCUTIF**
 
 **Mission** : Implémentation complète Option B - Solution Production PWA  
-**Objectif** : Préparer Fitness Reminder pour générer 50K€ ARR  
+**Objectif** : Préparer OmniFit pour générer 50K€ ARR  
 **Durée** : ~3 heures intensives  
 **Résultat** : ✅ PWA production-ready déployée
 
@@ -73,9 +73,9 @@ DEPLOYMENT.md        # Guide déploiement complet
 ### **Configuration Vite mise à jour**
 ```typescript
 // vite.config.ts
-base: process.env.NODE_ENV === 'production' ? '/fitness-reminder/' : '/',
-scope: process.env.NODE_ENV === 'production' ? '/fitness-reminder/' : '/',
-start_url: process.env.NODE_ENV === 'production' ? '/fitness-reminder/' : '/',
+base: process.env.NODE_ENV === 'production' ? '/omni-fit/' : '/',
+scope: process.env.NODE_ENV === 'production' ? '/omni-fit/' : '/',
+start_url: process.env.NODE_ENV === 'production' ? '/omni-fit/' : '/',
 ```
 
 ---
@@ -169,7 +169,7 @@ pnpm run deploy:github          # Deploy GitHub Pages
 
 ## 🎉 **RÉSULTATS BUSINESS**
 
-### **Fitness Reminder PWA - Production Ready**
+### **OmniFit PWA - Production Ready**
 - ✅ **PWA complète** : Installable mobile/desktop
 - ✅ **Expérience optimisée** : Onboarding 3 étapes fluide  
 - ✅ **Analytics professionnelles** : Dashboard + export

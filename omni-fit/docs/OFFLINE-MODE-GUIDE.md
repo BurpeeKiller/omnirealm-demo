@@ -1,8 +1,8 @@
-# Guide du Mode Offline - Fitness Reminder PWA
+# Guide du Mode Offline - OmniFit PWA
 
 ## 🚀 Vue d'ensemble
 
-Fitness Reminder est une Progressive Web App (PWA) complète avec un support offline avancé. L'application fonctionne entièrement sans connexion internet grâce à plusieurs technologies modernes.
+OmniFit est une Progressive Web App (PWA) complète avec un support offline avancé. L'application fonctionne entièrement sans connexion internet grâce à plusieurs technologies modernes.
 
 ## 📱 Fonctionnalités Offline
 

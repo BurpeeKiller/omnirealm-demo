@@ -140,4 +140,4 @@ pnpm run build && pnpm run type-check
 
 ## 🏷️ Tags
 
-#ui #components #radix-ui #tailwind #typescript #design-system
+  #radix-ui #tailwind #typescript #design-system

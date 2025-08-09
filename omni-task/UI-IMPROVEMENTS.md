@@ -55,8 +55,8 @@ L'interface a été complètement repensée pour offrir une expérience plus mod
 ## 🎨 Palette de couleurs
 
 ### Couleurs principales
-- **Primaire** : Gradient bleu-violet (#3B82F6 → #8B5CF6)
-- **Fond** : Gris très clair (#F9FAFB → #F3F4F6)
+- **Primaire** : Gradient bleu-violet ( → )
+- **Fond** : Gris très clair ( → )
 - **Cartes** : Blanc pur avec ombres douces
 - **Texte** : Gris foncé (#111827) pour contraste optimal
 

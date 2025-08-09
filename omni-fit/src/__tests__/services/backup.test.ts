@@ -136,7 +136,7 @@ describe('BackupService', () => {
       service.saveBackupSettings(settings);
 
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'fitness-reminder-backup-settings',
+        'omni-fit-backup-settings',
         JSON.stringify(settings),
       );
     });
@@ -280,22 +280,22 @@ describe('BackupService', () => {
 
     it('should return list of backups', () => {
       const mockKeys = [
-        'fitness-reminder-backup-1642249200000',
-        'fitness-reminder-backup-1642335600000',
+        'omni-fit-backup-1642249200000',
+        'omni-fit-backup-1642335600000',
         'other-key',
       ];
 
       localStorageMock.length = mockKeys.length;
       localStorageMock.key.mockImplementation((index) => mockKeys[index]);
       localStorageMock.getItem.mockImplementation((key) =>
-        key?.startsWith('fitness-reminder-backup-') ? '{"data": "test"}' : null,
+        key?.startsWith('omni-fit-backup-') ? '{"data": "test"}' : null,
       );
 
       const backups = service.getLocalBackups();
 
       expect(backups).toHaveLength(2);
-      expect(backups[0].key).toBe('fitness-reminder-backup-1642335600000');
-      expect(backups[1].key).toBe('fitness-reminder-backup-1642249200000');
+      expect(backups[0].key).toBe('omni-fit-backup-1642335600000');
+      expect(backups[1].key).toBe('omni-fit-backup-1642249200000');
     });
   });
 

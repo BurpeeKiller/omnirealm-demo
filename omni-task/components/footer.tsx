@@ -61,7 +61,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a href="https://fitness.omnirealm.com" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-                    Fitness Reminder
+                    OmniFit
                   </a>
                 </li>
                 <li>

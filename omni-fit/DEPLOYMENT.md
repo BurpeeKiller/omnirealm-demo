@@ -31,7 +31,7 @@ pnpm run build
 pnpm exec vercel --prod
 
 # URL de production (exemple)
-# https://fitness-reminder-omega.vercel.app
+# https://omni-fit-omega.vercel.app
 ```
 
 ### ✅ Fonctionnalités déployées

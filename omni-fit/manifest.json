@@ -1,5 +1,5 @@
 {
-  "name": "Fitness Reminder - Rappels d'exercices",
+  "name": "OmniFit - Rappels d'exercices",
   "short_name": "FitReminder",
   "description": "Application de rappels programmables pour Burpees, Pompes et Squats avec suivi des performances et statistiques détaillées",
   "start_url": "/",

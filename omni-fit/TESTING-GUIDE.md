@@ -1,4 +1,4 @@
-# 🧪 Guide de Test - Fitness Reminder
+# 🧪 Guide de Test - OmniFit
 
 ## Problèmes rencontrés et solutions
 
@@ -33,7 +33,7 @@ Les tests ont été corrigés pour :
 
 ```bash
 # Depuis le dossier du projet
-cd dev/apps/12-fitness-reminder
+cd dev/apps/12-omni-fit
 
 # Installer les dépendances si nécessaire
 pnpm install

@@ -7,7 +7,7 @@ interface OnboardingState {
   timestamp: number;
 }
 
-const STORAGE_KEY = 'fitness-reminder-onboarding-v2';
+const STORAGE_KEY = 'omni-fit-onboarding-v2';
 const ONBOARDING_VERSION = 2;
 
 export const useProgressiveOnboarding = () => {

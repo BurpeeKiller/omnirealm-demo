@@ -72,7 +72,7 @@ describe('useOnboarding', () => {
     });
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'fitness-reminder-onboarding',
+      'omni-fit-onboarding',
       JSON.stringify({
         isCompleted: false,
         currentStep: 1,
@@ -91,7 +91,7 @@ describe('useOnboarding', () => {
     });
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'fitness-reminder-onboarding',
+      'omni-fit-onboarding',
       JSON.stringify({
         isCompleted: false,
         currentStep: 2,
@@ -110,7 +110,7 @@ describe('useOnboarding', () => {
     });
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'fitness-reminder-onboarding',
+      'omni-fit-onboarding',
       JSON.stringify({
         isCompleted: true,
         currentStep: 3,
@@ -128,7 +128,7 @@ describe('useOnboarding', () => {
       result.current.resetOnboarding();
     });
 
-    expect(localStorageMock.removeItem).toHaveBeenCalledWith('fitness-reminder-onboarding');
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('omni-fit-onboarding');
     expect(result.current.state).toEqual({
       isCompleted: false,
       currentStep: 0,
@@ -146,7 +146,7 @@ describe('useOnboarding', () => {
     });
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'fitness-reminder-onboarding',
+      'omni-fit-onboarding',
       JSON.stringify({
         isCompleted: true,
         currentStep: 3,

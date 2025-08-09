@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'tech.omnirealm.fitnessreminder',
-  appName: 'Fitness Reminder',
+  appName: 'OmniFit',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

@@ -17,7 +17,7 @@ export interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
 }
 
-const PREFS_KEY = 'fitness-reminder-prefs';
+const PREFS_KEY = 'omni-fit-prefs';
 
 /**
  * Sauvegarde les préférences utilisateur

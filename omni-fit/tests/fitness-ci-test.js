@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Test CI/CD pour Fitness Reminder PWA
+ * Test CI/CD pour OmniFit PWA
  * Usage: node fitness-ci-test.js
  */
 
@@ -11,7 +11,7 @@ import { promises as fs } from 'fs';
 const CONFIG = {
   baseUrl: 'https://frolicking-stardust-cd010f.netlify.app',
   timeout: 10000,
-  expectedTitle: 'Fitness Reminder',
+  expectedTitle: 'OmniFit',
   requiredResources: [
     '/icon-192.png',
     '/icon-512.png', 

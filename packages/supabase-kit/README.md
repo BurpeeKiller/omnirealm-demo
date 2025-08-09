@@ -90,7 +90,7 @@ Pour plus de détails et exemples, voir :
 - [Guide Supabase OmniRealm](../../../docs/technical/supabase/docs/README.md)
 - [Guide des hooks](../../../docs/technical/supabase/docs/README-HOOKS.md)
 - [Best practices](../../../docs/technical/supabase/docs/SUPABASE-BEST-PRACTICES.md)
-<!-- Configuration TaskMaster disponible dans le guide unifié Supabase -->
+<!-- Configuration OmniTask disponible dans le guide unifié Supabase -->
 
 ## 🏗️ Structure du package
 

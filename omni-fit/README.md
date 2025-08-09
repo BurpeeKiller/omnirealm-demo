@@ -1,4 +1,4 @@
-# OmniFit - Coach Fitness IA Premium 💪🤖 #omnifit
+# OmniFit - Coach Fitness IA Premium 💪🤖 
 
 > **Last Updated**: 2025-07-25
 
@@ -101,7 +101,7 @@ Les données sont stockées localement dans IndexedDB :
 localStorage.debug = 'dexie:*'
 
 # Reset de la base de données
-indexedDB.deleteDatabase('FitnessReminderDB')
+indexedDB.deleteDatabase('OmniFitDB')
 ```
 
 ## 📄 License

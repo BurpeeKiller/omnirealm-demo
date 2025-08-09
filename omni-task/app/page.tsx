@@ -37,7 +37,7 @@ export default function HomePage() {
               Gestion de tâches moderne avec IA intégrée
             </p>
             <p className="text-sm text-muted-foreground mb-8 max-w-lg mx-auto">
-              Fait partie de l'écosystème OmniRealm : OmniScan, OmniTask, Fitness Reminder et plus encore. 
+              Fait partie de l'écosystème OmniRealm : OmniScan, OmniTask, OmniFit et plus encore. 
               Toutes vos applications professionnelles interconnectées.
             </p>
             <div className="flex gap-4 justify-center">

@@ -21,7 +21,7 @@ const localStorageMock = (() => {
 })();
 
 // Simuler le comportement du hook
-const ONBOARDING_STORAGE_KEY = 'fitness-reminder-onboarding';
+const ONBOARDING_STORAGE_KEY = 'omni-fit-onboarding';
 
 interface OnboardingState {
   isCompleted: boolean;
