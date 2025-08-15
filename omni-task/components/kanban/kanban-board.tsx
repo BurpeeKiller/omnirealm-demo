@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
 import { KanbanColumn } from './kanban-column'
 import { TaskForm } from '@/components/task-form'
-import { useTaskStore } from '@/lib/store/task-store'
+import { useRealtimeTasks } from '@/components/sync/realtime-provider'
 import { TaskStatus } from '@/lib/types'
 import type { KanbanColumn as KanbanColumnType, Task } from '@/lib/types'
 
@@ -16,9 +16,10 @@ const columns: Omit<KanbanColumnType, 'tasks'>[] = [
 ]
 
 export function KanbanBoard() {
-  const { tasks, moveTask, selectedProjectId } = useTaskStore()
+  const { tasks, moveTask, updateTask } = useRealtimeTasks()
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
 
   // Filtrer les tâches par projet si nécessaire
   const filteredTasks = selectedProjectId 

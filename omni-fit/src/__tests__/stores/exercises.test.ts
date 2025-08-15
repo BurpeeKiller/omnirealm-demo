@@ -1,129 +1,162 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useExercisesStore } from '../../stores/exercises.store';
 
-// Mock Dexie database
-vi.mock('../../db', () => ({
-  db: {
-    workouts: {
-      add: vi.fn(),
-      toArray: vi.fn(() => Promise.resolve([])),
-      where: vi.fn(() => ({
-        between: vi.fn(() => ({
-          toArray: vi.fn(() => Promise.resolve([])),
-        })),
-      })),
-    },
-    dailyStats: {
-      get: vi.fn(() => Promise.resolve(undefined)),
-      put: vi.fn(),
-    },
+// Mock the database functions
+const mockAddWorkout = vi.fn().mockResolvedValue(undefined);
+const mockGetTodayStats = vi.fn().mockResolvedValue({ burpees: 0, pushups: 0, squats: 0, total: 0 });
+
+// Mock analytics and sync services
+vi.mock('../../services/analytics', () => ({
+  analytics: {
+    trackExercise: vi.fn().mockResolvedValue(undefined),
   },
+}));
+
+vi.mock('../../services/sync', () => ({
+  syncService: {
+    addToSyncQueue: vi.fn(),
+  },
+}));
+
+// Mock database
+vi.mock('../../db', () => ({
+  addWorkout: mockAddWorkout,
+  getTodayStats: mockGetTodayStats,
 }));
 
 describe('ExercisesStore', () => {
   beforeEach(() => {
     // Reset store state before each test
     useExercisesStore.setState({
-      exercises: {
-        burpees: 0,
-        pompes: 0,
-        squats: 0,
-      },
-      dailyTotal: 0,
-      weeklyTotal: 0,
-      isLoading: false,
+      exercises: [
+        {
+          type: 'burpees',
+          name: 'Burpees',
+          emoji: '🔥',
+          count: 0,
+          increment: 10,
+        },
+        {
+          type: 'pushups',
+          name: 'Pompes',
+          emoji: '💪',
+          count: 0,
+          increment: 10,
+        },
+        {
+          type: 'squats',
+          name: 'Squats',
+          emoji: '🦵',
+          count: 0,
+          increment: 10,
+        },
+      ],
+      todayTotal: 0,
+      loading: false,
     });
+    
+    // Reset mocks
+    vi.clearAllMocks();
   });
 
   it('initializes with correct default state', () => {
     const store = useExercisesStore.getState();
 
-    expect(store.exercises).toEqual({
-      burpees: 0,
-      pompes: 0,
-      squats: 0,
+    expect(store.exercises).toHaveLength(3);
+    expect(store.exercises[0]).toEqual({
+      type: 'burpees',
+      name: 'Burpees',
+      emoji: '🔥',
+      count: 0,
+      increment: 10,
     });
-    expect(store.dailyTotal).toBe(0);
-    expect(store.weeklyTotal).toBe(0);
-    expect(store.isLoading).toBe(false);
+    expect(store.todayTotal).toBe(0);
+    expect(store.loading).toBe(false);
   });
 
-  it('increments exercise count correctly', () => {
+  it('increments exercise count correctly', async () => {
     const { incrementExercise } = useExercisesStore.getState();
 
-    incrementExercise('burpees');
+    await incrementExercise('burpees');
 
     const state = useExercisesStore.getState();
-    expect(state.exercises.burpees).toBe(1);
-    expect(state.exercises.pompes).toBe(0);
-    expect(state.exercises.squats).toBe(0);
+    const burpeesExercise = state.exercises.find(e => e.type === 'burpees');
+    expect(burpeesExercise?.count).toBe(10); // increment is 10
+    expect(state.todayTotal).toBe(10);
+    expect(mockAddWorkout).toHaveBeenCalledWith('burpees', 10);
   });
 
-  it('updates daily total when exercise is incremented', () => {
+  it('updates daily total when exercise is incremented', async () => {
     const { incrementExercise } = useExercisesStore.getState();
 
-    incrementExercise('burpees');
-    incrementExercise('pompes');
+    await incrementExercise('burpees');
+    await incrementExercise('pushups');
 
     const state = useExercisesStore.getState();
-    expect(state.dailyTotal).toBe(2);
+    expect(state.todayTotal).toBe(20); // 10 + 10
   });
 
-  it('handles multiple increments of same exercise', () => {
+  it('handles multiple increments of same exercise', async () => {
     const { incrementExercise } = useExercisesStore.getState();
 
-    incrementExercise('burpees');
-    incrementExercise('burpees');
-    incrementExercise('burpees');
+    await incrementExercise('burpees');
+    await incrementExercise('burpees');
+    await incrementExercise('burpees');
 
     const state = useExercisesStore.getState();
-    expect(state.exercises.burpees).toBe(3);
-    expect(state.dailyTotal).toBe(3);
+    const burpeesExercise = state.exercises.find(e => e.type === 'burpees');
+    expect(burpeesExercise?.count).toBe(30); // 10 * 3
+    expect(state.todayTotal).toBe(30);
   });
 
   it('resets daily stats correctly', () => {
-    const { incrementExercise, resetDaily } = useExercisesStore.getState();
+    const { resetDaily } = useExercisesStore.getState();
 
-    // Add some exercises
-    incrementExercise('burpees');
-    incrementExercise('pompes');
+    // First set some counts
+    useExercisesStore.setState({
+      exercises: useExercisesStore.getState().exercises.map(e => ({ ...e, count: 10 })),
+      todayTotal: 30,
+    });
 
     // Reset
     resetDaily();
 
     const state = useExercisesStore.getState();
-    expect(state.exercises).toEqual({
-      burpees: 0,
-      pompes: 0,
-      squats: 0,
+    state.exercises.forEach(exercise => {
+      expect(exercise.count).toBe(0);
     });
-    expect(state.dailyTotal).toBe(0);
+    expect(state.todayTotal).toBe(0);
   });
 
-  it('sets loading state correctly', () => {
-    const { setLoading } = useExercisesStore.getState();
-
-    setLoading(true);
-    expect(useExercisesStore.getState().isLoading).toBe(true);
-
-    setLoading(false);
-    expect(useExercisesStore.getState().isLoading).toBe(false);
-  });
-
-  it('validates exercise types', () => {
+  it('sets loading state correctly', async () => {
     const { incrementExercise } = useExercisesStore.getState();
 
-    // Valid exercise
-    incrementExercise('burpees');
-    expect(useExercisesStore.getState().exercises.burpees).toBe(1);
+    // Start an increment (should set loading to true, then false)
+    const promise = incrementExercise('burpees');
+    
+    // Loading should be true during execution
+    expect(useExercisesStore.getState().loading).toBe(true);
+    
+    // Wait for completion
+    await promise;
+    
+    // Loading should be false after completion
+    expect(useExercisesStore.getState().loading).toBe(false);
+  });
 
-    // Invalid exercise should not crash
-    incrementExercise('invalid' as any);
+  it('validates exercise types', async () => {
+    const { incrementExercise } = useExercisesStore.getState();
+
+    // Valid types should work
+    await incrementExercise('burpees');
+    const burpeesExercise = useExercisesStore.getState().exercises.find(e => e.type === 'burpees');
+    expect(burpeesExercise?.count).toBe(10);
+
+    // Invalid type should be handled gracefully (function returns early)
+    await incrementExercise('invalid' as any);
+    
+    // State should remain unchanged for invalid exercise
     const state = useExercisesStore.getState();
-    expect(state.exercises).toEqual({
-      burpees: 1,
-      pompes: 0,
-      squats: 0,
-    });
+    expect(state.todayTotal).toBe(10); // Only the valid exercise was added
   });
 });

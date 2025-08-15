@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react'
 
+export interface AnalysisConfig {
+  detailLevel: string
+  language: string
+  includeStructuredData: boolean
+  chapterSummaries?: boolean
+}
+
 interface SimpleModalProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: (config: any) => void
+  onConfirm: (config: AnalysisConfig) => void
   fileName: string
 }
 
@@ -11,6 +18,7 @@ export function SimpleModal({ isOpen, onClose, onConfirm, fileName }: SimpleModa
   const [detailLevel, setDetailLevel] = useState('medium')
   const [language, setLanguage] = useState('auto')
   const [includeStructuredData, setIncludeStructuredData] = useState(true)
+  const [chapterSummaries, setChapterSummaries] = useState(false)
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -83,6 +91,23 @@ export function SimpleModal({ isOpen, onClose, onConfirm, fileName }: SimpleModa
                 Extraire les données structurées (factures, CV, contrats...)
               </label>
             </div>
+            
+            {/* Option résumés par chapitre pour niveau détaillé */}
+            {(detailLevel === 'detailed' || detailLevel === 'high') && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="chapters"
+                  checked={chapterSummaries}
+                  onChange={(e) => setChapterSummaries(e.target.checked)}
+                  className="rounded"
+                />
+                <label htmlFor="chapters" className="text-sm">
+                  <span className="font-medium">Résumés par chapitre</span>
+                  <span className="text-gray-500 ml-1">(pour documents longs)</span>
+                </label>
+              </div>
+            )}
           </div>
           
           <div className="flex justify-end gap-3 mt-6">
@@ -96,7 +121,8 @@ export function SimpleModal({ isOpen, onClose, onConfirm, fileName }: SimpleModa
               onClick={() => onConfirm({
                 detailLevel,
                 language,
-                includeStructuredData
+                includeStructuredData,
+                chapterSummaries
               })}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >

@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { logger } from '@/utils/logger';
 
 interface AIResponse {
   content: string;
@@ -17,22 +18,25 @@ interface HistoryItem {
   timestamp: Date;
 }
 
-interface UserContext {
+export interface UserContext {
   exercisesDone?: Array<{
-    type: string;
-    completed: number;
+    name: string;
+    count: number;
+    completed: boolean;
     target: number;
   }>;
   totalCompleted?: number;
   timeOfDay?: string;
+  level?: string;
+  goal?: string;
 }
 
-// Configuration de l'API AI - Intégration Jarvis
-const AI_API_URL = import.meta.env.VITE_AI_API_URL || 'http://localhost:11434/api/generate'; // Ollama direct
-const AI_API_KEY = import.meta.env.VITE_AI_API_KEY || '';
-const JARVIS_ENABLED = import.meta.env.VITE_JARVIS_ENABLED === 'true';
+import { publicConfig } from '../lib/config';
 
-export function useAI(config = {}) {
+// Configuration de l'API AI - Intégration Jarvis
+const AI_API_URL = publicConfig.aiApiUrl;
+const AI_API_KEY = publicConfig.aiApiKey || '';
+export function useAI() {
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState<AIResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +86,7 @@ export function useAI(config = {}) {
       };
     } catch (err: any) {
       // Fallback pour dev local sans serveur AI
-      console.warn('API AI non disponible, utilisation du mock:', err.message);
+      logger.warn('API AI non disponible, utilisation du mock:', err.message);
       
       // Réponses améliorées pour le développement
       const fitnessResponses = {

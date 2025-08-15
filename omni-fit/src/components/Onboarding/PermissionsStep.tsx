@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Bell, Volume2, Shield, CheckCircle, XCircle } from 'lucide-react';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useNotification } from '@/hooks/useNotification';
+import { logger } from '@/utils/logger';
 
 interface PermissionsStepProps {
   onNext?: () => void;
@@ -21,11 +22,11 @@ export const PermissionsStep = ({ onNext, onSkip }: PermissionsStepProps) => {
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   const handleNotificationRequest = async () => {
-    console.log('handleNotificationRequest called');
+    logger.info('handleNotificationRequest called');
     setIsRequesting(true);
     try {
       const result = await requestPermission();
-      console.log('Permission result:', result);
+      logger.info('Permission result:', result);
       // Si on a obtenu la permission, on peut continuer automatiquement
       if (result === 'granted') {
         setTimeout(() => {
@@ -37,14 +38,14 @@ export const PermissionsStep = ({ onNext, onSkip }: PermissionsStepProps) => {
         }, 1000);
       }
     } catch (error) {
-      console.error('Failed to request notification permission:', error);
+      logger.error('Failed to request notification permission:', error);
     } finally {
       setIsRequesting(false);
     }
   };
 
   const handleContinue = () => {
-    console.log('handleContinue called, permission:', permission);
+    logger.info('handleContinue called, permission:', permission);
     if (onNext) {
       onNext();
     } else {
@@ -53,7 +54,7 @@ export const PermissionsStep = ({ onNext, onSkip }: PermissionsStepProps) => {
   };
 
   const handleSkipStep = () => {
-    console.log('handleSkip called');
+    logger.info('handleSkip called');
     if (onSkip) {
       onSkip();
     } else {

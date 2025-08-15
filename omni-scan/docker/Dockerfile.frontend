@@ -1,0 +1,69 @@
+# Dockerfile optimisé pour OmniScan Frontend
+# Image finale : ~50MB
+
+# ========================================
+# Stage 1: Builder
+# ========================================
+FROM node:20-alpine AS builder
+
+# Installer pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+# Copier les fichiers de configuration
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
+COPY dev/packages ./dev/packages
+COPY dev/apps/omni-scan/frontend/package.json ./dev/apps/omni-scan/frontend/
+COPY shared ./shared
+
+# Installer les dépendances
+RUN pnpm install --frozen-lockfile
+
+# Copier le code source
+COPY dev/apps/omni-scan/frontend ./dev/apps/omni-scan/frontend
+
+# Build des packages si nécessaire
+RUN pnpm --filter="@omnirealm/ui" run build || true
+RUN pnpm --filter="@omnirealm/utils" run build || true
+
+# Build du frontend
+WORKDIR /app/dev/apps/omni-scan/frontend
+RUN pnpm run build
+
+# ========================================
+# Stage 2: Runtime - Nginx Alpine
+# ========================================
+FROM nginx:alpine
+
+# Installer curl pour healthcheck
+RUN apk add --no-cache curl
+
+# Supprimer la config par défaut
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copier la config nginx optimisée
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copier les fichiers buildés
+COPY --from=builder /app/dev/apps/omni-scan/frontend/dist /usr/share/nginx/html
+
+# Créer un utilisateur non-root pour nginx
+RUN addgroup -g 1000 omniscan && \
+    adduser -D -u 1000 -G omniscan omniscan && \
+    chown -R omniscan:omniscan /usr/share/nginx/html && \
+    chown -R omniscan:omniscan /var/cache/nginx && \
+    chown -R omniscan:omniscan /var/log/nginx && \
+    touch /var/run/nginx.pid && \
+    chown omniscan:omniscan /var/run/nginx.pid
+
+# Utiliser le port 8080 (non-privilégié)
+EXPOSE 8080
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8080 || exit 1
+
+# Lancer nginx en mode non-daemon
+USER omniscan
+CMD ["nginx", "-g", "daemon off;"]

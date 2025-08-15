@@ -1,0 +1,95 @@
+# Dockerfile optimisé pour OmniScan Backend
+# Objectif : Réduire de 2.13GB à ~500MB
+
+# ========================================
+# Stage 1: Builder - Dépendances Python
+# ========================================
+FROM python:3.11-alpine AS builder
+
+# Installer les dépendances de build
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    python3-dev \
+    build-base \
+    # Pour Pillow
+    jpeg-dev \
+    zlib-dev \
+    freetype-dev \
+    lcms2-dev \
+    openjpeg-dev \
+    tiff-dev \
+    tk-dev \
+    tcl-dev \
+    # Pour OpenCV
+    linux-headers
+
+# Créer un environnement virtuel
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copier et installer les requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt
+
+# ========================================
+# Stage 2: Runtime - Image finale légère
+# ========================================
+FROM python:3.11-alpine
+
+# Installer uniquement les dépendances runtime
+RUN apk add --no-cache \
+    # OCR
+    tesseract-ocr \
+    tesseract-ocr-data-fra \
+    tesseract-ocr-data-eng \
+    # PDF
+    poppler-utils \
+    # Images
+    jpeg \
+    zlib \
+    freetype \
+    lcms2 \
+    openjpeg \
+    tiff \
+    # Autres
+    libgomp \
+    libgcc \
+    libstdc++ \
+    # Monitoring
+    curl \
+    && rm -rf /var/cache/apk/*
+
+# Copier l'environnement virtuel depuis le builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Créer un utilisateur non-root
+RUN addgroup -g 1000 omniscan && \
+    adduser -D -u 1000 -G omniscan omniscan
+
+# Créer les dossiers nécessaires
+RUN mkdir -p /app/uploads /app/temp && \
+    chown -R omniscan:omniscan /app
+
+# Définir le workdir
+WORKDIR /app
+
+# Copier le code de l'application
+COPY --chown=omniscan:omniscan ./backend .
+
+# Changer vers l'utilisateur non-root
+USER omniscan
+
+# Exposer le port
+EXPOSE 8001
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8001/api/v1/health || exit 1
+
+# Commande de démarrage
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]

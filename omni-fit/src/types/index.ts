@@ -1,11 +1,21 @@
 export type ExerciseType = 'burpees' | 'pushups' | 'squats';
 
-export interface Exercise {
+export interface ExerciseDefinition {
   type: ExerciseType;
   name: string;
   emoji: string;
   count: number;
   increment: number;
+}
+
+export interface Exercise {
+  id: string;
+  name: string;
+  count: number;
+  timestamp: Date;
+  synced: boolean;
+  completed?: boolean;
+  target?: number;
 }
 
 export interface Workout {

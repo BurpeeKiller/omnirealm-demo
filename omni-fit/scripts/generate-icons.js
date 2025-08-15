@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { logger } from '../src/utils/logger.js';
 
 // Générateur d'icônes SVG pour PWA
 const generateIcon = (size) => {
@@ -59,18 +60,18 @@ const saveSVGAsIcon = (svg, filename, size) => {
   // En production, on utiliserait sharp ou puppeteer pour convertir en PNG
   fs.writeFileSync(path.join(publicDir, `${filename}.svg`), svg);
 
-  console.log(`Generated ${filename}.svg (${size}x${size})`);
+  logger.info(`Generated ${filename}.svg (${size}x${size})`);
 
   // Créer un fichier PNG factice pour la demo
   // En réalité, il faudrait un outil de conversion SVG->PNG
   const pngPlaceholder = `<!-- PNG placeholder for ${filename} (${size}x${size}) -->`;
   fs.writeFileSync(path.join(publicDir, `${filename}.png`), pngPlaceholder);
 
-  console.log(`Generated ${filename}.png placeholder`);
+  logger.info(`Generated ${filename}.png placeholder`);
 };
 
 // Générer les icônes
-console.log('Generating PWA icons...');
+logger.info('Generating PWA icons...');
 
 // Icône 192x192
 const icon192 = generateIcon(192);
@@ -84,6 +85,6 @@ saveSVGAsIcon(icon512, 'icon-512', 512);
 const favicon = generateIcon(48);
 saveSVGAsIcon(favicon, 'favicon', 48);
 
-console.log('✅ All icons generated successfully!');
-console.log('📁 Check /public/ folder for the generated files');
-console.log('💡 Note: In production, use a tool like sharp to convert SVG to PNG');
+logger.info('✅ All icons generated successfully!');
+logger.info('📁 Check /public/ folder for the generated files');
+logger.info('💡 Note: In production, use a tool like sharp to convert SVG to PNG');

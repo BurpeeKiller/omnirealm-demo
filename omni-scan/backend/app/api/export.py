@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
-from typing import List, Optional
+from typing import List
 import io
 
 from app.core.database import get_supabase
@@ -126,7 +126,7 @@ async def export_batch_documents(
             io.BytesIO(content),
             media_type="application/json",
             headers={
-                "Content-Disposition": f"attachment; filename=omniscan_batch_export.json"
+                "Content-Disposition": "attachment; filename=omniscan_batch_export.json"
             }
         )
     else:  # excel
@@ -134,7 +134,7 @@ async def export_batch_documents(
             io.BytesIO(content),
             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             headers={
-                "Content-Disposition": f"attachment; filename=omniscan_batch_export.xlsx"
+                "Content-Disposition": "attachment; filename=omniscan_batch_export.xlsx"
             }
         )
 

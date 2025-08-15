@@ -1,28 +1,64 @@
 import { supabase, handleSupabaseError } from '@/lib/supabase/client'
 import type { Task, TaskStatus, CreateTaskInput, UpdateTaskInput } from '@/lib/types'
-import type { Database } from '@/lib/supabase/database.types'
-
-type DbTask = Database['public']['Tables']['tasks']['Row']
 
 // Convertir une tâche DB en Task du domaine
-function mapDbTaskToTask(dbTask: DbTask): Task {
+function mapDbTaskToTask(dbTask: any): Task {
   return {
     id: dbTask.id,
     title: dbTask.title,
     description: dbTask.description ?? undefined,
-    status: dbTask.status as TaskStatus,
-    priority: dbTask.priority,
+    status: mapDbStatusToTaskStatus(dbTask.status),
+    priority: mapDbPriorityToTaskPriority(dbTask.priority),
     projectId: dbTask.project_id ?? undefined,
     userId: dbTask.user_id,
-    assigneeId: dbTask.assignee_id ?? undefined,
+    assigneeId: undefined, // Pas dans notre schéma actuel
     position: dbTask.position,
     dueDate: dbTask.due_date ?? undefined,
-    estimatedHours: dbTask.estimated_hours ?? undefined,
-    actualHours: dbTask.actual_hours ?? undefined,
+    estimatedHours: dbTask.estimated_hours ? Number(dbTask.estimated_hours) : undefined,
+    actualHours: dbTask.actual_hours ? Number(dbTask.actual_hours) : undefined,
     tags: dbTask.tags ?? undefined,
     createdAt: dbTask.created_at,
     updatedAt: dbTask.updated_at,
   }
+}
+
+// Mapper les statuts DB vers les statuts de l'app
+function mapDbStatusToTaskStatus(dbStatus: string): TaskStatus {
+  const statusMap: Record<string, TaskStatus> = {
+    'todo': 'TODO',
+    'in_progress': 'IN_PROGRESS',
+    'review': 'REVIEW',
+    'done': 'DONE'
+  }
+  return statusMap[dbStatus] || 'TODO'
+}
+
+// Mapper les priorités DB vers les priorités de l'app
+function mapDbPriorityToTaskPriority(dbPriority: string): 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT' {
+  const priorityMap: Record<string, 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'> = {
+    'low': 'LOW',
+    'medium': 'MEDIUM',
+    'high': 'HIGH',
+    'urgent': 'URGENT'
+  }
+  return priorityMap[dbPriority] || 'MEDIUM'
+}
+
+// Mapper les statuts de l'app vers les statuts DB
+function mapTaskStatusToDb(status: TaskStatus): string {
+  const statusMap: Record<TaskStatus, string> = {
+    'TODO': 'todo',
+    'IN_PROGRESS': 'in_progress',
+    'REVIEW': 'review',
+    'DONE': 'done',
+    'CANCELLED': 'done' // Map CANCELLED to done in DB
+  }
+  return statusMap[status]
+}
+
+// Mapper les priorités de l'app vers les priorités DB
+function mapTaskPriorityToDb(priority: string): string {
+  return priority.toLowerCase()
 }
 
 export const tasksApi = {
@@ -43,7 +79,6 @@ export const tasksApi = {
       if (error) throw error
       return data ? data.map(mapDbTaskToTask) : []
     } catch (error) {
-      console.error('Error fetching tasks:', error)
       throw new Error(handleSupabaseError(error))
     }
   },
@@ -69,8 +104,8 @@ export const tasksApi = {
       const dbTask = {
         title: taskData.title,
         description: taskData.description,
-        status: 'TODO',
-        priority: taskData.priority,
+        status: mapTaskStatusToDb(taskData.status || 'TODO'),
+        priority: mapTaskPriorityToDb(taskData.priority),
         project_id: taskData.projectId,
         due_date: taskData.dueDate,
         estimated_hours: taskData.estimatedHours,
@@ -88,7 +123,6 @@ export const tasksApi = {
       if (error) throw error
       return mapDbTaskToTask(data)
     } catch (error) {
-      console.error('Error creating task:', error)
       throw new Error(handleSupabaseError(error))
     }
   },
@@ -100,8 +134,8 @@ export const tasksApi = {
       const dbUpdates: any = {}
       if (updates.title !== undefined) dbUpdates.title = updates.title
       if (updates.description !== undefined) dbUpdates.description = updates.description
-      if (updates.status !== undefined) dbUpdates.status = updates.status
-      if (updates.priority !== undefined) dbUpdates.priority = updates.priority
+      if (updates.status !== undefined) dbUpdates.status = mapTaskStatusToDb(updates.status)
+      if (updates.priority !== undefined) dbUpdates.priority = mapTaskPriorityToDb(updates.priority)
       if (updates.projectId !== undefined) dbUpdates.project_id = updates.projectId
       if (updates.dueDate !== undefined) dbUpdates.due_date = updates.dueDate
       if (updates.estimatedHours !== undefined) dbUpdates.estimated_hours = updates.estimatedHours
@@ -119,7 +153,6 @@ export const tasksApi = {
       if (error) throw error
       return mapDbTaskToTask(data)
     } catch (error) {
-      console.error('Error updating task:', error)
       throw new Error(handleSupabaseError(error))
     }
   },
@@ -134,7 +167,6 @@ export const tasksApi = {
 
       if (error) throw error
     } catch (error) {
-      console.error('Error deleting task:', error)
       throw new Error(handleSupabaseError(error))
     }
   },
@@ -144,6 +176,9 @@ export const tasksApi = {
     try {
       const { data: userData } = await supabase.auth.getUser()
       if (!userData.user) throw new Error('User not authenticated')
+
+      // Convertir le statut pour la DB
+      const dbNewStatus = mapTaskStatusToDb(newStatus)
 
       // Transaction manuelle car Supabase ne supporte pas les transactions côté client
       // 1. Récupérer la tâche actuelle
@@ -159,7 +194,7 @@ export const tasksApi = {
       const oldPosition = task.position
 
       // 2. Mettre à jour les positions dans l'ancienne colonne
-      if (oldStatus === newStatus) {
+      if (oldStatus === dbNewStatus) {
         // Déplacement dans la même colonne
         if (oldPosition < newPosition) {
           // Déplacement vers le bas
@@ -194,7 +229,7 @@ export const tasksApi = {
         await supabase
           .from('tasks')
           .update({ position: `position + 1` })
-          .eq('status', newStatus)
+          .eq('status', dbNewStatus)
           .eq('user_id', userData.user.id)
           .gte('position', newPosition)
       }
@@ -203,14 +238,13 @@ export const tasksApi = {
       const { error: updateError } = await supabase
         .from('tasks')
         .update({
-          status: newStatus,
+          status: dbNewStatus,
           position: newPosition,
         })
         .eq('id', taskId)
 
       if (updateError) throw updateError
     } catch (error) {
-      console.error('Error moving task:', error)
       throw new Error(handleSupabaseError(error))
     }
   },

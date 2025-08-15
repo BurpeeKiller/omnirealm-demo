@@ -10,9 +10,10 @@ export function ProcessingLoader({ isProcessing, fileName }: ProcessingLoaderPro
   const [currentStep, setCurrentStep] = useState(0)
   
   const steps = [
-    { icon: FileText, text: "Lecture du document...", duration: 1500 },
-    { icon: Brain, text: "Extraction du texte avec OCR...", duration: 2500 },
-    { icon: CheckCircle, text: "Finalisation...", duration: 1000 }
+    { icon: FileText, text: "Lecture du document...", duration: 1000 },
+    { icon: Brain, text: "Extraction du texte avec OCR...", duration: 2000 },
+    { icon: Brain, text: "Analyse intelligente du contenu...", duration: 1500 },
+    { icon: CheckCircle, text: "Finalisation...", duration: 500 }
   ]
   
   useEffect(() => {

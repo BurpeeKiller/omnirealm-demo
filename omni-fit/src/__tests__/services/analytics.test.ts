@@ -23,10 +23,7 @@ vi.mock('../../db', () => ({
 
 // Mock de date-fns
 vi.mock('date-fns', () => ({
-  format: vi.fn((date, format) => {
-    if (format === 'yyyy-MM-dd') {
-      return '2024-01-15';
-    }
+  format: vi.fn(() => {
     return '2024-01-15';
   }),
   startOfWeek: vi.fn(() => new Date('2024-01-15')),
@@ -51,7 +48,7 @@ describe('AnalyticsService', () => {
       };
 
       vi.mocked(db.analytics.get).mockResolvedValue(mockExisting);
-      vi.mocked(db.analytics.put).mockResolvedValue(undefined);
+      vi.mocked(db.analytics.put).mockResolvedValue('2024-01-15');
 
       await analytics.trackSessionStart();
 
@@ -67,7 +64,7 @@ describe('AnalyticsService', () => {
 
     it('should handle first session of the day', async () => {
       vi.mocked(db.analytics.get).mockResolvedValue(undefined);
-      vi.mocked(db.analytics.put).mockResolvedValue(undefined);
+      vi.mocked(db.analytics.put).mockResolvedValue('2024-01-15');
 
       await analytics.trackSessionStart();
 
@@ -99,7 +96,7 @@ describe('AnalyticsService', () => {
       };
 
       vi.mocked(db.analytics.get).mockResolvedValue(mockExisting);
-      vi.mocked(db.analytics.put).mockResolvedValue(undefined);
+      vi.mocked(db.analytics.put).mockResolvedValue('2024-01-15');
 
       await analytics.trackExercise('pompes', 10);
 
@@ -114,7 +111,7 @@ describe('AnalyticsService', () => {
 
     it('should handle first exercise of the day', async () => {
       vi.mocked(db.analytics.get).mockResolvedValue(undefined);
-      vi.mocked(db.analytics.put).mockResolvedValue(undefined);
+      vi.mocked(db.analytics.put).mockResolvedValue('2024-01-15');
 
       await analytics.trackExercise('burpees', 1);
 

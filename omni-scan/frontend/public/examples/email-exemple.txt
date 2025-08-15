@@ -1,0 +1,26 @@
+De: jean.martin@entreprise.com
+À: equipe-projet@entreprise.com
+Date: 20 janvier 2024 14:30
+Objet: Compte-rendu réunion projet Alpha - Actions requises
+
+Bonjour à tous,
+
+Suite à notre réunion de ce matin concernant le projet Alpha, voici le récapitulatif des décisions prises et des actions à mener :
+
+1. **Validation du cahier des charges** : OK, version finale validée
+2. **Planning** : Début développement le 1er février, livraison phase 1 prévue le 15 mars
+3. **Budget** : 150K€ alloués, à répartir selon le document joint
+
+**Actions pour chacun :**
+- Marie : Finaliser les maquettes UI/UX avant le 25/01
+- Pierre : Préparer l'environnement de développement
+- Sophie : Planifier les sprints et créer les tickets JIRA
+- Thomas : Organiser le kick-off avec le client (semaine du 29/01)
+
+Prochaine réunion : Vendredi 26/01 à 10h
+
+N'hésitez pas si vous avez des questions.
+
+Cordialement,
+Jean Martin
+Chef de Projet

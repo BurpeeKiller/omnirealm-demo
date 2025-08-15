@@ -1,10 +1,12 @@
+import { logger } from '@/utils/logger';
+
 // Capacitor imports commented out - PWA mode only
 // import { LocalNotifications } from '@capacitor/local-notifications';
 // import { Capacitor } from '@capacitor/core';
 
 export async function setupNotifications() {
   // PWA mode only
-  console.log('Notifications: Running in web mode');
+  logger.info('Notifications: Running in web mode');
 
   // Request web notification permission
   if ('Notification' in window && Notification.permission === 'default') {
@@ -14,8 +16,8 @@ export async function setupNotifications() {
 }
 
 export async function scheduleWorkoutReminder(
-  hour: number,
-  minute: number,
+  _hour: number,
+  _minute: number,
   exerciseType: string,
   count: number = 10,
 ) {
@@ -55,6 +57,8 @@ export async function scheduleMultipleReminders(
 
       // Choisir un exercice aléatoire
       const exercise = exercises[Math.floor(Math.random() * exercises.length)];
+      
+      if (!exercise) continue;
 
       const scheduledTime = new Date();
       scheduledTime.setHours(hour, minute, 0, 0);
@@ -76,8 +80,8 @@ export async function scheduleMultipleReminders(
         },
         actionTypeId: 'WORKOUT_REMINDER',
         extra: {
-          exerciseType: exercise.type,
-          count: exercise.count,
+          exerciseType: exercise?.type || '',
+          count: exercise?.count || 0,
         },
         sound: 'beep.wav',
         smallIcon: 'ic_stat_icon_config_sample',

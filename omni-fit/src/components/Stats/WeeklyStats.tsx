@@ -4,6 +4,7 @@ import { getWeekStats } from '@/db';
 import type { DailyStats as DailyStatsType } from '@/types';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { logger } from '@/utils/logger';
 
 // Lazy loading des composants Chart.js
 const ChartComponents = lazy(() => import('./ChartComponents'));
@@ -22,7 +23,7 @@ export const WeeklyStats = () => {
       const stats = await getWeekStats();
       setWeekStats(stats);
     } catch (error) {
-      console.error('Error loading week stats:', error);
+      logger.error('Error loading week stats:', error);
     } finally {
       setLoading(false);
     }

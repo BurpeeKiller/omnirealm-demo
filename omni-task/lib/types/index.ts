@@ -50,7 +50,7 @@ export interface Project {
   userId: string;
   createdAt: string;
   updatedAt: string;
-  isArchived: boolean;
+  is_archived: boolean; // Correspond à la colonne DB snake_case
 }
 
 export interface KanbanColumn {
@@ -125,6 +125,7 @@ export interface TaskStore {
   // Projects
   setProjects: (projects: Project[]) => void;
   selectProject: (projectId: string | null) => void;
+  fetchProjects: () => Promise<void>;
   
   // Utils
   clearError: () => void;

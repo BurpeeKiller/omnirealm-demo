@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.cover
+.hypothesis/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temp files
+temp/
+uploads/
+*.tmp
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Scripts de dev
+scripts/
+test_*.py
+test_*.json
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Build
+dist/
+build/
+*.egg-info/

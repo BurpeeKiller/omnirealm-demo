@@ -143,11 +143,64 @@ logs: ## Voir les logs de l'application
 	@echo "$(YELLOW)📋 Logs de l'application...$(RESET)"
 	tail -f logs/omniscan.log 2>/dev/null || echo "Aucun fichier de log trouvé"
 
+# Tests de Protection des Revenus 🛡️
+test-revenue: ## Lancer tous les tests de protection des revenus
+	@echo "$(RED)🛡️  Tests de protection des revenus...$(RESET)"
+	./run-revenue-tests.sh
+
+test-revenue-quick: ## Tests critiques de revenus (< 2min)
+	@echo "$(RED)⚡ Tests critiques de revenus...$(RESET)"
+	./run-revenue-tests.sh --quick
+
+test-revenue-critical: ## Tous les tests critiques de revenus
+	@echo "$(RED)🚨 Tests critiques complets...$(RESET)"
+	./run-revenue-tests.sh --critical
+
+test-quotas: ## Test protection quotas utilisateurs (CRITIQUE)
+	@echo "$(RED)💰 Tests protection quotas...$(RESET)"
+	$(SOURCE) && pytest tests/business/test_quota_protection.py -v
+
+test-stripe: ## Test intégration Stripe (CRITIQUE)
+	@echo "$(RED)💳 Tests Stripe...$(RESET)"
+	$(SOURCE) && pytest tests/business/test_stripe_integration.py -v
+
+test-auth-security: ## Test sécurité authentification (CRITIQUE)
+	@echo "$(RED)🔐 Tests sécurité auth...$(RESET)"
+	$(SOURCE) && pytest tests/business/test_auth_security.py -v
+
+test-injections: ## Test protection injections (CRITIQUE)
+	@echo "$(RED)🗃️  Tests protection injections...$(RESET)"
+	$(SOURCE) && pytest tests/security/test_injection_attacks.py -v
+
+test-performance: ## Tests de performance et charge
+	@echo "$(YELLOW)⚡ Tests de performance...$(RESET)"
+	$(SOURCE) && pytest tests/performance/ -v
+
+setup-revenue-tests: ## Configurer environnement tests de revenus
+	@echo "$(BLUE)🔧 Configuration tests de revenus...$(RESET)"
+	./setup-test-env.sh
+
+# Production readiness
+production-check: ## Vérifier la préparation pour production
+	@echo "$(RED)🚀 Vérification production...$(RESET)"
+	./run-revenue-tests.sh --critical || (echo "$(RED)❌ PAS PRÊT POUR PRODUCTION$(RESET)" && exit 1)
+	@echo "$(GREEN)✅ Prêt pour production!$(RESET)"
+
+emergency-revenue-check: ## Vérification urgente protection revenus
+	@echo "$(RED)🚨 VÉRIFICATION URGENTE REVENUS$(RESET)"
+	$(SOURCE) && pytest tests/business/test_quota_protection.py::TestQuotaProtection::test_free_user_over_quota_blocked -v
+	$(SOURCE) && pytest tests/business/test_quota_protection.py::TestQuotaProtection::test_pro_user_unlimited_access -v
+	$(SOURCE) && pytest tests/business/test_stripe_integration.py::TestStripeWebhookSecurity::test_webhook_without_signature_rejected -v
+
 # Sécurité
 security-check: ## Vérifier les vulnérabilités
 	@echo "$(YELLOW)🔒 Analyse de sécurité...$(RESET)"
 	$(SOURCE) && safety check
 	$(SOURCE) && bandit -r app/
+
+security-scan: ## Scan sécurité complet (Safety + Bandit + Semgrep)
+	@echo "$(RED)🔍 Scan sécurité complet...$(RESET)"
+	./security-scan.sh
 
 # Métriques et monitoring
 metrics: ## Afficher les métriques du code

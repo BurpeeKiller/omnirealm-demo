@@ -1,0 +1,93 @@
+# Coolify-specific docker-compose configuration for OmniScan
+# This file is optimized for deployment on Coolify platform
+
+version: '3.8'
+
+services:
+  # Backend API - FastAPI Python
+  backend:
+    build:
+      context: ../../../  # Remonte à la racine du monorepo
+      dockerfile: Dockerfile.omniscan-backend
+      target: backend
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - REDIS_URL=redis://redis:6379
+      # Coolify will inject these from the UI
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - FRONTEND_URL=${FRONTEND_URL:-https://scan.omnirealm.tech}
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://scan.omnirealm.tech}
+    volumes:
+      - uploads:/app/backend/uploads
+      - temp:/app/backend/temp
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      # Coolify routing for backend API
+      - "coolify.domain=api.scan.omnirealm.tech"
+      - "coolify.port=8001"
+      - "coolify.https=true"
+      - "coolify.http.redirect=true"
+
+  # Frontend - React/Vite served by nginx
+  frontend:
+    build:
+      context: ../../../  # Remonte à la racine du monorepo
+      dockerfile: Dockerfile.omniscan-backend
+      target: frontend
+      args:
+        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+        - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+        - VITE_API_URL=${VITE_API_URL:-https://api.scan.omnirealm.tech}
+    restart: unless-stopped
+    environment:
+      # These are build-time variables for Vite
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+      - VITE_API_URL=${VITE_API_URL:-https://api.scan.omnirealm.tech}
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      # Coolify routing for frontend
+      - "coolify.domain=scan.omnirealm.tech"
+      - "coolify.port=80"
+      - "coolify.https=true"
+      - "coolify.http.redirect=true"
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  uploads:
+    name: omniscan_uploads
+  temp:
+    name: omniscan_temp
+  redis_data:
+    name: omniscan_redis_data

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
+import { logger } from '@/utils/logger';
 
 interface AuthState {
   user: User | null;
@@ -66,7 +67,7 @@ export function useAuth() {
         setAuthState((prev) => ({ ...prev, plan: data.plan }));
       }
     } catch (error) {
-      console.error('Error fetching user plan:', error);
+      logger.error('Error fetching user plan:', error);
     }
   };
 

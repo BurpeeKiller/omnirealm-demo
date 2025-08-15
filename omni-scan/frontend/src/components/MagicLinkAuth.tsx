@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Mail, Loader2, CheckCircle } from 'lucide-react'
+import { publicConfig } from '@/lib/config'
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,7 @@ import {
   Input,
   Alert,
   AlertDescription
-} from '@omnirealm/ui'
+} from '@/components/ui'
 
 interface MagicLinkAuthProps {
   isOpen: boolean
@@ -18,7 +19,7 @@ interface MagicLinkAuthProps {
   onSuccess?: () => void
 }
 
-export function MagicLinkAuth({ isOpen, onClose, onSuccess }: MagicLinkAuthProps) {
+export function MagicLinkAuth({ isOpen, onClose, onSuccess: _onSuccess }: MagicLinkAuthProps) {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
@@ -30,7 +31,7 @@ export function MagicLinkAuth({ isOpen, onClose, onSuccess }: MagicLinkAuthProps
     setLoading(true)
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/magic-link`, {
+      const response = await fetch(`${publicConfig.backendUrl}/api/${publicConfig.apiVersion}/auth/magic-link`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

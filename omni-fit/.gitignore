@@ -1,0 +1,76 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+*.local
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+*.lcov
+
+# PWA files
+dev-dist/
+sw.js
+sw.js.map
+workbox-*.js
+workbox-*.js.map
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Capacitor
+ios/
+android/
+.capacitor/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+desktop.ini
+
+# TypeScript
+*.tsbuildinfo
+
+# Vitest
+vitest.config.*.timestamp-*
+
+# Journal local
+JOURNAL.md
+
+# Backup files
+*.backup
+*.old
+
+# Python (if any backend remains)
+__pycache__/
+*.py[cod]
+venv/
+.pytest_cache/

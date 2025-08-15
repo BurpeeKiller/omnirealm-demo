@@ -1,2 +1,1 @@
-// export { SettingsImproved as Settings } from './SettingsImproved';
-export { SettingsHarmonized as Settings } from './SettingsHarmonized';
+export { Settings } from './Settings';

@@ -8,10 +8,12 @@ import os
 import time
 
 from app.core.config import settings
-from app.api import health, auth, upload, stats, upload_simple, auth_light, payment, test_ai, export, batch_simple as batch
+from app.api import health, auth, upload_unified, stats, auth_light, payment, test_ai, export, batch_simple as batch, ocr_v2
+# Import temporaire des anciennes routes pour compatibilité
 from app.core.database import init_db
 from app.core.logging import setup_logging, get_logger
-from app.schemas.common import ErrorResponse
+from app.core.error_handlers import register_error_handlers
+from app.core.api_key_manager import get_api_key_manager
 
 
 @asynccontextmanager
@@ -37,6 +39,28 @@ async def lifespan(app: FastAPI):
     
     # Initialiser la base de données
     await init_db()
+    
+    # Initialiser les clés API par défaut de manière sécurisée
+    api_key_manager = get_api_key_manager()
+    
+    # Charger les clés depuis les variables d'environnement
+    if settings.openai_api_key:
+        api_key_manager.set_default_key("openai", settings.openai_api_key)
+    
+    # Ajouter d'autres providers si configurés
+    anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+    if anthropic_key:
+        api_key_manager.set_default_key("anthropic", anthropic_key)
+    
+    groq_key = os.getenv("GROQ_API_KEY")
+    if groq_key:
+        api_key_manager.set_default_key("groq", groq_key)
+    
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+    if openrouter_key:
+        api_key_manager.set_default_key("openrouter", openrouter_key)
+    
+    logger.info("API key manager initialized with default keys")
     
     yield
     
@@ -66,14 +90,22 @@ app.add_middleware(
 # Inclure les routes
 app.include_router(health.router, prefix=settings.api_prefix, tags=["health"])
 app.include_router(auth.router, prefix=settings.api_prefix, tags=["auth"])
-app.include_router(upload.router, prefix=settings.api_prefix, tags=["upload"])
+
+# Routes unifiées (nouvelles)
+app.include_router(upload_unified.router, prefix=settings.api_prefix, tags=["upload"])
+
+# Routes legacy (temporaires pour compatibilité)
+# TODO: Supprimer après validation complète
+# app.include_router(upload.router, prefix=settings.api_prefix, tags=["upload-legacy"])
+# app.include_router(upload_simple.router, prefix=settings.api_prefix, tags=["simple-legacy"])
+
 app.include_router(stats.router, prefix=settings.api_prefix, tags=["stats"])
-app.include_router(upload_simple.router, prefix=settings.api_prefix, tags=["simple"])
 app.include_router(auth_light.router, prefix=settings.api_prefix, tags=["auth-light"])
 app.include_router(payment.router, prefix=settings.api_prefix, tags=["payment"])
 app.include_router(test_ai.router, prefix=settings.api_prefix, tags=["test"])
 app.include_router(export.router, prefix=settings.api_prefix, tags=["export"])
 app.include_router(batch.router, prefix=settings.api_prefix, tags=["batch"])
+app.include_router(ocr_v2.router, prefix=settings.api_prefix, tags=["ocr-v2"])
 
 
 @app.middleware("http")
@@ -146,32 +178,8 @@ async def log_requests(request: Request, call_next):
     return response
 
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    """Gestionnaire global d'exceptions"""
-    logger = get_logger("error")
-    
-    # Logger l'erreur
-    logger.error(
-        "Unhandled exception",
-        extra={
-            "method": request.method,
-            "url": str(request.url),
-            "error_type": type(exc).__name__,
-            "error_message": str(exc)
-        },
-        exc_info=True
-    )
-    
-    # Retourner une réponse d'erreur générique
-    return JSONResponse(
-        status_code=500,
-        content=ErrorResponse(
-            detail="Une erreur interne s'est produite",
-            status_code=500,
-            error_type="internal_server_error"
-        ).model_dump()
-    )
+# Enregistrer les gestionnaires d'erreurs centralisés
+register_error_handlers(app)
 
 
 @app.get("/")

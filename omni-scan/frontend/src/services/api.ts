@@ -1,9 +1,9 @@
 import axios from 'axios'
-
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
+// Logger removed - using console instead
+import { publicConfig } from '@/lib/config'
 
 export const api = axios.create({
-  baseURL: `${API_URL}/api/v1`,
+  baseURL: `${publicConfig.backendUrl}/api/${publicConfig.apiVersion}`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -25,9 +25,9 @@ export const uploadDocument = async (file: File, userId?: string) => {
     formData.append('user_id', userId)
   }
 
-  console.log('Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type)
-  console.log('User ID:', userId)
-  console.log('API URL:', api.defaults.baseURL)
+  console.info('Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type)
+  console.info('User ID:', userId)
+  console.info('API URL:', api.defaults.baseURL)
 
   try {
     const response = await api.post('/upload', formData, {

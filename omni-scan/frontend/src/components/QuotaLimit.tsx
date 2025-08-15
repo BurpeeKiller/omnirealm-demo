@@ -7,7 +7,7 @@ import {
   Card,
   Button,
   Badge
-} from '@omnirealm/ui'
+} from '@/components/ui'
 
 interface QuotaLimitProps {
   isOpen: boolean

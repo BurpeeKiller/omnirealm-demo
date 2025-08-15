@@ -1,5 +1,11 @@
 # 🚀 Guide de Déploiement Production OmniScan
 
+## 🌐 URLs de Production Actuelles
+- **Frontend** : https://scan.omnirealm.tech
+- **Backend API** : https://api.scan.omnirealm.tech
+- **Plateforme** : Coolify sur VPS OmniRealm
+- **Status** : ✅ Déployé avec succès (2025-08-12)
+
 ## 📋 Checklist Pré-Production
 
 ### 1. **Variables d'Environnement**
@@ -324,11 +330,64 @@ curl -X POST $SLACK_WEBHOOK -d '{"text":"Rollback to version '$PREVIOUS_VERSION'
 2. **Niveau 2** : Alerte équipe dev (PagerDuty)
 3. **Niveau 3** : Escalation CTO
 
+## 🐛 Problèmes Rencontrés et Solutions (Déploiement Coolify)
+
+### 1. Frontend : Erreur healthcheck nginx IPv6
+**Problème** : Le healthcheck échoue car nginx n'écoute que sur IPv4 mais wget essaie IPv6.
+```
+wget: can't connect to remote host (::1): Address not available
+```
+
+**Solution** : 
+```dockerfile
+# Ajouter l'écoute IPv6 dans nginx
+RUN echo 'server { \
+    listen 80; \
+    listen [::]:80; \
+    ...
+}' > /etc/nginx/conf.d/default.conf
+
+# Forcer IPv4 dans le healthcheck
+HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:80/ || exit 1
+```
+
+### 2. Backend : Tables Supabase manquantes
+**Problème** : `postgrest.exceptions.APIError: {'code': '42P01', 'message': 'relation "public.documents" does not exist'}`
+
+**Solution** : Créer les tables dans le schéma `public` (voir `/dev/apps/omni-scan/supabase/create_public_tables.sql`)
+
+### 3. Backend : Erreur async/await Supabase
+**Problème** : `TypeError: object APIResponse[~_ReturnT] can't be used in 'await' expression`
+
+**Solution** : Le client Supabase Python est synchrone, pas async :
+```python
+# ❌ Incorrect
+await supabase.table("documents").select("count").execute()
+
+# ✅ Correct  
+supabase.table("documents").select("count").execute()
+```
+
+### 4. Backend : Dépendances OpenCV manquantes
+**Problème** : Erreur lors de l'installation d'opencv-python-headless avec Alpine Linux.
+
+**Solution** : Utiliser Debian et installer les dépendances système nécessaires.
+
+## 🔧 Maintenance VPS
+
+### Nettoyage espace disque
+Un script sécurisé est disponible : `/dev/tools/vps/cleanup-disk-safe.sh`
+
+**Résultat du nettoyage (2025-08-12)** :
+- 88 GB libérés
+- Utilisation réduite de 89% à 44%
+
 ## ✅ Checklist Finale
 
-- [ ] DNS configuré (A records pour omniscan.app et api.omniscan.app)
-- [ ] SSL/TLS installé et auto-renew configuré
-- [ ] Variables d'environnement production
+- [x] DNS configuré (scan.omnirealm.tech et api.scan.omnirealm.tech)
+- [x] SSL/TLS installé et auto-renew configuré (via Coolify)
+- [x] Variables d'environnement production
+- [x] Tables Supabase créées dans le schéma public
 - [ ] Redis configuré avec persistence
 - [ ] Emails transactionnels testés
 - [ ] Stripe webhooks configurés
@@ -337,8 +396,8 @@ curl -X POST $SLACK_WEBHOOK -d '{"text":"Rollback to version '$PREVIOUS_VERSION'
 - [ ] Documentation API à jour
 - [ ] Pages légales accessibles
 - [ ] Tests de charge passés
-- [ ] Plan de rollback testé
-- [ ] Equipe notifiée du go-live
+- [x] Plan de rollback testé (via Coolify)
+- [x] Equipe notifiée du go-live
 
 ---
 

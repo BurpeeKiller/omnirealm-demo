@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
 import { syncService } from '@/services/sync';
+import { logger } from '@/utils/logger';
 
 export function NetworkStatus() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -55,7 +56,7 @@ export function NetworkStatus() {
       await syncService.forceSync();
       setSyncStatus(syncService.getSyncStatus());
     } catch (error) {
-      console.error('Erreur sync:', error);
+      logger.error('Erreur sync:', error);
     } finally {
       setIsSyncing(false);
     }

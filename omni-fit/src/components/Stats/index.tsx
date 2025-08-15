@@ -1,1 +1,1 @@
-export { StatsImproved as Stats } from './StatsImproved';
+export { Stats } from './Stats';

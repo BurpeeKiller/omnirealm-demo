@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { OmniFitLogo } from '@/components/Branding/OmniFitLogo';
-import { Crown, Zap, Brain, Trophy, CheckCircle, ArrowRight, Play, Users } from 'lucide-react';
+import { Crown, Zap, Brain, Trophy, ArrowRight, Play, Users } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useState } from 'react';
 import { UpgradePrompt } from '@/components/Premium';
@@ -10,7 +10,7 @@ interface LandingPageProps {
   onLogin?: () => void;
 }
 
-export const LandingPage = ({ onStartFree, onLogin }: LandingPageProps) => {
+export const LandingPage = ({ onStartFree }: LandingPageProps) => {
   const { startTrial } = useSubscription();
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
@@ -243,6 +243,32 @@ export const LandingPage = ({ onStartFree, onLogin }: LandingPageProps) => {
           </motion.div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 border-t border-gray-800 py-8 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <OmniFitLogo size="small" />
+              <span className="text-gray-400">© 2025 OmniRealm</span>
+            </div>
+            <div className="flex gap-6 text-sm text-gray-400">
+              <a href="/privacy" className="hover:text-white transition-colors">
+                Confidentialité
+              </a>
+              <a href="/terms" className="hover:text-white transition-colors">
+                CGU
+              </a>
+              <a href="/cgv" className="hover:text-white transition-colors">
+                CGV
+              </a>
+              <a href="mailto:support@omnirealm.com" className="hover:text-white transition-colors">
+                Contact
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Upgrade Modal */}
       <UpgradePrompt isOpen={showUpgradePrompt} onClose={() => setShowUpgradePrompt(false)} />

@@ -1,0 +1,29 @@
+Marie DUBOIS
+Développeuse Full-Stack Senior
+📧 marie.dubois@email.com | 📱 06 12 34 56 78
+🏠 Paris, France | 💼 LinkedIn: /in/mariedubois
+
+EXPÉRIENCE PROFESSIONNELLE
+
+Lead Developer | TechCorp France | 2020-2024
+• Management d'une équipe de 5 développeurs
+• Architecture microservices avec Node.js et React
+• Mise en place CI/CD avec GitLab et Docker
+• Réduction du temps de déploiement de 70%
+
+Développeuse Full-Stack | StartupXYZ | 2018-2020
+• Développement d'une plateforme SaaS B2B
+• Stack: React, TypeScript, Node.js, PostgreSQL
+• Implémentation de tests automatisés (Jest, Cypress)
+
+FORMATION
+Master Informatique | Université Paris-Saclay | 2018
+Licence Informatique | Université Paris Diderot | 2016
+
+COMPÉTENCES
+• Langages: JavaScript/TypeScript, Python, Java
+• Frontend: React, Vue.js, Next.js, Tailwind CSS
+• Backend: Node.js, Express, NestJS, Django
+• Bases de données: PostgreSQL, MongoDB, Redis
+• DevOps: Docker, Kubernetes, AWS, CI/CD
+• Langues: Français (natif), Anglais (C1), Espagnol (B2)

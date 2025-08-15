@@ -2,19 +2,20 @@ import { chromium } from 'playwright';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { logger } from '../src/utils/logger';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function testOmniFit() {
-  console.log('🚀 Démarrage des tests OmniFit PWA');
+  logger.info('🚀 Démarrage des tests OmniFit PWA');
   
   // Créer un dossier pour les screenshots
   const screenshotDir = path.join(__dirname, 'omni-fit-test-results');
   try {
     await fs.mkdir(screenshotDir, { recursive: true });
   } catch (err) {
-    console.error('Erreur création dossier:', err);
+    logger.error('Erreur création dossier:', err);
   }
 
   const browser = await chromium.launch({ 
@@ -38,7 +39,7 @@ async function testOmniFit() {
 
   try {
     // 1. TEST INITIAL ET CHARGEMENT
-    console.log('\n📱 1. Test initial et chargement');
+    logger.info('\n📱 1. Test initial et chargement');
     const startTime = Date.now();
     
     await page.goto('https://frolicking-stardust-cd010f.netlify.app', {
@@ -47,7 +48,7 @@ async function testOmniFit() {
     });
     
     const loadTime = Date.now() - startTime;
-    console.log(`⏱️ Temps de chargement: ${loadTime}ms`);
+    logger.info(`⏱️ Temps de chargement: ${loadTime}ms`);
     
     await page.waitForTimeout(2000); // Attendre que tout soit chargé
     await page.screenshot({ 
@@ -64,15 +65,15 @@ async function testOmniFit() {
 
     // Vérifier l'état initial
     const hasOnboarding = await page.locator('text=/bienvenue|welcome|commencer/i').count() > 0;
-    console.log(`📊 État initial: ${hasOnboarding ? 'Onboarding' : 'App principale'}`);
+    logger.info(`📊 État initial: ${hasOnboarding ? 'Onboarding' : 'App principale'}`);
 
     // 2. TEST ONBOARDING
     if (hasOnboarding) {
-      console.log('\n🎯 2. Test du flow d\'onboarding');
+      logger.info('\n🎯 2. Test du flow d\'onboarding');
       
       // Étape 1: Welcome + Privacy
       const welcomeTitle = await page.locator('h1, h2').first().textContent();
-      console.log(`📄 Titre welcome: ${welcomeTitle}`);
+      logger.info(`📄 Titre welcome: ${welcomeTitle}`);
       await page.screenshot({ 
         path: path.join(screenshotDir, '02-onboarding-welcome.png')
       });
@@ -87,7 +88,7 @@ async function testOmniFit() {
       // Étape 2: Permissions
       const hasPermissions = await page.locator('text=/notification|permission/i').count() > 0;
       if (hasPermissions) {
-        console.log('📲 Page de permissions détectée');
+        logger.info('📲 Page de permissions détectée');
         await page.screenshot({ 
           path: path.join(screenshotDir, '03-onboarding-permissions.png')
         });
@@ -106,7 +107,7 @@ async function testOmniFit() {
       // Étape 3: Premier exercice
       const hasExercise = await page.locator('text=/burpees|pompes|squats|exercice/i').count() > 0;
       if (hasExercise) {
-        console.log('💪 Page de premier exercice détectée');
+        logger.info('💪 Page de premier exercice détectée');
         await page.screenshot({ 
           path: path.join(screenshotDir, '04-onboarding-exercise.png')
         });
@@ -120,7 +121,7 @@ async function testOmniFit() {
     }
 
     // 3. TEST DES FONCTIONNALITÉS PRINCIPALES
-    console.log('\n💪 3. Test des fonctionnalités principales');
+    logger.info('\n💪 3. Test des fonctionnalités principales');
     
     // Attendre que l'app principale soit chargée
     await page.waitForTimeout(2000);
@@ -136,7 +137,7 @@ async function testOmniFit() {
     for (const exercise of exerciseButtons) {
       const button = page.locator(`button:has-text("${exercise}")`).first();
       if (await button.count() > 0) {
-        console.log(`✅ Bouton ${exercise} trouvé`);
+        logger.info(`✅ Bouton ${exercise} trouvé`);
         await button.click();
         await page.waitForTimeout(500);
         exerciseFound = true;
@@ -145,18 +146,18 @@ async function testOmniFit() {
         const counterElement = await page.locator('text=/[0-9]+ (fois|reps|done)/').first();
         if (await counterElement.count() > 0) {
           const counterText = await counterElement.textContent();
-          console.log(`📊 Compteur: ${counterText}`);
+          logger.info(`📊 Compteur: ${counterText}`);
         }
         break;
       }
     }
 
     if (!exerciseFound) {
-      console.log('⚠️ Aucun bouton d\'exercice trouvé');
+      logger.info('⚠️ Aucun bouton d\'exercice trouvé');
     }
 
     // 4. TEST DU DASHBOARD ANALYTICS
-    console.log('\n📊 4. Test du dashboard Analytics');
+    logger.info('\n📊 4. Test du dashboard Analytics');
     
     // Chercher le bouton Stats
     const statsButton = page.locator('button:has-text("Stats"), button:has-text("Statistiques"), a:has-text("Stats"), nav >> text="Stats"').first();
@@ -177,22 +178,22 @@ async function testOmniFit() {
           path: path.join(screenshotDir, '07-analytics-dashboard.png'),
           fullPage: true
         });
-        console.log('✅ Dashboard Analytics accessible');
+        logger.info('✅ Dashboard Analytics accessible');
       } else {
-        console.log('⚠️ Onglet Analyse non trouvé');
+        logger.info('⚠️ Onglet Analyse non trouvé');
       }
 
       // Chercher bouton export CSV
       const exportButton = page.locator('button:has-text("Export"), button:has-text("CSV"), button:has-text("Exporter")').first();
       if (await exportButton.count() > 0) {
-        console.log('✅ Bouton export CSV trouvé');
+        logger.info('✅ Bouton export CSV trouvé');
       }
     } else {
-      console.log('⚠️ Bouton Stats non trouvé');
+      logger.info('⚠️ Bouton Stats non trouvé');
     }
 
     // 5. TEST DES PARAMÈTRES
-    console.log('\n⚙️ 5. Test des paramètres et backup');
+    logger.info('\n⚙️ 5. Test des paramètres et backup');
     
     // Retour à l'accueil si nécessaire
     const homeButton = page.locator('button:has-text("Home"), button:has-text("Accueil"), a[href="/"]').first();
@@ -214,14 +215,14 @@ async function testOmniFit() {
       // Vérifier auto-backup
       const backupOption = await page.locator('text=/backup|sauvegarde/i').count() > 0;
       if (backupOption) {
-        console.log('✅ Options de backup trouvées');
+        logger.info('✅ Options de backup trouvées');
       }
     } else {
-      console.log('⚠️ Bouton Paramètres non trouvé');
+      logger.info('⚠️ Bouton Paramètres non trouvé');
     }
 
     // 6. TESTS RESPONSIVE
-    console.log('\n📱 6. Tests responsive');
+    logger.info('\n📱 6. Tests responsive');
     
     // Test mobile
     await page.setViewportSize({ width: 375, height: 667 });
@@ -230,7 +231,7 @@ async function testOmniFit() {
       path: path.join(screenshotDir, '09-mobile-view.png'),
       fullPage: true
     });
-    console.log('✅ Vue mobile testée (375x667)');
+    logger.info('✅ Vue mobile testée (375x667)');
 
     // Test tablette
     await page.setViewportSize({ width: 768, height: 1024 });
@@ -239,7 +240,7 @@ async function testOmniFit() {
       path: path.join(screenshotDir, '10-tablet-view.png'),
       fullPage: true
     });
-    console.log('✅ Vue tablette testée (768x1024)');
+    logger.info('✅ Vue tablette testée (768x1024)');
 
     // Retour desktop
     await page.setViewportSize({ width: 1920, height: 1080 });
@@ -248,11 +249,11 @@ async function testOmniFit() {
     const manifestResponse = await page.goto('https://frolicking-stardust-cd010f.netlify.app/manifest.json');
     if (manifestResponse && manifestResponse.ok()) {
       const manifest = await manifestResponse.json();
-      console.log('\n✅ Manifest PWA trouvé:');
-      console.log(`- Nom: ${manifest.name || 'Non défini'}`);
-      console.log(`- Nom court: ${manifest.short_name || 'Non défini'}`);
-      console.log(`- Couleur thème: ${manifest.theme_color || 'Non définie'}`);
-      console.log(`- Display: ${manifest.display || 'Non défini'}`);
+      logger.info('\n✅ Manifest PWA trouvé:');
+      logger.info(`- Nom: ${manifest.name || 'Non défini'}`);
+      logger.info(`- Nom court: ${manifest.short_name || 'Non défini'}`);
+      logger.info(`- Couleur thème: ${manifest.theme_color || 'Non définie'}`);
+      logger.info(`- Display: ${manifest.display || 'Non défini'}`);
       
       results.tests.push({
         name: 'Manifest PWA',
@@ -262,7 +263,7 @@ async function testOmniFit() {
     }
 
   } catch (error) {
-    console.error('❌ Erreur pendant les tests:', error);
+    logger.error('❌ Erreur pendant les tests:', error);
     results.tests.push({
       name: 'Erreur générale',
       status: 'error',
@@ -283,29 +284,29 @@ async function testOmniFit() {
 }
 
 function generateReport(results, screenshotDir) {
-  console.log('\n' + '='.repeat(60));
-  console.log('📋 RAPPORT DE TEST - FITNESS REMINDER PWA');
-  console.log('='.repeat(60));
-  console.log(`🌐 URL: ${results.url}`);
-  console.log(`📅 Date: ${new Date(results.timestamp).toLocaleString('fr-FR')}`);
-  console.log(`📁 Screenshots: ${screenshotDir}`);
-  console.log('\n' + '='.repeat(60));
+  logger.info('\n' + '='.repeat(60));
+  logger.info('📋 RAPPORT DE TEST - FITNESS REMINDER PWA');
+  logger.info('='.repeat(60));
+  logger.info(`🌐 URL: ${results.url}`);
+  logger.info(`📅 Date: ${new Date(results.timestamp).toLocaleString('fr-FR')}`);
+  logger.info(`📁 Screenshots: ${screenshotDir}`);
+  logger.info('\n' + '='.repeat(60));
   
-  console.log('\n✅ CE QUI FONCTIONNE BIEN:');
-  console.log('- Application accessible et chargement rapide');
-  console.log('- Interface responsive sur mobile/tablette');
-  console.log('- Manifest PWA présent');
+  logger.info('\n✅ CE QUI FONCTIONNE BIEN:');
+  logger.info('- Application accessible et chargement rapide');
+  logger.info('- Interface responsive sur mobile/tablette');
+  logger.info('- Manifest PWA présent');
   
-  console.log('\n⚠️ PROBLÈMES IDENTIFIÉS:');
-  console.log('- Navigation entre les sections à vérifier manuellement');
-  console.log('- Certains éléments peuvent nécessiter une interaction manuelle');
+  logger.info('\n⚠️ PROBLÈMES IDENTIFIÉS:');
+  logger.info('- Navigation entre les sections à vérifier manuellement');
+  logger.info('- Certains éléments peuvent nécessiter une interaction manuelle');
   
-  console.log('\n💡 AMÉLIORATIONS SUGGÉRÉES:');
-  console.log('- Ajouter des attributs data-testid pour faciliter les tests');
-  console.log('- Améliorer l\'accessibilité avec plus d\'attributs ARIA');
-  console.log('- Optimiser le temps de chargement initial');
+  logger.info('\n💡 AMÉLIORATIONS SUGGÉRÉES:');
+  logger.info('- Ajouter des attributs data-testid pour faciliter les tests');
+  logger.info('- Améliorer l\'accessibilité avec plus d\'attributs ARIA');
+  logger.info('- Optimiser le temps de chargement initial');
   
-  console.log('\n' + '='.repeat(60));
+  logger.info('\n' + '='.repeat(60));
 }
 
 // Lancer les tests

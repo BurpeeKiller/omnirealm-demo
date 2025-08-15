@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Loader2, CheckCircle, XCircle } from 'lucide-react'
-import { Card, CardContent, Button } from '@omnirealm/ui'
+import { Card, CardContent, Button } from '@/components/ui'
 import { useAuthStore } from '@/stores/authStore'
+import { publicConfig } from '@/lib/config'
 
 export function VerifyMagicLink() {
   const [searchParams] = useSearchParams()
@@ -23,7 +24,7 @@ export function VerifyMagicLink() {
       }
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/verify`, {
+        const response = await fetch(`${publicConfig.backendUrl}/api/${publicConfig.apiVersion}/auth/verify`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token })

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Crown, Check, X, Zap, Brain, TrendingUp } from 'lucide-react';
 import { subscriptionService, PRICING_PLANS } from '../services/subscription';
+import { logger } from '@/utils/logger';
 
 interface UpgradeScreenProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ export function UpgradeScreen({ isOpen, onClose }: UpgradeScreenProps) {
         await subscriptionService.redirectToCheckout(plan.stripePriceId);
       }
     } catch (error) {
-      console.error('Erreur upgrade:', error);
+      logger.error('Erreur upgrade:', error);
       setLoading(false);
     }
   };

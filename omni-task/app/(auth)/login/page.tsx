@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Button, Input, Label, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@omnirealm/ui'
+import { Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui'
 import { Logo } from '@/components/logo'
 import { supabase } from '@/lib/supabase/client'
 import { useToastStore } from '@/lib/store/toast-store'
@@ -47,20 +47,17 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       })
 
       if (signInError) throw signInError
-
-      console.log('Login successful:', data)
       
       success('Connexion réussie !')
       
       // Vérifier que la session est bien établie
       const { data: { session } } = await supabase.auth.getSession()
-      console.log('Session after login:', session)
       
       if (session) {
         // Force le rafraîchissement pour déclencher le middleware
@@ -92,7 +89,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
               <Input
                 id="email"
                 type="email"
@@ -104,7 +101,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Mot de passe</label>
               <Input
                 id="password"
                 type="password"

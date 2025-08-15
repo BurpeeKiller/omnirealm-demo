@@ -3,17 +3,13 @@ import { useEffect, useState, useCallback } from 'react'
 
 import { useAuth } from '@/features/auth/useAuth'
 import { supabase } from '@/services/supabase'
+import { CacheStats } from '@/components/CacheStats'
+
 
 export function DashboardPage() {
   const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const { user } = useAuth()
-
-  useEffect(() => {
-    if (user) {
-      loadDocuments()
-    }
-  }, [user, loadDocuments])
 
   const loadDocuments = useCallback(async () => {
     try {
@@ -31,6 +27,12 @@ export function DashboardPage() {
       setLoading(false)
     }
   }, [user?.id])
+
+  useEffect(() => {
+    if (user) {
+      loadDocuments()
+    }
+  }, [user, loadDocuments])
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -56,6 +58,11 @@ export function DashboardPage() {
   return (
     <div className="max-w-6xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-8">Mes documents</h1>
+      
+      {/* Statistiques du cache */}
+      <div className="mb-8">
+        <CacheStats />
+      </div>
 
       {documents.length === 0 ? (
         <div className="text-center py-12">

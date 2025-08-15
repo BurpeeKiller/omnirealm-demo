@@ -1,5 +1,7 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { apiService } from './api';
+import { logger } from '@/utils/logger';
+import { publicConfig } from '../lib/config';
 
 // Types pour la gestion des abonnements
 export interface SubscriptionStatus {
@@ -28,7 +30,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     price: 29,
     currency: 'EUR',
     interval: 'month',
-    stripePriceId: import.meta.env.VITE_STRIPE_PRICE_ID_MONTHLY || '',
+    stripePriceId: publicConfig.stripePriceIdMonthly,
     features: [
       '🤖 Coach IA personnalisé illimité',
       '📊 Programmes d\'entraînement sur mesure',
@@ -46,7 +48,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     price: 290, // 2 mois gratuits
     currency: 'EUR',
     interval: 'year',
-    stripePriceId: import.meta.env.VITE_STRIPE_PRICE_ID_YEARLY || '',
+    stripePriceId: publicConfig.stripePriceIdYearly,
     features: [
       '🎁 2 mois offerts (économisez 58€)',
       '🤖 Coach IA personnalisé illimité',
@@ -67,7 +69,7 @@ class SubscriptionService {
   private stripePromise: Promise<Stripe | null>;
 
   constructor() {
-    const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+    const publishableKey = publicConfig.stripePublishableKey;
     this.stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null);
   }
 
@@ -94,7 +96,7 @@ class SubscriptionService {
         }
         return data;
       } catch (e) {
-        console.error('Erreur parsing subscription:', e);
+        logger.error('Erreur parsing subscription:', e);
       }
     }
     
@@ -140,13 +142,13 @@ class SubscriptionService {
       const result = await apiService.createCheckoutSession(priceId, userEmail);
       
       if (result.error) {
-        console.error('Erreur API:', result.error);
+        logger.error('Erreur API:', result.error);
         return null;
       }
       
       return result.data?.session_id || null;
     } catch (error) {
-      console.error('Erreur création session checkout:', error);
+      logger.error('Erreur création session checkout:', error);
       return null;
     }
   }
@@ -155,19 +157,19 @@ class SubscriptionService {
   async redirectToCheckout(priceId: string): Promise<void> {
     const stripe = await this.initializeStripe();
     if (!stripe) {
-      console.error('Stripe non initialisé');
+      logger.error('Stripe non initialisé');
       return;
     }
 
     const sessionId = await this.createCheckoutSession(priceId);
     if (!sessionId) {
-      console.error('Impossible de créer la session checkout');
+      logger.error('Impossible de créer la session checkout');
       return;
     }
 
     const { error } = await stripe.redirectToCheckout({ sessionId });
     if (error) {
-      console.error('Erreur redirection checkout:', error);
+      logger.error('Erreur redirection checkout:', error);
     }
   }
 
@@ -177,14 +179,14 @@ class SubscriptionService {
       // Récupérer le customer ID depuis le localStorage
       const customerId = localStorage.getItem('omnifit_stripe_customer_id');
       if (!customerId) {
-        console.error('Aucun customer ID trouvé');
+        logger.error('Aucun customer ID trouvé');
         return;
       }
 
       const result = await apiService.createPortalSession(customerId);
       
       if (result.error) {
-        console.error('Erreur API:', result.error);
+        logger.error('Erreur API:', result.error);
         return;
       }
 
@@ -192,7 +194,7 @@ class SubscriptionService {
         window.location.href = result.data.url;
       }
     } catch (error) {
-      console.error('Erreur création portail client:', error);
+      logger.error('Erreur création portail client:', error);
     }
   }
 

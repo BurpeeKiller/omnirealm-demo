@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ExerciseCard } from '../components/ExerciseCard';
+import type { ExerciseDefinition, ExerciseType } from '../types';
 
 // Mock des stores
 vi.mock('../stores/exercises.store', () => ({
@@ -23,8 +24,8 @@ vi.mock('../utils/sound', () => ({
   })),
 }));
 
-const mockExercise = {
-  type: 'burpees',
+const mockExercise: ExerciseDefinition = {
+  type: 'burpees' as ExerciseType,
   name: 'Burpees',
   emoji: '🏃‍♂️',
   count: 5,

@@ -1,4 +1,4 @@
-import { Badge } from '@omnirealm/ui'
+import { Badge } from '@/components/ui'
 import { 
   FileText, 
   FileSignature, 

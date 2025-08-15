@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, Badge } from '@omnirealm/ui'
+import { Card, Badge } from '@/components/ui'
 import { Calendar, Clock, AlertCircle, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'

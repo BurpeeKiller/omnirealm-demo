@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, Input, Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@omnirealm/ui'
+import { Card, CardContent, CardHeader, CardTitle, Input, Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 import { Key, Save, Trash2, Eye, EyeOff } from 'lucide-react'
 
 interface ApiKeyManagerProps {

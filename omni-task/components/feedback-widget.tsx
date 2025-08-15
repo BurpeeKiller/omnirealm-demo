@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@omnirealm/ui'
+import { Button } from '@/components/ui'
 import { MessageSquare, X, Send } from 'lucide-react'
+import { createLogger } from '@/lib/logger';
+const logger = createLogger('feedback-widget.tsx');
 
 export function FeedbackWidget() {
   const [isOpen, setIsOpen] = useState(false)
@@ -21,7 +23,7 @@ export function FeedbackWidget() {
     setIsSubmitting(false)
     
     // TODO: Envoyer le feedback à votre API
-    console.log('Feedback envoyé:', feedback)
+    logger.info('Feedback envoyé:', feedback)
   }
 
   return (

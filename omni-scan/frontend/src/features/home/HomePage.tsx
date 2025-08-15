@@ -14,7 +14,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger
-} from '@omnirealm/ui'
+} from '@/components/ui'
 import { 
   Upload, 
   FileText, 
@@ -32,6 +32,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth/useAuth'
 import { getDocuments } from '@/services/api'
+
 
 interface Stats {
   totalDocuments: number
@@ -55,10 +56,6 @@ export function HomePage() {
   })
   const [recentDocuments, setRecentDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchUserData()
-  }, [user, fetchUserData])
 
   const fetchUserData = useCallback(async () => {
     if (!user) {
@@ -85,6 +82,10 @@ export function HomePage() {
       setLoading(false)
     }
   }, [user])
+
+  useEffect(() => {
+    fetchUserData()
+  }, [user, fetchUserData])
 
   const quotaPercentage = (stats.documentsUsed / stats.documentsQuota) * 100
   const isQuotaExceeded = stats.documentsUsed >= stats.documentsQuota

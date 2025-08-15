@@ -16,6 +16,25 @@ export default defineConfig({
     },
     strictPort: false,
     allowedHosts: ['.ngrok-free.app', '.ngrok.io', 'localhost'],
+    headers: {
+      'Content-Security-Policy': [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src 'self' https://fonts.gstatic.com",
+        "img-src 'self' data: blob: https:",
+        "connect-src 'self' https://plausible.io https://*.supabase.co wss://*.supabase.co https://checkout.stripe.com",
+        "media-src 'self' blob:",
+        "worker-src 'self' blob:",
+        "manifest-src 'self'",
+        "frame-src 'self' https://checkout.stripe.com https://js.stripe.com",
+      ].join('; '),
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    },
   },
   optimizeDeps: {
     include: [
@@ -25,27 +44,21 @@ export default defineConfig({
       'chart.js',
       'react-chartjs-2',
       'dexie',
-      'dexie-react-hooks',
       'zustand',
       'date-fns',
       'lucide-react',
     ],
   },
   build: {
-    // Optimisations production
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    // Minification optimisée pour éviter erreurs
+    minify: 'esbuild', // Alternative plus stable à terser
+    target: 'es2020', // Cible moderne pour compatibilité
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['framer-motion', 'lucide-react'],
-          store: ['zustand', 'dexie'],
+        manualChunks(id) {
+          // DÉSACTIVÉ - Le chunking cause des erreurs avec React
+          // Tout sera dans le bundle principal pour éviter les problèmes
+          return undefined;
         },
       },
     },

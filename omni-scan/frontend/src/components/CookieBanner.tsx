@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Card, Button } from '@omnirealm/ui'
+import { Card, Button } from '@/components/ui'
 import { Cookie, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 

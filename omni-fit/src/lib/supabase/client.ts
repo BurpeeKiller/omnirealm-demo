@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
+import { logger } from '@/utils/logger';
+import { publicConfig } from '../config';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl = publicConfig.supabaseUrl;
+const supabaseAnonKey = publicConfig.supabaseAnonKey;
 
 // En dev, on permet de continuer sans Supabase
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables missing - auth features disabled');
+  logger.warn('Supabase environment variables missing - auth features disabled');
 }
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {

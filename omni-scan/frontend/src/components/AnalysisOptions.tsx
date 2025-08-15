@@ -6,7 +6,7 @@ import {
   CardTitle,
   Label,
   Switch
-} from '@omnirealm/ui'
+} from '@/components/ui'
 import { RadioGroup, RadioGroupItem } from './RadioGroup'
 import { Settings2, FileText, Zap, FileSearch } from 'lucide-react'
 

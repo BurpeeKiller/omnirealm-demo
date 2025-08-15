@@ -1,0 +1,14 @@
+Ceci est un exemple de facture pour tester l'OCR.
+
+FACTURE N° 2025-001
+Date: 06/08/2025
+
+Client:
+Entreprise Test
+123 Rue de la Démo
+75001 Paris
+
+Article: Service OCR Premium
+Prix: 49€ HT
+TVA 20%: 9.80€
+Total TTC: 58.80€

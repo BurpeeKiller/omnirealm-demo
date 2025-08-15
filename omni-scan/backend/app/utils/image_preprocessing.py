@@ -3,8 +3,9 @@ Preprocessing des images pour améliorer la qualité OCR
 """
 import cv2
 import numpy as np
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageEnhance
 import io
+from typing import Union
 
 
 class ImagePreprocessor:
@@ -13,12 +14,18 @@ class ImagePreprocessor:
     def __init__(self):
         self.target_dpi = 300  # DPI optimal pour OCR
         
-    def process(self, image_path: str) -> Image.Image:
+    def process(self, image_input: Union[str, Image.Image]) -> Image.Image:
         """
         Applique une série de traitements pour améliorer l'image
+        
+        Args:
+            image_input: Chemin vers l'image ou objet Image PIL
         """
-        # Charger l'image avec PIL
-        img = Image.open(image_path)
+        # Charger l'image avec PIL si c'est un chemin
+        if isinstance(image_input, str):
+            img = Image.open(image_input)
+        else:
+            img = image_input
         
         # 1. Convertir en RGB si nécessaire
         if img.mode != 'RGB':
@@ -154,3 +161,28 @@ class ImagePreprocessor:
             processed_img.save(buffer, format='PNG')
             buffer.seek(0)
             return buffer
+
+
+# Fonction wrapper pour compatibilité
+def preprocess_image(image_path: Union[str, Image.Image]) -> Image.Image:
+    """
+    Fonction wrapper pour préprocesser une image
+    
+    Args:
+        image_path: Chemin vers l'image ou objet Image PIL
+        
+    Returns:
+        Image PIL préprocessée
+    """
+    preprocessor = ImagePreprocessor()
+    if isinstance(image_path, str):
+        return preprocessor.process(image_path)
+    else:
+        # Si c'est déjà une image PIL, la sauvegarder temporairement
+        import tempfile
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+            image_path.save(tmp.name)
+            result = preprocessor.process(tmp.name)
+            import os
+            os.unlink(tmp.name)
+            return result

@@ -1,13 +1,15 @@
 import { Check, Zap, Shield, Clock, Brain } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from '@omnirealm/ui'
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from '@/components/ui'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
+// Logger removed - using console instead
+import { publicConfig } from '@/lib/config'
 
 export function PricingPage() {
   const navigate = useNavigate()
   const { isAuthenticated, token } = useAuthStore()
 
-  const handleCheckout = async (plan: 'monthly' | 'yearly') => {
+  const handleCheckout = async (_plan: 'monthly' | 'yearly') => {
     if (!isAuthenticated) {
       // Demander de se connecter d'abord
       navigate('/?auth=true')
@@ -15,7 +17,7 @@ export function PricingPage() {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/create-checkout`, {
+      const response = await fetch(`${publicConfig.backendUrl}/api/${publicConfig.apiVersion}/create-checkout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

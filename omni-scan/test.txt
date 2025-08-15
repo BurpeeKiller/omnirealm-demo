@@ -1,1 +1,1 @@
-Test OCR Document
+Ceci est un document de test pour vérifier le système de progression OmniScan.

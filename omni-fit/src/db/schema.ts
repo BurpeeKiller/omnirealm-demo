@@ -1,6 +1,6 @@
 import type { Table } from 'dexie';
 import Dexie from 'dexie';
-import type { Workout, DailyStats } from '@/types';
+import type { Workout, DailyStats, Exercise } from '@/types';
 
 export interface AnalyticsEntry {
   date: string; // YYYY-MM-DD format
@@ -14,8 +14,17 @@ export interface AnalyticsEntry {
   };
 }
 
+export interface ExerciseStats {
+  name: string;
+  totalCount: number;
+  sessionCount: number;
+  lastCompleted: Date;
+}
+
 export class FitnessDB extends Dexie {
   workouts!: Table<Workout>;
+  exercises!: Table<Exercise>;
+  exerciseStats!: Table<ExerciseStats>;
   dailyStats!: Table<DailyStats>;
   settings!: Table<{ key: string; value: any }>;
   analytics!: Table<AnalyticsEntry>;
@@ -32,6 +41,16 @@ export class FitnessDB extends Dexie {
     // Version 2: Add analytics table
     this.version(2).stores({
       workouts: '++id, date, exercise, [date+exercise]',
+      dailyStats: 'date',
+      settings: 'key',
+      analytics: 'date, lastActivity',
+    });
+
+    // Version 3: Add exercises and exerciseStats tables
+    this.version(3).stores({
+      workouts: '++id, date, exercise, [date+exercise]',
+      exercises: 'id, name, timestamp, synced',
+      exerciseStats: 'name, lastCompleted',
       dailyStats: 'date',
       settings: 'key',
       analytics: 'date, lastActivity',

@@ -1,6 +1,7 @@
 """Gestion de la connexion Supabase"""
 
 from supabase import create_client, Client
+from app.utils.logger import logger
 from app.core.config import settings
 import os
 
@@ -15,7 +16,7 @@ if os.getenv("ENVIRONMENT") != "test":
             settings.supabase_anon_key
         )
     except Exception as e:
-        print(f"Warning: Could not initialize Supabase client: {e}")
+        logger.info(f"Warning: Could not initialize Supabase client: {e}")
         if settings.environment == "production":
             raise
 
@@ -25,16 +26,16 @@ async def init_db():
     # Vérifier la connexion
     if supabase:
         try:
-            # Test simple de connexion
-            await supabase.table("documents").select("count").execute()
-            print("✅ Connexion Supabase établie")
+            # Test simple de connexion - le client Supabase est synchrone
+            supabase.table("documents").select("count").execute()
+            logger.info("✅ Connexion Supabase établie")
         except Exception as e:
-            print(f"❌ Erreur connexion Supabase: {e}")
+            logger.info(f"❌ Erreur connexion Supabase: {e}")
             # En dev, continuer même si Supabase n'est pas disponible
             if settings.environment == "production":
                 raise
     else:
-        print("⚠️ Supabase non initialisé (mode test ou erreur config)")
+        logger.info("⚠️ Supabase non initialisé (mode test ou erreur config)")
 
 
 def get_supabase() -> Client:

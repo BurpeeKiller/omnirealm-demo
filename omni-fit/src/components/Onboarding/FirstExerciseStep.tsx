@@ -3,13 +3,14 @@ import { motion } from 'framer-motion';
 import { Zap, CheckCircle, ArrowRight } from 'lucide-react';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useExercisesStore } from '@/stores/exercises.store';
+import { logger } from '@/utils/logger';
 
 interface FirstExerciseStepProps {
   onNext?: () => void;
   onSkip?: () => void;
 }
 
-export const FirstExerciseStep = ({ onNext, onSkip }: FirstExerciseStepProps) => {
+export const FirstExerciseStep = ({ onNext }: FirstExerciseStepProps) => {
   const { completeFirstExercise } = useOnboarding();
   const { incrementExercise, loading } = useExercisesStore();
   const [hasCompletedExercise, setHasCompletedExercise] = useState(false);
@@ -50,7 +51,7 @@ export const FirstExerciseStep = ({ onNext, onSkip }: FirstExerciseStepProps) =>
         navigator.vibrate(200);
       }
     } catch (error) {
-      console.error('Failed to complete first exercise:', error);
+      logger.error('Failed to complete first exercise:', error);
     }
   };
 
@@ -63,11 +64,11 @@ export const FirstExerciseStep = ({ onNext, onSkip }: FirstExerciseStepProps) =>
 
     // Éviter les double-clics
     if (isFinishing) {
-      console.log('Already finishing, ignoring click');
+      logger.info('Already finishing, ignoring click');
       return;
     }
 
-    console.log('handleFinish called');
+    logger.info('handleFinish called');
     setIsFinishing(true);
     
     if (onNext) {
@@ -76,7 +77,7 @@ export const FirstExerciseStep = ({ onNext, onSkip }: FirstExerciseStepProps) =>
       completeFirstExercise();
       // Forcer un rechargement après un court délai pour s'assurer que l'état est sauvegardé
       setTimeout(() => {
-        console.log('Reloading page to complete onboarding');
+        logger.info('Reloading page to complete onboarding');
         window.location.reload();
       }, 100);
     }
@@ -203,7 +204,7 @@ export const FirstExerciseStep = ({ onNext, onSkip }: FirstExerciseStepProps) =>
           {/* Bouton de secours si le premier ne fonctionne pas */}
           <button
             onClick={() => {
-              console.log('Alternative button clicked');
+              logger.info('Alternative button clicked');
               window.location.reload();
             }}
             className="w-full mt-3 py-2 text-gray-400 hover:text-gray-300 transition-colors text-sm underline"

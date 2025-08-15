@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { subscriptionService } from '@/services/subscription';
+import { logger } from '@/utils/logger';
 
 export type AppView = 'landing' | 'dashboard' | 'onboarding';
 
@@ -88,7 +89,7 @@ export function useAppState() {
         setIsFirstVisit(false);
       } catch (e) {
         // En navigation privée, on ne peut pas sauvegarder
-        console.warn('Impossible de sauvegarder l\'état de visite (navigation privée?)');
+        logger.warn('Impossible de sauvegarder l\'état de visite (navigation privée?)');
       }
     }
   };
@@ -119,7 +120,7 @@ export function useAppState() {
       localStorage.setItem('omnifit_onboarding_completed', 'true');
     } catch (e) {
       // En navigation privée, on ne peut pas sauvegarder
-      console.warn('Impossible de sauvegarder la complétion de l\'onboarding');
+      logger.warn('Impossible de sauvegarder la complétion de l\'onboarding');
     }
     navigateTo('dashboard');
   };
@@ -132,7 +133,7 @@ export function useAppState() {
       localStorage.removeItem('omnifit_subscription');
     } catch (e) {
       // En navigation privée, on ne peut pas modifier localStorage
-      console.warn('Impossible de réinitialiser localStorage');
+      logger.warn('Impossible de réinitialiser localStorage');
     }
     setCurrentView('landing');
     setIsFirstVisit(true);

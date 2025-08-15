@@ -94,3 +94,151 @@
     }
   }
 }
+
+/* ========================================
+   CORRECTIONS DE COMPATIBILITÉ
+   ======================================== */
+
+/* Support Chrome Android pour filter */
+.backdrop-blur,
+[class*="backdrop-blur"] {
+  -webkit-filter: blur(var(--backdrop-blur, 10px));
+  filter: blur(var(--backdrop-blur, 10px));
+}
+
+/* Support text-size-adjust pour tous les navigateurs */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Support Safari pour backdrop-filter */
+.backdrop-filter,
+[class*="backdrop-"] {
+  -webkit-backdrop-filter: var(--backdrop-filter, blur(10px));
+  backdrop-filter: var(--backdrop-filter, blur(10px));
+}
+
+/* Support Safari pour user-select */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.select-text {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.select-all {
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
+}
+
+/* Support forced-color-adjust pour accessibilité */
+@supports (forced-color-adjust: none) {
+  * {
+    forced-color-adjust: auto;
+  }
+}
+
+/* ========================================
+   SUPPRESSION DES EFFETS DE FLOU
+   ======================================== */
+
+/* Suppression forcée de tous les effets de flou */
+* {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-filter: none !important;
+  filter: none !important;
+}
+
+/* S'assurer que les éléments principaux sont nets */
+body, 
+header, 
+main, 
+nav, 
+div, 
+section, 
+article {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+  transform: translateZ(0) !important; /* Force GPU rendering */
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Améliorer la netteté du texte */
+* {
+  text-rendering: optimizeLegibility !important;
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: crisp-edges !important;
+}
+
+/* S'assurer que les modals sont nets */
+.fixed {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* ========================================
+   FIX ÉCRAN BLEU
+   ======================================== */
+
+/* Forcer les couleurs de fond correctes */
+html, body {
+  background-color: rgb(17, 24, 39) !important; /* gray-900 */
+  color: rgb(243, 244, 246) !important; /* gray-100 */
+}
+
+/* S'assurer que le root est également correct */
+:root {
+  background-color: rgb(17, 24, 39) !important;
+  color: rgb(243, 244, 246) !important;
+}
+
+/* Empêcher tout écran bleu accidentel */
+body, #root, .App, main {
+  background-color: rgb(17, 24, 39) !important;
+  background: rgb(17, 24, 39) !important;
+}
+
+/* Si un écran bleu vient d'un overlay ou modal */
+.fixed, .absolute, .relative {
+  background-color: transparent !important;
+}
+
+/* Empêcher les backgrounds bleus sur tous les éléments */
+* {
+  background-color: initial;
+}
+
+/* Forcer les backgrounds opaques */
+.bg-gray-900 {
+  background-color: rgb(17, 24, 39) !important;
+  opacity: 1 !important;
+}
+
+.bg-gray-800 {
+  background-color: rgb(31, 41, 55) !important;
+  opacity: 1 !important;
+}
+
+.bg-white {
+  background-color: rgb(255, 255, 255) !important;
+  opacity: 1 !important;
+}
+
+/* S'assurer que les overlays modaux utilisent le bon fond */
+.backdrop, [role="dialog"] {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}

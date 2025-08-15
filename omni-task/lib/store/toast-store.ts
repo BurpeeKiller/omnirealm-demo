@@ -17,11 +17,11 @@ interface ToastStore {
   warning: (message: string) => void
 }
 
-export const useToastStore = create<ToastStore>((set) => ({
+export const useToastStore = create<ToastStore>((set, get) => ({
   toasts: [],
   
   addToast: (toast) => {
-    const id = Date.now().toString()
+    const id = `${Date.now()}-${Math.random().toString(36).substring(7)}`
     const newToast = { ...toast, id }
     
     set((state) => ({
@@ -41,62 +41,21 @@ export const useToastStore = create<ToastStore>((set) => ({
   })),
   
   success: (message) => {
-    set((state) => {
-      const id = Date.now().toString()
-      const newToast = { id, type: 'success' as const, message }
-      
-      setTimeout(() => {
-        state.removeToast(id)
-      }, 3000)
-      
-      return {
-        toasts: [...state.toasts, newToast]
-      }
-    })
+    get().addToast({ type: 'success', message, duration: 3000 })
   },
   
   error: (message) => {
-    set((state) => {
-      const id = Date.now().toString()
-      const newToast = { id, type: 'error' as const, message }
-      
-      setTimeout(() => {
-        state.removeToast(id)
-      }, 5000)
-      
-      return {
-        toasts: [...state.toasts, newToast]
-      }
-    })
+    get().addToast({ type: 'error', message, duration: 5000 })
   },
   
   info: (message) => {
-    set((state) => {
-      const id = Date.now().toString()
-      const newToast = { id, type: 'info' as const, message }
-      
-      setTimeout(() => {
-        state.removeToast(id)
-      }, 3000)
-      
-      return {
-        toasts: [...state.toasts, newToast]
-      }
-    })
+    get().addToast({ type: 'info', message, duration: 3000 })
   },
   
   warning: (message) => {
-    set((state) => {
-      const id = Date.now().toString()
-      const newToast = { id, type: 'warning' as const, message }
-      
-      setTimeout(() => {
-        state.removeToast(id)
-      }, 4000)
-      
-      return {
-        toasts: [...state.toasts, newToast]
-      }
-    })
+    get().addToast({ type: 'warning', message, duration: 4000 })
   }
 }))
+
+// Export alias pour compatibilité
+export const useToast = useToastStore

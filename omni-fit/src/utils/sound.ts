@@ -1,3 +1,5 @@
+import { logger } from '@/utils/logger';
+
 // Générateur de sons avec Web Audio API
 class SoundGenerator {
   private audioContext: AudioContext | null = null;
@@ -21,7 +23,7 @@ class SoundGenerator {
       // Troisième bip (plus aigu)
       this.createBeep(ctx, 1000, 0.6, 0.3);
     } catch (error) {
-      console.warn('Could not play reminder sound:', error);
+      logger.warn('Could not play reminder sound:', error);
     }
   }
 
@@ -35,7 +37,7 @@ class SoundGenerator {
       this.createBeep(ctx, 659, 0.1, 0.15); // Mi
       this.createBeep(ctx, 784, 0.2, 0.25); // Sol
     } catch (error) {
-      console.warn('Could not play complete sound:', error);
+      logger.warn('Could not play complete sound:', error);
     }
   }
 
@@ -90,6 +92,6 @@ export const playSound = (type: 'complete' | 'reminder') => {
     audio.volume = 0.5;
     audio.play();
   } catch (error) {
-    console.warn(`Could not play ${type} sound:`, error);
+    logger.warn(`Could not play ${type} sound:`, error);
   }
 };

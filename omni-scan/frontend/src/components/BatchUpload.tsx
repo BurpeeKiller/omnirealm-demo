@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Upload, FileStack, Loader2, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
 
+
 interface BatchFile {
   file: File;
   id: string;
@@ -23,7 +24,7 @@ export const BatchUpload: React.FC<BatchUploadProps> = ({
   const [files, setFiles] = useState<BatchFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [batchId, setBatchId] = useState<string | null>(null);
+  const [_batchId, _setBatchId] = useState<string | null>(null);
 
   const maxFiles = isPremium ? 50 : 10;
 
@@ -103,7 +104,7 @@ export const BatchUpload: React.FC<BatchUploadProps> = ({
         }
       });
 
-      setBatchId(response.data.batch_id);
+      _setBatchId(response.data.batch_id);
 
       // Mettre à jour les statuts avec les résultats
       const results = response.data.results;

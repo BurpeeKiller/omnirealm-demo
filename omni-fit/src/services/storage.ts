@@ -1,3 +1,5 @@
+import { logger } from '@/utils/logger';
+
 // Capacitor imports commented out - PWA mode only
 // import { Preferences } from '@capacitor/preferences';
 // import { Capacitor } from '@capacitor/core';
@@ -99,7 +101,7 @@ export async function importData(jsonData: string): Promise<void> {
 
     // TODO: Importer les workouts dans la base de données
   } catch (error) {
-    console.error("Erreur lors de l'import des données:", error);
+    logger.error("Erreur lors de l'import des données:", error);
     throw new Error('Format de données invalide');
   }
 }

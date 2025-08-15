@@ -2,7 +2,7 @@
 Classificateur de documents pour déterminer le type
 """
 import re
-from typing import Tuple, Dict, List
+from typing import Tuple, Dict, Any
 
 
 class DocumentClassifier:
@@ -76,7 +76,7 @@ class DocumentClassifier:
             ]
         }
     
-    def classify(self, text: str) -> Tuple[str, float, Dict[str, any]]:
+    def classify(self, text: str) -> Tuple[str, float, Dict[str, Any]]:
         """
         Classifie le document et retourne le type avec la confiance
         
@@ -137,7 +137,7 @@ class DocumentClassifier:
         
         return (best_type, confidence, metadata)
     
-    def _extract_metadata(self, text: str, doc_type: str) -> Dict[str, any]:
+    def _extract_metadata(self, text: str, doc_type: str) -> Dict[str, Any]:
         """Extrait des métadonnées selon le type de document"""
         metadata = {
             "has_amounts": bool(re.search(r"\d+[,.]?\d*\s*€", text)),
@@ -163,7 +163,7 @@ class DocumentClassifier:
         
         return metadata
     
-    def get_document_structure(self, text: str, doc_type: str) -> Dict[str, any]:
+    def get_document_structure(self, text: str, doc_type: str) -> Dict[str, Any]:
         """
         Analyse la structure du document pour mieux l'interpréter
         """
@@ -177,23 +177,23 @@ class DocumentClassifier:
         
         # Détecter un en-tête (premières lignes courtes)
         if len(lines) > 3:
-            header_lines = [l for l in lines[:5] if l.strip() and len(l.strip()) < 50]
+            header_lines = [line for line in lines[:5] if line.strip() and len(line.strip()) < 50]
             structure["has_header"] = len(header_lines) >= 2
         
         # Détecter des tableaux (alignement de nombres/montants)
-        amount_lines = [l for l in lines if re.search(r"\d+[,.]?\d*\s*€", l)]
+        amount_lines = [line for line in lines if re.search(r"\d+[,.]?\d*\s*€", line)]
         if len(amount_lines) > 3:
             structure["has_table"] = True
         
         # Détecter des listes (lignes commençant par -, *, •, ou numéros)
-        list_lines = [l for l in lines if re.match(r"^\s*[-*•·]\s+", l) or re.match(r"^\s*\d+[\.)]\s+", l)]
+        list_lines = [line for line in lines if re.match(r"^\s*[-*•·]\s+", line) or re.match(r"^\s*\d+[\.)]\s+", line)]
         structure["has_list"] = len(list_lines) > 2
         
         return structure
 
 
 # Fonction helper
-def classify_document(text: str) -> Tuple[str, float, Dict[str, any]]:
+def classify_document(text: str) -> Tuple[str, float, Dict[str, Any]]:
     """Classifie un document et retourne le type avec métadonnées"""
     classifier = DocumentClassifier()
     return classifier.classify(text)

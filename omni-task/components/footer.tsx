@@ -101,6 +101,11 @@ export function Footer() {
                     CGU
                   </Link>
                 </li>
+                <li>
+                  <Link href="/cgv" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                    CGV
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

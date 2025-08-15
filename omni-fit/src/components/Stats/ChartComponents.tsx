@@ -1,44 +1,61 @@
-import type {
-  ChartData,
-  ChartOptions} from 'chart.js';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-} from 'chart.js';
+// Import optimisé - la configuration est déjà faite dans chart-setup.ts
 import { Line, Bar } from 'react-chartjs-2';
+import { lineChartOptions, barChartOptions } from '@/config/chart-setup';
 
-// Enregistrer les composants Chart.js une seule fois
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-);
+// Export direct des composants pour le lazy loading
+export { Line, Bar };
+export { lineChartOptions, barChartOptions };
 
-interface ChartComponentsProps {
-  data: ChartData<'line' | 'bar'>;
-  options: ChartOptions<'line' | 'bar'>;
-  type: 'line' | 'bar';
-}
+// Export des options de configuration communes
+export const getLineChartOptions = () => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        color: '#e5e7eb',
+      },
+    },
+    tooltip: {
+      backgroundColor: '#1f2937',
+      titleColor: '#e5e7eb',
+      bodyColor: '#e5e7eb',
+    },
+  },
+  scales: {
+    x: {
+      grid: {
+        color: '#374151',
+      },
+      ticks: {
+        color: '#9ca3af',
+      },
+    },
+    y: {
+      grid: {
+        color: '#374151',
+      },
+      ticks: {
+        color: '#9ca3af',
+      },
+    },
+  },
+});
 
-const ChartComponents = ({ data, options, type }: ChartComponentsProps) => {
-  if (type === 'line') {
-    return <Line data={data as ChartData<'line'>} options={options as ChartOptions<'line'>} />;
-  }
-  return <Bar data={data as ChartData<'bar'>} options={options as ChartOptions<'bar'>} />;
-};
-
-export default ChartComponents;
+export const getDoughnutChartOptions = () => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'bottom' as const,
+      labels: {
+        color: '#e5e7eb',
+      },
+    },
+    tooltip: {
+      backgroundColor: '#1f2937',
+      titleColor: '#e5e7eb',
+      bodyColor: '#e5e7eb',
+    },
+  },
+});

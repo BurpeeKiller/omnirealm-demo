@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: ${COOLIFY_CONTAINER_NAME:-omni-web}
+    image: ${DOCKER_REGISTRY_IMAGE:-omni-web}:${SOURCE_COMMIT:-latest}
+    build:
+      context: ../../../  # Remonte à la racine du monorepo
+      dockerfile: Dockerfile.omniweb
+      args:
+        - COOLIFY_URL=${COOLIFY_URL:-localhost}
+        - COOLIFY_FQDN=${COOLIFY_FQDN:-localhost}
+        - COOLIFY_BRANCH=${COOLIFY_BRANCH:-main}
+        - SOURCE_COMMIT=${SOURCE_COMMIT:-latest}
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - NEXT_TELEMETRY_DISABLED=1
+      - COOLIFY_URL=${COOLIFY_URL:-localhost}
+      - COOLIFY_FQDN=${COOLIFY_FQDN:-localhost}
+      - COOLIFY_BRANCH=${COOLIFY_BRANCH:-main}
+      - SOURCE_COMMIT=${SOURCE_COMMIT:-latest}
+      # Variables personnalisées
+      - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
+      - NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
+      - N8N_NEWSLETTER_WEBHOOK_URL=${N8N_NEWSLETTER_WEBHOOK_URL}
+      - N8N_CONTACT_WEBHOOK_URL=${N8N_CONTACT_WEBHOOK_URL}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

@@ -1,15 +1,21 @@
-"""Service d'analyse IA avec OpenAI"""
+"""Service d'analyse IA unifié avec support multi-providers"""
 
-import json
-import openai
-from typing import Dict, Optional
-from app.core.config import settings
-from app.templates.invoice_template import extract_invoice_data
-from app.utils.document_classifier import classify_document
+from typing import Dict
+from enum import Enum
+from app.core.logging import get_logger
 from app.services.ai_prompts import get_prompt_for_type
+from app.utils.document_classifier import classify_document
+from app.utils.document_extractor import extract_invoice_data
 
-# Configurer OpenAI
-openai.api_key = settings.openai_api_key
+logger = get_logger("ai_analysis")
+
+
+class AIProvider(Enum):
+    OPENAI = "openai"
+    ANTHROPIC = "anthropic"
+    OPENROUTER = "openrouter"
+    GROQ = "groq"
+    OLLAMA = "ollama"
 
 
 def detect_language_fallback(text: str) -> str:
@@ -93,7 +99,7 @@ async def analyze_text(
         }
     }
     
-    config = detail_config.get(detail_level, detail_config["medium"])
+    detail_config.get(detail_level, detail_config["medium"])
     
     # Limiter la longueur du texte
     max_length = 4000
@@ -102,7 +108,6 @@ async def analyze_text(
     
     try:
         # Adapter le prompt selon l'indice de langue
-        language_instruction = ""
         if language_hint:
             language_map = {
                 'fr': 'français',
@@ -111,67 +116,17 @@ async def analyze_text(
                 'de': 'allemand',
                 'it': 'italien'
             }
-            lang_name = language_map.get(language_hint, language_hint)
-            language_instruction = f"\nIMPORTANT: Le document est en {lang_name}. Réponds dans cette même langue."
+            language_map.get(language_hint, language_hint)
         
         # Obtenir les prompts spécialisés selon le type de document
-        resume_prompt = get_prompt_for_type(doc_type, "resume")
-        key_points_prompt = get_prompt_for_type(doc_type, "key_points")
+        get_prompt_for_type(doc_type, "resume")
+        get_prompt_for_type(doc_type, "key_points")
         
-        # Prompt système adapté
-        system_prompt = f"""Tu es un assistant expert en analyse de documents multilingues.
-        
-        Type de document détecté : {doc_type} (confiance: {doc_confidence:.0%})
-        
-        INSTRUCTIONS POUR LE RÉSUMÉ:
-        {resume_prompt}
-        
-        INSTRUCTIONS POUR LES POINTS CLÉS:
-        {key_points_prompt}
-        
-        NIVEAU DE DÉTAIL DEMANDÉ:
-        - Résumé : {config['summary_sentences']} phrases maximum
-        - Points clés : {config['key_points']} points maximum
-        
-        AUTRES ÉLÉMENTS À EXTRAIRE:
-        1. Les entités importantes (personnes, lieux, organisations, montants, dates)
-        2. La langue principale du document (code ISO 639-1: 'fr', 'en', 'es', etc.)
-        
-        {language_instruction}
-        
-        IMPORTANT: 
-        - Adapte ton analyse au type de document détecté
-        - Sois précis et factuel
-        - Extrait les informations vraiment importantes selon le contexte
-        
-        Réponds en JSON avec les clés: summary, key_points, entities, language, document_type"""
-        
-        # Appel à OpenAI
-        response = await openai.ChatCompletion.acreate(
-            model=settings.openai_model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Analyse ce texte:\n\n{text}"}
-            ],
-            temperature=0.3,
-            max_tokens=1000,
-            response_format={"type": "json_object"}
-        )
-        
-        # Parser la réponse de manière sécurisée
-        analysis = response.choices[0].message.content
-        result = json.loads(analysis)
-        
-        # Ajouter les données structurées et métadonnées
-        result['structured_data'] = structured_data
-        result['document_type'] = doc_type
-        result['document_confidence'] = doc_confidence
-        result['document_metadata'] = doc_metadata
-        
-        return result
+        # Cette méthode est obsolète - utiliser ai_analysis_unified.py à la place
+        raise NotImplementedError("Utiliser AIAnalyzer de ai_analysis_unified.py")
         
     except Exception as e:
-        print(f"Erreur analyse IA: {e}")
+        logger.info(f"Erreur analyse IA: {e}")
         # Fallback basique
         return {
             "summary": "Analyse IA temporairement indisponible",

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { subscriptionService, SubscriptionStatus, PRICING_PLANS } from '@/services/subscription';
 import { analytics } from '@/services/analytics';
+import { logger } from '@/utils/logger';
 
 export interface UseSubscriptionReturn {
   subscriptionStatus: SubscriptionStatus;
@@ -81,7 +82,7 @@ export function useSubscription(): UseSubscriptionReturn {
       
       await subscriptionService.redirectToCheckout(priceId);
     } catch (error) {
-      console.error('Erreur souscription:', error);
+      logger.error('Erreur souscription:', error);
       analytics.trackEvent('checkout_error', {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -98,7 +99,7 @@ export function useSubscription(): UseSubscriptionReturn {
       analytics.trackEvent('portal_opened');
       await subscriptionService.redirectToCustomerPortal();
     } catch (error) {
-      console.error('Erreur ouverture portail:', error);
+      logger.error('Erreur ouverture portail:', error);
     } finally {
       setLoading(false);
     }

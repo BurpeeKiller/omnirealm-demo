@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { backupService } from '@/services/backup';
+import { logger } from '@/utils/logger';
 
 export const useBackupNotification = () => {
   const [shouldShowNotification, setShouldShowNotification] = useState(false);
@@ -50,7 +51,7 @@ export const useBackupNotification = () => {
       dismissNotification();
       return true;
     } catch (error) {
-      console.error('Failed to create backup:', error);
+      logger.error('Failed to create backup:', error);
       return false;
     }
   };

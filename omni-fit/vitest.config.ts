@@ -1,41 +1,34 @@
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-import path from 'path';
+import { defineConfig } from 'vitest/config'
+import path from 'path'
 
 export default defineConfig({
-  plugins: [react()],
-  optimizeDeps: {
-    include: ['is-stream'],
-  },
-  ssr: {
-    noExternal: ['is-stream'],
-  },
   test: {
-    globals: true,
+    name: 'omni-fit',
     environment: 'jsdom',
+    globals: true,
     setupFiles: ['./src/test/setup.ts'],
-    // Configuration optimisée pour WSL
+    testTimeout: 10000,
+    // Configuration mémoire optimisée (Option A2)
     pool: 'forks',
     poolOptions: {
       forks: {
-        singleFork: true,
-      },
+        maxForks: 6,
+        minForks: 1
+      }
     },
-    // Timeout réduit mais suffisant
-    testTimeout: 10000,
-    // Isoler complètement les tests
+    maxConcurrency: 2,
     isolate: true,
-    // Une seule tâche à la fois pour éviter OOM
-    maxConcurrency: 1,
-    minThreads: 1,
-    maxThreads: 1,
-    // Nettoyer après chaque test
-    clearMocks: true,
-    restoreMocks: true,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules/', 'src/test/', '**/*.d.ts', '**/*.config.*', 'dist/'],
+      reporter: ['text', 'html', 'clover', 'json'],
+      exclude: [
+        'node_modules/',
+        'dist/',
+        '*.config.*',
+        '**/*.d.ts',
+        '**/__tests__/**',
+        '**/test/**'
+      ],
       thresholds: {
         global: {
           branches: 80,
@@ -51,4 +44,4 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-});
+})

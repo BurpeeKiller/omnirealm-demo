@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.core.logging import get_logger
 from app.services.ai_prompts import get_prompt_for_type
 from app.utils.document_classifier import DocumentClassifier
+from app.services.document_analyzer import document_analyzer
 
 logger = get_logger("ai_analysis")
 
@@ -29,28 +30,71 @@ class AIAnalyzer:
         
     async def analyze_text(self, text: str, detail_level: str = "medium", 
                           language: Optional[str] = None, 
-                          include_structured_data: bool = True) -> Dict[str, any]:
+                          include_structured_data: bool = True,
+                          chapter_summaries: bool = False) -> Dict[str, any]:
         """Analyser le texte avec le provider configuré"""
         
         if not text or len(text.strip()) < 10:
             return self._empty_analysis("Texte trop court pour l'analyse")
         
-        # Limiter la longueur
-        max_length = 4000
-        if len(text) > max_length:
-            text = text[:max_length] + "..."
+        # Analyser d'abord la structure du document
+        doc_analysis = document_analyzer.analyze_document(text, {
+            'include_chapter_summaries': chapter_summaries or detail_level in ['high', 'detailed']
+        })
+        
+        # Pour les documents longs, utiliser une approche différente
+        if doc_analysis.get('is_long_document', False):
+            # Utiliser le résumé global pour l'analyse IA
+            analysis_text = doc_analysis['global_summary']['text']
+            # Ajouter quelques points clés pour le contexte
+            if doc_analysis['global_summary'].get('key_points'):
+                analysis_text += "\n\nPoints clés : " + " ".join(doc_analysis['global_summary']['key_points'][:3])
+        else:
+            # Pour les documents courts, limiter comme avant
+            max_length = 4000
+            if len(text) > max_length:
+                analysis_text = text[:max_length] + "..."
+            else:
+                analysis_text = text
         
         try:
+            # Obtenir l'analyse IA de base
             if self.provider == AIProvider.OPENAI:
-                return await self._analyze_openai(text, detail_level, language, include_structured_data)
+                ai_result = await self._analyze_openai(analysis_text, detail_level, language, include_structured_data)
             elif self.provider == AIProvider.ANTHROPIC:
-                return await self._analyze_anthropic(text, detail_level, language, include_structured_data)
+                ai_result = await self._analyze_anthropic(analysis_text, detail_level, language, include_structured_data)
             elif self.provider == AIProvider.OPENROUTER:
-                return await self._analyze_openrouter(text, detail_level, language, include_structured_data)
+                ai_result = await self._analyze_openrouter(analysis_text, detail_level, language, include_structured_data)
             elif self.provider == AIProvider.GROQ:
-                return await self._analyze_groq(text, detail_level, language, include_structured_data)
+                ai_result = await self._analyze_groq(analysis_text, detail_level, language, include_structured_data)
             else:
-                return self._fallback_analysis(text, detail_level, language, include_structured_data)
+                ai_result = self._fallback_analysis(analysis_text, detail_level, language, include_structured_data)
+            
+            # Enrichir le résultat avec l'analyse de document pour les documents longs
+            if doc_analysis.get('is_long_document', False):
+                # Remplacer le résumé par le résumé global
+                ai_result['summary'] = doc_analysis['global_summary']['text'][:500] + "..."
+                
+                # Ajouter les informations de structure
+                if doc_analysis.get('has_structure'):
+                    ai_result['document_structure'] = {
+                        'chapter_count': doc_analysis['chapter_count'],
+                        'main_topics': doc_analysis.get('main_topics', []),
+                        'key_themes': doc_analysis.get('key_themes', [])
+                    }
+                    
+                    # Si résumés par chapitre demandés
+                    if doc_analysis.get('chapter_summaries'):
+                        ai_result['chapter_summaries'] = doc_analysis['chapter_summaries']
+                
+                # Ajouter les statistiques
+                ai_result['document_stats'] = doc_analysis['stats']
+                
+                # Marquer comme document long
+                ai_result['is_long_document'] = True
+                ai_result['analysis_type'] = 'summarized'  # Indique que c'est une analyse résumée
+            
+            return ai_result
                 
         except Exception as e:
             logger.error(f"Erreur analyse IA ({self.provider.value}): {str(e)}", exc_info=True)
@@ -182,7 +226,7 @@ class AIAnalyzer:
             # Parser le JSON de la réponse
             try:
                 return json.loads(content)
-            except:
+            except json.JSONDecodeError:
                 # Si pas du JSON, créer une structure
                 return self._parse_text_response(content)
         else:
@@ -224,7 +268,7 @@ class AIAnalyzer:
             content = result["choices"][0]["message"]["content"]
             try:
                 return json.loads(content)
-            except:
+            except json.JSONDecodeError:
                 return self._parse_text_response(content)
         else:
             raise Exception(f"Groq error: {response.status_code}")
@@ -371,21 +415,21 @@ class AIAnalyzer:
             summary = f"Document de {len(text)} caractères en français"
             key_points = [
                 f"Type détecté : {category}",
-                f"Langue : français",
+                "Langue : français",
                 f"{len(text.split())} mots environ"
             ]
         elif lang == "es":
             summary = f"Documento de {len(text)} caracteres en español"
             key_points = [
                 f"Tipo detectado: {category}",
-                f"Idioma: español",
+                "Idioma: español",
                 f"{len(text.split())} palabras aproximadamente"
             ]
         else:
             summary = f"Document of {len(text)} characters in English"
             key_points = [
                 f"Detected type: {category}",
-                f"Language: English",
+                "Language: English",
                 f"Approximately {len(text.split())} words"
             ]
         

@@ -1,4 +1,5 @@
 // Service Worker personnalisé pour Background Sync et Notifications
+// Logger removed for service worker compatibility
 
 // Gestion du Background Sync
 self.addEventListener('sync', (event) => {
@@ -178,4 +179,4 @@ self.addEventListener('message', (event) => {
   }
 });
 
-console.log('✅ Service Worker personnalisé chargé');
+console.info('✅ Service Worker personnalisé chargé');

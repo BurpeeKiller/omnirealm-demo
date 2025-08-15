@@ -3,6 +3,7 @@ import { Flame, Trophy, Calendar } from 'lucide-react';
 import { getStreakStats } from '@/db/queries';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { logger } from '@/utils/logger';
 
 interface StreakStats {
   currentStreak: number;
@@ -23,7 +24,7 @@ export default function StreakDisplay() {
       const streakData = await getStreakStats();
       setStats(streakData);
     } catch (error) {
-      console.error('Erreur chargement streaks:', error);
+      logger.error('Erreur chargement streaks:', error);
     } finally {
       setLoading(false);
     }

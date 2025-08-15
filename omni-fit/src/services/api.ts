@@ -1,6 +1,9 @@
+import { logger } from '@/utils/logger';
+import { publicConfig } from '../lib/config';
+
 // Service API pour communiquer avec le backend OmniFit
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8003';
+const API_BASE_URL = publicConfig.apiUrl;
 
 interface ApiResponse<T = any> {
   data?: T;
@@ -35,7 +38,7 @@ class ApiService {
       const data = await response.json();
       return { data };
     } catch (error) {
-      console.error('API Error:', error);
+      logger.error('API Error:', error);
       return { error: (error as Error).message };
     }
   }

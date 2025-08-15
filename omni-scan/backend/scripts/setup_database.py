@@ -3,8 +3,8 @@
 Script pour initialiser la base de données OmniScan
 """
 
-import os
 import sys
+from app.utils.logger import logger
 from pathlib import Path
 
 # Ajouter le répertoire parent au path
@@ -16,7 +16,7 @@ from app.core.config import settings
 def setup_database():
     """Créer les tables nécessaires via l'API Supabase"""
     
-    print("🔧 Configuration de la base de données OmniScan...")
+    logger.info("🔧 Configuration de la base de données OmniScan...")
     
     # Créer le client Supabase avec la clé service (admin)
     supabase: Client = create_client(
@@ -28,32 +28,29 @@ def setup_database():
     migration_path = Path(__file__).parent.parent.parent / "supabase" / "migrations" / "001_initial_schema.sql"
     
     if not migration_path.exists():
-        print(f"❌ Fichier de migration non trouvé : {migration_path}")
+        logger.info(f"❌ Fichier de migration non trouvé : {migration_path}")
         return False
-    
-    with open(migration_path, 'r') as f:
-        sql_content = f.read()
     
     # Note: Supabase ne permet pas l'exécution directe de SQL via l'API REST
     # Pour le développement local, nous devons utiliser une approche différente
     
-    print("\n📝 Instructions pour créer les tables :")
-    print("1. Ouvrez Supabase Studio : http://localhost:54323")
-    print("2. Allez dans SQL Editor")
-    print("3. Copiez et exécutez le contenu du fichier :")
-    print(f"   {migration_path}")
-    print("\nOu exécutez cette commande si vous avez psql :")
-    print(f"   psql postgresql://postgres:postgres@localhost:54322/postgres -f {migration_path}")
+    logger.info("\n📝 Instructions pour créer les tables :")
+    logger.info("1. Ouvrez Supabase Studio : http://localhost:54323")
+    logger.info("2. Allez dans SQL Editor")
+    logger.info("3. Copiez et exécutez le contenu du fichier :")
+    logger.info(f"   {migration_path}")
+    logger.info("\nOu exécutez cette commande si vous avez psql :")
+    logger.info(f"   psql postgresql://postgres:postgres@localhost:54322/postgres -f {migration_path}")
     
     # Tester la connexion
     try:
         # Essayer de lire une table (va échouer si elle n'existe pas)
-        response = supabase.table("documents").select("count").execute()
-        print("\n✅ Tables déjà créées !")
+        supabase.table("documents").select("count").execute()
+        logger.info("\n✅ Tables déjà créées !")
         return True
-    except Exception as e:
-        print(f"\n⚠️  Les tables n'existent pas encore : {str(e)}")
-        print("   Veuillez suivre les instructions ci-dessus pour les créer.")
+    except Exception:
+        logger.info("\n⚠️  Les tables n'existent pas encore.")
+        logger.info("   Veuillez suivre les instructions ci-dessus pour les créer.")
         return False
 
 if __name__ == "__main__":

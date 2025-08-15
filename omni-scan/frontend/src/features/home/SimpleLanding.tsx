@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@omnirealm/ui'
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui'
 import { Upload, Zap, Shield, Globe } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 

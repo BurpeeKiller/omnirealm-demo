@@ -12,7 +12,8 @@ const ModalContext = React.createContext<ModalContextType | undefined>(undefined
 
 export const useModalContainer = () => {
   const context = React.useContext(ModalContext)
-  return context?.modalRef?.current || null
+  if (!context) return null
+  return context.modalRef?.current || null
 }
 
 interface ModalProps {

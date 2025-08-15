@@ -1,33 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { getAllTimeStats, getYearStats, exportToCSV, exportToJSON } from '@/db';
 import type { DailyStats as DailyStatsType } from '@/types';
 import { Download, Award, TrendingUp, FileJson } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from 'chart.js';
-import { Line, Doughnut } from 'react-chartjs-2';
+import { logger } from '@/utils/logger';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-);
+// Lazy load chart components
+const ChartComponents = lazy(() => import('./ChartComponents'));
 
 export const HistoryStats = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -66,7 +47,7 @@ export const HistoryStats = () => {
         setMonthlyData(monthlyTotals);
       }
     } catch (error) {
-      console.error('Error loading history stats:', error);
+      logger.error('Error loading history stats:', error);
     } finally {
       setLoading(false);
     }
@@ -75,13 +56,15 @@ export const HistoryStats = () => {
   const handleExportCSV = async () => {
     try {
       const csv = await exportToCSV();
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      // Ajouter le BOM UTF-8 pour Excel
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = `fitness-stats-${format(new Date(), 'yyyy-MM-dd')}.csv`;
       link.click();
     } catch (error) {
-      console.error('Error exporting CSV:', error);
+      logger.error('Error exporting CSV:', error);
     }
   };
 
@@ -94,7 +77,7 @@ export const HistoryStats = () => {
       link.download = `fitness-backup-${format(new Date(), 'yyyy-MM-dd')}.json`;
       link.click();
     } catch (error) {
-      console.error('Error exporting JSON:', error);
+      logger.error('Error exporting JSON:', error);
     }
   };
 
@@ -131,58 +114,14 @@ export const HistoryStats = () => {
     ],
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: '#e5e7eb',
-        },
-      },
-      tooltip: {
-        backgroundColor: '#1f2937',
-        titleColor: '#e5e7eb',
-        bodyColor: '#e5e7eb',
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          color: '#374151',
-        },
-        ticks: {
-          color: '#9ca3af',
-        },
-      },
-      y: {
-        grid: {
-          color: '#374151',
-        },
-        ticks: {
-          color: '#9ca3af',
-        },
-      },
-    },
-  };
+  const [ChartsLoaded, setChartsLoaded] = useState<any>(null);
 
-  const doughnutOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          color: '#e5e7eb',
-        },
-      },
-      tooltip: {
-        backgroundColor: '#1f2937',
-        titleColor: '#e5e7eb',
-        bodyColor: '#e5e7eb',
-      },
-    },
-  };
+  // Load charts dynamically when needed
+  useEffect(() => {
+    import('./ChartComponents').then((module) => {
+      setChartsLoaded(module);
+    });
+  }, []);
 
   if (loading) {
     return (
@@ -291,7 +230,11 @@ export const HistoryStats = () => {
         >
           <h4 className="text-lg font-semibold mb-4">Répartition par exercice</h4>
           <div className="h-64">
-            <Doughnut data={doughnutData} options={doughnutOptions} />
+            <Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div></div>}>
+              {ChartsLoaded && (
+                <ChartsLoaded.Doughnut data={doughnutData} options={ChartsLoaded.getDoughnutChartOptions()} />
+              )}
+            </Suspense>
           </div>
         </motion.div>
 
@@ -305,7 +248,11 @@ export const HistoryStats = () => {
           >
             <h4 className="text-lg font-semibold mb-4">Évolution {selectedYear}</h4>
             <div className="h-64">
-              <Line data={lineData} options={chartOptions} />
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div></div>}>
+                {ChartsLoaded && (
+                  <ChartsLoaded.Line data={lineData} options={ChartsLoaded.getLineChartOptions()} />
+                )}
+              </Suspense>
             </div>
           </motion.div>
         )}

@@ -1,5 +1,6 @@
 import { db } from '@/db';
 import { format, startOfWeek, endOfWeek, subDays, isSameDay } from 'date-fns';
+import { logger } from '@/utils/logger';
 
 export interface AnalyticsData {
   // Engagement metrics
@@ -65,7 +66,7 @@ export class AnalyticsService {
         },
       });
     } catch (error) {
-      console.warn('Failed to track session:', error);
+      logger.warn('Failed to track session:', error);
     }
   }
 
@@ -95,7 +96,7 @@ export class AnalyticsService {
         },
       });
     } catch (error) {
-      console.warn('Failed to track exercise:', error);
+      logger.warn('Failed to track exercise:', error);
     }
   }
 
@@ -105,11 +106,11 @@ export class AnalyticsService {
     eventData?: Record<string, any>
   ): Promise<void> {
     try {
-      console.log(`[Analytics] Event: ${eventName}`, eventData);
+      logger.info(`[Analytics] Event: ${eventName}`, eventData);
       // Pour l'instant, on log juste les événements
       // Dans une vraie app, on pourrait les envoyer à un service d'analytics
     } catch (error) {
-      console.warn('Failed to track event:', error);
+      logger.warn('Failed to track event:', error);
     }
   }
 
@@ -198,7 +199,7 @@ export class AnalyticsService {
         weeklyGoalProgress,
       };
     } catch (error) {
-      console.error('Failed to get analytics:', error);
+      logger.error('Failed to get analytics:', error);
       return this.getEmptyAnalytics();
     }
   }
@@ -275,7 +276,7 @@ export class AnalyticsService {
 
       return { average, total, days };
     } catch (error) {
-      console.error('Failed to get weekly data:', error);
+      logger.error('Failed to get weekly data:', error);
       return { average: 0, total: 0, days: 0 };
     }
   }
@@ -304,7 +305,7 @@ export class AnalyticsService {
     try {
       await db.analytics.clear();
     } catch (error) {
-      console.error('Failed to clear analytics:', error);
+      logger.error('Failed to clear analytics:', error);
     }
   }
 

@@ -1,5 +1,6 @@
 import { db } from '@/db';
 import { analytics } from './analytics';
+import { logger } from '@/utils/logger';
 
 export interface BackupData {
   version: string;
@@ -46,7 +47,7 @@ export class BackupService {
         return JSON.parse(saved);
       }
     } catch (error) {
-      console.warn('Failed to load backup settings:', error);
+      logger.warn('Failed to load backup settings:', error);
     }
 
     return {
@@ -62,7 +63,7 @@ export class BackupService {
     try {
       localStorage.setItem(BACKUP_STORAGE_KEY, JSON.stringify(settings));
     } catch (error) {
-      console.warn('Failed to save backup settings:', error);
+      logger.warn('Failed to save backup settings:', error);
     }
   }
 
@@ -97,7 +98,7 @@ export class BackupService {
 
       return backup;
     } catch (error) {
-      console.error('Failed to create backup:', error);
+      logger.error('Failed to create backup:', error);
       throw error;
     }
   }
@@ -124,7 +125,7 @@ export class BackupService {
       settings.lastBackupDate = new Date().toISOString();
       this.saveBackupSettings(settings);
     } catch (error) {
-      console.error('Failed to download backup:', error);
+      logger.error('Failed to download backup:', error);
       throw error;
     }
   }
@@ -146,7 +147,7 @@ export class BackupService {
       settings.lastBackupDate = new Date().toISOString();
       this.saveBackupSettings(settings);
     } catch (error) {
-      console.warn('Failed to auto-save backup:', error);
+      logger.warn('Failed to auto-save backup:', error);
     }
   }
 
@@ -178,7 +179,7 @@ export class BackupService {
         });
       }
     } catch (error) {
-      console.warn('Failed to cleanup old backups:', error);
+      logger.warn('Failed to cleanup old backups:', error);
     }
   }
 
@@ -203,7 +204,7 @@ export class BackupService {
         }
       }
     } catch (error) {
-      console.warn('Failed to get local backups:', error);
+      logger.warn('Failed to get local backups:', error);
     }
 
     return backups.sort((a, b) => b.key.localeCompare(a.key));
@@ -233,7 +234,7 @@ export class BackupService {
         db.analytics.bulkAdd(backupData.data.analytics),
       ]);
     } catch (error) {
-      console.error('Failed to restore backup:', error);
+      logger.error('Failed to restore backup:', error);
       throw error;
     }
   }
@@ -245,7 +246,7 @@ export class BackupService {
       const backupData: BackupData = JSON.parse(text);
       await this.restoreFromBackup(backupData);
     } catch (error) {
-      console.error('Failed to restore from file:', error);
+      logger.error('Failed to restore from file:', error);
       throw error;
     }
   }

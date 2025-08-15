@@ -1,0 +1,15 @@
+# Variables d'environnement pour Coolify
+# Copiez-collez ces lignes dans l'interface Coolify
+
+NODE_ENV=production
+PORT=3000
+HOSTNAME=0.0.0.0
+NEXT_TELEMETRY_DISABLED=1
+
+# Analytics PostHog (remplacez par vos vraies clés)
+NEXT_PUBLIC_POSTHOG_KEY=phc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+
+# Webhooks n8n (adaptez selon votre configuration)
+N8N_NEWSLETTER_WEBHOOK_URL=https://n8n.omnirealm.tech/webhook/newsletter
+N8N_CONTACT_WEBHOOK_URL=https://n8n.omnirealm.tech/webhook/contact

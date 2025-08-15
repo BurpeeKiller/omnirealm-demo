@@ -166,15 +166,6 @@ class OCRPostProcessor:
     
     def _fix_accents(self, text: str) -> str:
         """Corrige les accents mal reconnus"""
-        replacements = {
-            'a': ['à', 'â', 'ä'],
-            'e': ['é', 'è', 'ê', 'ë'],
-            'i': ['î', 'ï'],
-            'o': ['ô', 'ö'],
-            'u': ['ù', 'û', 'ü'],
-            'c': ['ç'],
-        }
-        
         # Pour chaque mot
         words = text.split()
         corrected_words = []
@@ -252,3 +243,18 @@ def improve_ocr_text(text: str) -> Dict[str, any]:
         'confidence': confidence,
         'improvements_made': text != improved_text
     }
+
+
+# Fonction wrapper pour compatibilité
+def clean_ocr_text(text: str) -> str:
+    """
+    Fonction wrapper pour nettoyer le texte OCR
+    
+    Args:
+        text: Texte brut de l'OCR
+        
+    Returns:
+        Texte nettoyé
+    """
+    processor = OCRPostProcessor()
+    return processor.process(text)

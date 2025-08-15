@@ -1,5 +1,7 @@
 import { supabase, handleSupabaseError } from '@/lib/supabase/client'
 import type { Project } from '@/lib/types'
+import { createLogger } from '@/lib/logger';
+const logger = createLogger('projects.ts');
 
 export const projectsApi = {
   // Récupérer tous les projets de l'utilisateur
@@ -14,7 +16,7 @@ export const projectsApi = {
       if (error) throw error
       return data || []
     } catch (error) {
-      console.error('Error fetching projects:', error)
+      logger.error('Error fetching projects:', error)
       throw new Error(handleSupabaseError(error))
     }
   },
@@ -37,7 +39,7 @@ export const projectsApi = {
       if (error) throw error
       return data
     } catch (error) {
-      console.error('Error creating project:', error)
+      logger.error('Error creating project:', error)
       throw new Error(handleSupabaseError(error))
     }
   },
@@ -55,13 +57,13 @@ export const projectsApi = {
       if (error) throw error
       return data
     } catch (error) {
-      console.error('Error updating project:', error)
+      logger.error('Error updating project:', error)
       throw new Error(handleSupabaseError(error))
     }
   },
 
   // Archiver un projet
   async archiveProject(id: string) {
-    return projectsApi.updateProject(id, { isArchived: true })
+    return projectsApi.updateProject(id, { is_archived: true })
   }
 }

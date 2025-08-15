@@ -2,12 +2,11 @@
 Middleware de sécurité pour OmniScan
 """
 
-from fastapi import Request, HTTPException, status
+from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 import time
 from collections import defaultdict
-from datetime import datetime, timedelta
 import hashlib
 
 class SecurityMiddleware(BaseHTTPMiddleware):

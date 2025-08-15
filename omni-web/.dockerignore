@@ -1,0 +1,46 @@
+# Dépendances
+node_modules
+npm-debug.log*
+
+# Next.js
+.next/
+out/
+
+# Coverage et tests
+coverage
+*.tsbuildinfo
+
+# Environment variables
+.env*.local
+.env
+
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# TypeScript
+*.tsbuildinfo

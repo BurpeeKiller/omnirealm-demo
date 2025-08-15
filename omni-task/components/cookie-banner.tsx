@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@omnirealm/ui'
+import { Button } from '@/components/ui'
 import { Cookie } from 'lucide-react'
 
 export function CookieBanner() {

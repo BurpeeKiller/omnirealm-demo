@@ -1,0 +1,367 @@
+▲ [WARNING] Duplicate key "docs:validate" in object literal [duplicate-object-key]
+
+    ../../../package.json:168:4:
+      168 │     "docs:validate": "echo '📝 Validation structure documentati...
+          ╵     ~~~~~~~~~~~~~~~
+
+  The original key "docs:validate" is here:
+
+    ../../../package.json:67:4:
+      67 │     "docs:validate": "node shared/scripts/maintenance/validate-doc...
+         ╵     ~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "docs:build" in object literal [duplicate-object-key]
+
+    ../../../package.json:169:4:
+      169 │     "docs:build": "echo '🏗️ Génération site documentation....
+          ╵     ~~~~~~~~~~~~
+
+  The original key "docs:build" is here:
+
+    ../../../package.json:62:4:
+      62 │     "docs:build": "vitepress build docs",
+         ╵     ~~~~~~~~~~~~
+
+
+ RUN  v3.2.4 /home/greg/projets/dev/apps/omni-task
+      Coverage enabled with v8
+
+ ❯ |omni-task| components/ui/__tests__/modal.test.tsx (14 tests | 1 failed) 430ms
+   ✓ Modal > Affichage > ne devrait rien afficher si isOpen est false 32ms
+   ✓ Modal > Affichage > devrait afficher le modal si isOpen est true 58ms
+   ✓ Modal > Affichage > devrait appliquer les classes CSS personnalisées 15ms
+   ✓ Modal > Interactions > devrait appeler onClose en cliquant sur le bouton fermer 156ms
+   ✓ Modal > Interactions > devrait appeler onClose en cliquant sur le backdrop 33ms
+   ✓ Modal > Interactions > devrait appeler onClose en appuyant sur Escape 18ms
+   ✓ Modal > Interactions > ne devrait pas écouter Escape si le modal est fermé 10ms
+   ✓ Modal > Gestion du scroll > devrait bloquer le scroll du body quand ouvert 10ms
+   ✓ Modal > Gestion du scroll > devrait restaurer le scroll du body quand fermé 11ms
+   ✓ Modal > Gestion du scroll > devrait nettoyer les event listeners au démontage 15ms
+   ✓ Modal > Structure > devrait avoir la structure correcte 22ms
+   ✓ Modal > Structure > devrait avoir les bonnes classes pour le conteneur principal 8ms
+   ✓ useModalContainer > devrait retourner null quand utilisé en dehors du contexte 6ms
+   × useModalContainer > devrait retourner la référence du modal quand utilisé dans le contexte 29ms
+     → [2mexpect([22m[31melement[39m[2m).toHaveTextContent()[22m
+
+Expected element to have text content:
+[32m  Has container[39m
+Received:
+[31m  No container[39m
+ ❯ |omni-task| lib/store/__tests__/toast-store.test.ts (16 tests | 2 failed) 114ms
+   ✓ useToastStore > État initial > devrait avoir un état initial vide 11ms
+   ✓ useToastStore > addToast > devrait ajouter un toast avec un ID unique 13ms
+   ✓ useToastStore > addToast > devrait supprimer automatiquement le toast après la durée spécifiée 6ms
+   ✓ useToastStore > addToast > devrait utiliser une durée par défaut de 3 secondes 8ms
+   × useToastStore > removeToast > devrait supprimer un toast spécifique 15ms
+     → expected [] to have a length of 2 but got +0
+   ✓ useToastStore > success > devrait ajouter un toast de succès 6ms
+   ✓ useToastStore > success > devrait supprimer automatiquement après 3 secondes 5ms
+   ✓ useToastStore > error > devrait ajouter un toast d'erreur 5ms
+   ✓ useToastStore > error > devrait supprimer automatiquement après 5 secondes 5ms
+   ✓ useToastStore > info > devrait ajouter un toast d'info 5ms
+   ✓ useToastStore > info > devrait supprimer automatiquement après 3 secondes 6ms
+   ✓ useToastStore > warning > devrait ajouter un toast d'avertissement 6ms
+   ✓ useToastStore > warning > devrait supprimer automatiquement après 4 secondes 5ms
+   ✓ useToastStore > Gestion de plusieurs toasts > devrait gérer plusieurs toasts simultanément 5ms
+   × useToastStore > Gestion de plusieurs toasts > devrait supprimer les toasts dans le bon ordre 6ms
+     → expected [] to have a length of 2 but got +0
+   ✓ useToastStore > IDs uniques > devrait générer des IDs uniques même pour des toasts créés rapidement 6ms
+ ❯ |omni-task| app/api/tasks/__tests__/route.test.ts (6 tests | 4 failed) 58ms
+   ✓ Tasks API - Simplified > GET /api/tasks > devrait retourner 401 si non authentifié 24ms
+   × Tasks API - Simplified > GET /api/tasks > devrait retourner les tâches de l'utilisateur 11ms
+     → expected { data: [ { id: '1', …(2) }, …(1) ] } to deeply equal [ …(2) ]
+   × Tasks API - Simplified > POST /api/tasks > devrait créer une nouvelle tâche 9ms
+     → expected { data: { title: 'New Task', …(4) } } to match object { title: 'New Task', …(2) }
+(6 matching properties omitted from actual)
+   ✓ Tasks API - Simplified > POST /api/tasks > devrait retourner 401 si non authentifié 3ms
+   × Tasks API - Simplified > PATCH /api/tasks > devrait retourner 401 si non authentifié 5ms
+     → Cannot destructure property 'params' of 'undefined' as it is undefined.
+   × Tasks API - Simplified > DELETE /api/tasks > devrait retourner 401 si non authentifié 6ms
+     → Cannot destructure property 'params' of 'undefined' as it is undefined.
+stderr | components/__tests__/task-form.test.tsx > TaskForm > Mode création > devrait afficher le titre "Nouvelle tâche"
+Warning: Invalid value for prop `data-onvaluechange` on <div> tag. Either remove it from the element, or pass a string or number value to keep it in the DOM. For details, see https://reactjs.org/link/attribute-behavior 
+    at div
+    at Select (/home/greg/projets/dev/apps/omni-task/components/__tests__/task-form.test.tsx:19:14)
+    at div
+    at div
+    at form
+    at div
+    at Modal (/home/greg/projets/dev/apps/omni-task/components/__tests__/task-form.test.tsx:4:13)
+    at TaskForm (/home/greg/projets/dev/apps/omni-task/components/task-form.tsx:11:21)
+
+stdout | components/__tests__/task-form.test.tsx > TaskForm > Mode création > devrait créer une nouvelle tâche
+Saving task: {
+  title: [32m'Nouvelle tâche test'[39m,
+  description: [32m'Description de test'[39m,
+  status: [32m'TODO'[39m,
+  priority: [32m'MEDIUM'[39m,
+  projectId: [90mundefined[39m,
+  dueDate: [32m'2024-12-25'[39m,
+  estimatedHours: [33m4.5[39m,
+  tags: [ [32m'test'[39m, [32m'vitest'[39m, [32m'react'[39m ]
+}
+
+stdout | components/__tests__/task-form.test.tsx > TaskForm > Mode création > devrait utiliser le status par défaut fourni
+Saving task: {
+  title: [32m'Test'[39m,
+  description: [90mundefined[39m,
+  status: [32m'IN_PROGRESS'[39m,
+  priority: [32m'MEDIUM'[39m,
+  projectId: [90mundefined[39m,
+  dueDate: [90mundefined[39m,
+  estimatedHours: [90mundefined[39m,
+  tags: [90mundefined[39m
+}
+
+stdout | components/__tests__/task-form.test.tsx > TaskForm > Mode création > devrait gérer les erreurs de création
+Saving task: {
+  title: [32m'Test'[39m,
+  description: [90mundefined[39m,
+  status: [32m'TODO'[39m,
+  priority: [32m'MEDIUM'[39m,
+  projectId: [90mundefined[39m,
+  dueDate: [90mundefined[39m,
+  estimatedHours: [90mundefined[39m,
+  tags: [90mundefined[39m
+}
+
+stderr | components/__tests__/task-form.test.tsx > TaskForm > Mode création > devrait gérer les erreurs de création
+Error saving task: Error: Erreur de création
+    at [90m/home/greg/projets/dev/apps/omni-task/[39mcomponents/__tests__/task-form.test.tsx:174:37
+    at file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8)
+
+stdout | components/__tests__/task-form.test.tsx > TaskForm > Mode édition > devrait mettre à jour la tâche
+Saving task: {
+  title: [32m'Tâche modifiée'[39m,
+  description: [32m'Description existante'[39m,
+  status: [32m'TODO'[39m,
+  priority: [32m'HIGH'[39m,
+  projectId: [32m'project1'[39m,
+  dueDate: [32m'2024-12-31'[39m,
+  estimatedHours: [33m8[39m,
+  tags: [ [32m'bug'[39m, [32m'urgent'[39m ]
+}
+
+stdout | components/__tests__/task-form.test.tsx > TaskForm > Mode édition > devrait gérer les erreurs de mise à jour
+Saving task: {
+  title: [32m'Tâche existante'[39m,
+  description: [32m'Description existante'[39m,
+  status: [32m'TODO'[39m,
+  priority: [32m'HIGH'[39m,
+  projectId: [32m'project1'[39m,
+  dueDate: [32m'2024-12-31'[39m,
+  estimatedHours: [33m8[39m,
+  tags: [ [32m'bug'[39m, [32m'urgent'[39m ]
+}
+
+stderr | components/__tests__/task-form.test.tsx > TaskForm > Mode édition > devrait gérer les erreurs de mise à jour
+Error saving task: Error: Erreur de mise à jour
+    at [90m/home/greg/projets/dev/apps/omni-task/[39mcomponents/__tests__/task-form.test.tsx:253:40
+    at file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///home/greg/projets/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8)
+
+stdout | components/__tests__/task-form.test.tsx > TaskForm > Interactions communes > devrait gérer les tags correctement
+Saving task: {
+  title: [32m'Test'[39m,
+  description: [90mundefined[39m,
+  status: [32m'TODO'[39m,
+  priority: [32m'MEDIUM'[39m,
+  projectId: [90mundefined[39m,
+  dueDate: [90mundefined[39m,
+  estimatedHours: [90mundefined[39m,
+  tags: [ [32m'tag1'[39m, [32m'tag2'[39m, [32m'tag3'[39m ]
+}
+
+ ✓ |omni-task| components/__tests__/task-form.test.tsx (15 tests) 1952ms
+   ✓ TaskForm > Mode création > devrait créer une nouvelle tâche  769ms
+stderr | app/(auth)/register/__tests__/page.test.tsx > RegisterPage > Inscription réussie > devrait utiliser le fallback si la fonction RPC échoue
+Erreur lors de la configuration du profil: { message: [32m'RPC failed'[39m }
+
+ ✓ |omni-task| app/(auth)/register/__tests__/page.test.tsx (12 tests) 1980ms
+   ✓ RegisterPage > Inscription réussie > devrait créer un compte avec succès  339ms
+   ✓ RegisterPage > Inscription réussie > devrait utiliser le fallback si la fonction RPC échoue  303ms
+   ✓ RegisterPage > Gestion des erreurs > devrait afficher une erreur si l'inscription échoue  312ms
+   ✓ RegisterPage > Gestion des erreurs > devrait afficher un message d'erreur générique  330ms
+   ✓ RegisterPage > État du formulaire > devrait désactiver les champs pendant le chargement  323ms
+ ✓ |omni-task| app/(auth)/login/__tests__/page.test.tsx (11 tests) 1250ms
+ ✓ |omni-task| components/kanban/__tests__/task-card.test.tsx (14 tests) 221ms
+ ✓ |omni-task| components/kanban/__tests__/kanban-board.test.tsx (7 tests) 136ms
+ ✓ |omni-task| app/dashboard/__tests__/page.test.tsx (7 tests) 135ms
+ ✓ |omni-task| components/kanban/__tests__/kanban-column.test.tsx (8 tests) 101ms
+ ✓ |omni-task| lib/store/__tests__/task-store.test.ts (15 tests | 2 skipped) 82ms
+ ✓ |omni-task| components/__tests__/toast.test.tsx (9 tests) 83ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |omni-task| components/ui/__tests__/modal.test.tsx > useModalContainer > devrait retourner la référence du modal quand utilisé dans le contexte
+Error: [2mexpect([22m[31melement[39m[2m).toHaveTextContent()[22m
+
+Expected element to have text content:
+[32m  Has container[39m
+Received:
+[31m  No container[39m
+ ❯ components/ui/__tests__/modal.test.tsx:223:45
+    221|     )
+    222| 
+    223|     expect(screen.getByTestId('container')).toHaveTextContent('Has con…
+       |                                             ^
+    224|   })
+    225| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  |omni-task| lib/store/__tests__/toast-store.test.ts > useToastStore > removeToast > devrait supprimer un toast spécifique
+AssertionError: expected [] to have a length of 2 but got +0
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 2[39m
+[31m+ 0[39m
+
+ ❯ lib/store/__tests__/toast-store.test.ts:109:37
+    107|       })
+    108| 
+    109|       expect(result.current.toasts).toHaveLength(2)
+       |                                     ^
+    110|       expect(result.current.toasts.find(t => t.id === toastToRemove.id…
+    111|       expect(result.current.toasts[0].message).toBe('Toast 1')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  |omni-task| lib/store/__tests__/toast-store.test.ts > useToastStore > Gestion de plusieurs toasts > devrait supprimer les toasts dans le bon ordre
+AssertionError: expected [] to have a length of 2 but got +0
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 2[39m
+[31m+ 0[39m
+
+ ❯ lib/store/__tests__/toast-store.test.ts:282:37
+    280|         vi.advanceTimersByTime(3000)
+    281|       })
+    282|       expect(result.current.toasts).toHaveLength(2)
+       |                                     ^
+    283|       expect(result.current.toasts.find(t => t.type === 'success')).to…
+    284| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  |omni-task| app/api/tasks/__tests__/route.test.ts > Tasks API - Simplified > GET /api/tasks > devrait retourner les tâches de l'utilisateur
+AssertionError: expected { data: [ { id: '1', …(2) }, …(1) ] } to deeply equal [ …(2) ]
+
+[32m- Expected:[39m 
+[
+  {
+    "id": "1",
+    "title": "Task 1",
+    "user_id": "user123",
+  },
+  {
+    "id": "2",
+    "title": "Task 2",
+    "user_id": "user123",
+  },
+]
+
+[31m+ Received:[39m 
+{
+  "data": [
+    {
+      "id": "1",
+      "title": "Task 1",
+      "user_id": "user123",
+    },
+    {
+      "id": "2",
+      "title": "Task 2",
+      "user_id": "user123",
+    },
+  ],
+}
+
+ ❯ app/api/tasks/__tests__/route.test.ts:90:20
+     88| 
+     89|       expect(response.status).toBe(200)
+     90|       expect(data).toEqual(mockTasks)
+       |                    ^
+     91|       expect(mockSupabase.from).toHaveBeenCalledWith('tasks')
+     92|       expect(mockSupabase.eq).toHaveBeenCalledWith('user_id', 'user123…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  |omni-task| app/api/tasks/__tests__/route.test.ts > Tasks API - Simplified > POST /api/tasks > devrait créer une nouvelle tâche
+AssertionError: expected { data: { title: 'New Task', …(4) } } to match object { title: 'New Task', …(2) }
+(6 matching properties omitted from actual)
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[31m+   "data": {[39m
+[31m+     "id": "task123",[39m
+[2m      "priority": "HIGH",[22m
+[2m      "status": "TODO",[22m
+[2m      "title": "New Task",[22m
+[31m+     "user_id": "user123",[39m
+[31m+   },[39m
+[2m  }[22m
+
+ ❯ app/api/tasks/__tests__/route.test.ts:131:20
+    129| 
+    130|       expect(response.status).toBe(201)
+    131|       expect(data).toMatchObject(newTask)
+       |                    ^
+    132|     })
+    133| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  |omni-task| app/api/tasks/__tests__/route.test.ts > Tasks API - Simplified > PATCH /api/tasks > devrait retourner 401 si non authentifié
+TypeError: Cannot destructure property 'params' of 'undefined' as it is undefined.
+ ❯ Module.PATCH app/api/tasks/route.ts:132:5
+    130| export async function PATCH(
+    131|   request: NextRequest,
+    132|   { params }: { params: { id: string } }
+       |     ^
+    133| ) {
+    134|   try {
+ ❯ app/api/tasks/__tests__/route.test.ts:162:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  |omni-task| app/api/tasks/__tests__/route.test.ts > Tasks API - Simplified > DELETE /api/tasks > devrait retourner 401 si non authentifié
+TypeError: Cannot destructure property 'params' of 'undefined' as it is undefined.
+ ❯ Module.DELETE app/api/tasks/route.ts:208:5
+    206| export async function DELETE(
+    207|   request: NextRequest,
+    208|   { params }: { params: { id: string } }
+       |     ^
+    209| ) {
+    210|   try {
+ ❯ app/api/tasks/__tests__/route.test.ts:175:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  3 failed | 9 passed (12)
+      Tests  7 failed | 125 passed | 2 skipped (134)
+   Start at  20:57:03
+   Duration  12.52s (transform 757ms, setup 533ms, collect 2.58s, tests 6.54s, environment 906ms, prepare 176ms)
+

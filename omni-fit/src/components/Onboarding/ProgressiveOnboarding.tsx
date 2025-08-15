@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, Bell, Zap, TrendingUp } from 'lucide-react';
+import { logger } from '@/utils/logger';
 
 interface ProgressiveOnboardingProps {
   isOpen: boolean;
@@ -64,12 +65,13 @@ export const ProgressiveOnboarding = ({
         }
       }
     } catch (error) {
-      console.log('Notifications not supported or denied');
+      logger.info('Notifications not supported or denied');
     }
   }
 
   const handleNext = () => {
     const step = steps[currentStep];
+    if (!step) return;
 
     // Marquer comme complété
     setCompletedSteps((prev) => [...prev, step.id]);

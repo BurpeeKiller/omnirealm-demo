@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Loader2 } from 'lucide-react';
 import { useAI } from '@/hooks/useAI';
 import { useExercisesStore } from '@/stores/exercises.store';
+import { logger } from '@/utils/logger';
+import type { UserContext } from '@/hooks/useAI';
 
 export function AIChat() {
   const [input, setInput] = useState('');
@@ -14,7 +16,6 @@ export function AIChat() {
   const {
     isLoading,
     history,
-    sendMessage,
     askFitnessAdvice,
     generateWorkout,
     getMotivation,
@@ -46,10 +47,10 @@ export function AIChat() {
     }
     
     // Suggestions basées sur les exercices actifs
-    const activeExercises = exercises.filter(e => e.completed > 0);
+    const activeExercises = exercises.filter(e => (e.completed ?? false) === true);
     if (activeExercises.length > 0) {
       const lastExercise = activeExercises[activeExercises.length - 1];
-      suggestions.push(`Technique pour ${lastExercise.type} ?`);
+      suggestions.push(`Technique pour ${lastExercise.name} ?`);
     }
     
     return suggestions.slice(0, 3);
@@ -63,21 +64,24 @@ export function AIChat() {
     setInput('');
 
     // Contexte utilisateur pour personnaliser les réponses
-    const userContext = {
+    const userContext: UserContext = {
       exercisesDone: exercises.map(e => ({
-        type: e.type,
-        completed: e.completed,
-        target: e.target
+        name: e.name,
+        count: e.count,
+        completed: e.completed || false,
+        target: e.target || 0
       })),
       totalCompleted: completedCount,
       timeOfDay: new Date().getHours() < 12 ? 'matin' : 
-                 new Date().getHours() < 18 ? 'après-midi' : 'soir'
+                 new Date().getHours() < 18 ? 'après-midi' : 'soir',
+      level: 'intermédiaire',
+      goal: 'forme générale'
     };
 
     try {
       await askFitnessAdvice(message, userContext);
     } catch (err) {
-      console.error('Erreur chat:', err);
+      logger.error('Erreur chat:', err);
     }
 
     inputRef.current?.focus();
@@ -107,7 +111,7 @@ export function AIChat() {
           break;
       }
     } catch (err) {
-      console.error('Erreur action rapide:', err);
+      logger.error('Erreur action rapide:', err);
     }
   };
 

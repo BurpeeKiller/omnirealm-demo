@@ -1,9 +1,9 @@
 """Service d'analyse IA avec Ollama (local)"""
 
 import json
+from app.utils.logger import logger
 import httpx
 from typing import Dict
-from app.core.config import settings
 
 
 async def analyze_text(text: str) -> Dict[str, any]:
@@ -87,7 +87,7 @@ async def analyze_text(text: str) -> Dict[str, any]:
             "error": "Ollama non connecté"
         }
     except Exception as e:
-        print(f"Erreur analyse IA: {e}")
+        logger.info(f"Erreur analyse IA: {e}")
         return {
             "summary": "Erreur lors de l'analyse",
             "key_points": [],

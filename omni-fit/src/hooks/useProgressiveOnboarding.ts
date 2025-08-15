@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 
 interface OnboardingState {
   completed: boolean;
@@ -44,7 +45,7 @@ export const useProgressiveOnboarding = () => {
         setShowOnboarding(true);
       }
     } catch (error) {
-      console.warn('Failed to load onboarding state:', error);
+      logger.warn('Failed to load onboarding state:', error);
       reset();
     }
   };
@@ -54,7 +55,7 @@ export const useProgressiveOnboarding = () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
       setState(newState);
     } catch (error) {
-      console.warn('Failed to save onboarding state:', error);
+      logger.warn('Failed to save onboarding state:', error);
     }
   };
 

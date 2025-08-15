@@ -19,6 +19,7 @@ interface ReminderState {
   intervalId: number | null;
   startTimer: () => void;
   stopTimer: () => void;
+  cleanup: () => void;
   checkActiveHours: () => boolean;
   calculateNextReminder: () => Date | null;
   updateCountdown: () => void;
@@ -136,7 +137,9 @@ export const useReminderStore = create<ReminderState>((set, get) => ({
       startHour: startTime.getHours(),
       endHour: endTime.getHours(),
       intervalMinutes: settings.frequency,
-    }).catch(console.error);
+    }).catch(() => {
+      // TODO: Implémenter un système de logging approprié
+    });
 
     updateCountdown();
 
@@ -163,6 +166,28 @@ export const useReminderStore = create<ReminderState>((set, get) => ({
     }
     
     // Annuler les rappels du service worker
-    reminderWorkerService.cancelAllReminders().catch(console.error);
+    reminderWorkerService.cancelAllReminders().catch(() => {
+      // TODO: Implémenter un système de logging approprié
+    });
+  },
+
+  cleanup: () => {
+    const { intervalId } = get();
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+    
+    // Reset all state
+    set({
+      nextReminderTime: null,
+      timeUntilNextReminder: '--:--',
+      isInActiveHours: false,
+      intervalId: null,
+    });
+    
+    // Cleanup service worker
+    reminderWorkerService.cancelAllReminders().catch(() => {
+      // TODO: Implémenter un système de logging approprié
+    });
   },
 }));

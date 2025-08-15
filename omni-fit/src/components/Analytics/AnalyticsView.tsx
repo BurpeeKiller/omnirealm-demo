@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import type { AnalyticsData } from '@/services/analytics';
 import { analytics } from '@/services/analytics';
 import { TrendingUp, Target, Award, BarChart3, Download } from 'lucide-react';
+import { logger } from '@/utils/logger';
 
 interface AnalyticsViewProps {
   onExport?: () => void;
@@ -18,7 +19,7 @@ export const AnalyticsView = ({ onExport }: AnalyticsViewProps) => {
       const analyticsData = await analytics.getAnalytics();
       setData(analyticsData);
     } catch (error) {
-      console.error('Failed to load analytics:', error);
+      logger.error('Failed to load analytics:', error);
     } finally {
       setLoading(false);
     }
@@ -27,7 +28,9 @@ export const AnalyticsView = ({ onExport }: AnalyticsViewProps) => {
   const handleExport = async () => {
     try {
       const csvData = await analytics.exportAnalytics();
-      const blob = new Blob([csvData], { type: 'text/csv' });
+      // Ajouter le BOM UTF-8 pour Excel
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + csvData], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -38,7 +41,7 @@ export const AnalyticsView = ({ onExport }: AnalyticsViewProps) => {
       URL.revokeObjectURL(url);
       onExport?.();
     } catch (error) {
-      console.error('Failed to export analytics:', error);
+      logger.error('Failed to export analytics:', error);
     }
   };
 

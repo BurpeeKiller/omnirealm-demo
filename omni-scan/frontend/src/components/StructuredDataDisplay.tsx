@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle, Badge } from '@omnirealm/ui'
+import { Card, CardContent, CardHeader, CardTitle, Badge } from '@/components/ui'
 import { FileText, Calendar, Euro, User, Building, Hash } from 'lucide-react'
 
 interface StructuredDataDisplayProps {

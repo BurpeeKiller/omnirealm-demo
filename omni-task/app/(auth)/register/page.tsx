@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Button, Input, Label, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@omnirealm/ui'
+import { Button, Input, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui'
 import { Logo } from '@/components/logo'
 import { supabase } from '@/lib/supabase/client'
 import { useToastStore } from '@/lib/store/toast-store'
+import { createLogger } from '@/lib/logger';
+const logger = createLogger('page.tsx');
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -30,33 +32,37 @@ export default function RegisterPage() {
           data: {
             full_name: formData.fullName,
           },
+          emailRedirectTo: `${window.location.origin}/auth/callback`
         },
       })
 
       if (signUpError) throw signUpError
 
-      // Créer le profil utilisateur immédiatement après l'inscription
+      // Créer le profil utilisateur et l'accès app après l'inscription
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
+        // Utiliser la fonction SQL pour créer profil + accès app
+        const { error: setupError } = await supabase.rpc('create_user_profile', {
+          p_user_id: user.id,
+          p_email: user.email!,
+          p_full_name: formData.fullName,
+          p_application_id: 'omnitask'
+        })
+        
+        if (setupError) {
+          logger.error('Erreur lors de la configuration du profil:', setupError)
+          // Fallback: créer manuellement si la fonction RPC échoue
+          await supabase.from('profiles').insert({
             id: user.id,
             email: user.email,
             full_name: formData.fullName
-          })
-        
-        if (profileError && profileError.code !== '23505') { // Ignorer si le profil existe déjà
-          console.error('Erreur lors de la création du profil:', profileError)
-        }
-
-        // Créer aussi les préférences utilisateur
-        const { error: prefsError } = await supabase
-          .from('user_preferences')
-          .insert({ user_id: user.id })
-        
-        if (prefsError && prefsError.code !== '23505') { // Ignorer si existe déjà
-          console.error('Erreur lors de la création des préférences:', prefsError)
+          }).select()
+          
+          await supabase.from('user_applications').insert({
+            user_id: user.id,
+            application_id: 'omnitask',
+            subscription_tier: 'free'
+          }).select()
         }
       }
 
@@ -84,7 +90,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Nom complet</Label>
+              <label htmlFor="fullName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nom complet</label>
               <Input
                 id="fullName"
                 type="text"
@@ -96,7 +102,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
               <Input
                 id="email"
                 type="email"
@@ -108,7 +114,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Mot de passe</label>
               <Input
                 id="password"
                 type="password"

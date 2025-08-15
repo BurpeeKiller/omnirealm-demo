@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Logo } from '@/components/logo'
-import { Button } from '@omnirealm/ui'
+import { Button } from '@/components/ui'
 
 export default function LogoTestPage() {
   const [animate, setAnimate] = useState(true)

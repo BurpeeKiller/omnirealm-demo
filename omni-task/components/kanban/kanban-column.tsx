@@ -2,7 +2,7 @@
 
 import { Droppable, Draggable } from '@hello-pangea/dnd'
 import { TaskCard } from './task-card'
-import { Button } from '@omnirealm/ui'
+import { Button } from '@/components/ui'
 import { Plus } from 'lucide-react'
 import type { KanbanColumn as KanbanColumnType } from '@/lib/types'
 import { cn } from '@/lib/utils'

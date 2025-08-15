@@ -5,6 +5,7 @@
 // import { Capacitor } from '@capacitor/core';
 import { setupNotifications } from './notifications';
 // import { defineCustomElements } from '@ionic/pwa-elements/loader';
+import { logger } from '@/utils/logger';
 
 /**
  * Initialise tous les plugins Capacitor
@@ -14,7 +15,7 @@ export async function initializeCapacitor() {
   // defineCustomElements(window);
 
   // PWA mode only - Capacitor not installed
-  console.log('Running as PWA');
+  logger.info('Running as PWA');
   await setupNotifications();
   return;
 
@@ -30,7 +31,7 @@ export async function initializeCapacitor() {
     
     // Gestion du cycle de vie de l'app
     App.addListener('appStateChange', ({ isActive }: any) => {
-      console.log('App state changed. Is active?', isActive);
+      logger.info('App state changed. Is active?', isActive);
       if (isActive) {
         // L'app revient au premier plan
         window.dispatchEvent(new Event('app-resume'));
@@ -54,9 +55,9 @@ export async function initializeCapacitor() {
       SplashScreen.hide();
     }, 1000);
     
-    console.log('Capacitor plugins initialized successfully');
+    logger.info('Capacitor plugins initialized successfully');
   } catch (error) {
-    console.error('Error initializing Capacitor:', error);
+    logger.error('Error initializing Capacitor:', error);
   }
   */
 }

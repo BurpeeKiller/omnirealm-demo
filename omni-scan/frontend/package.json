@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:strict": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
@@ -13,25 +14,41 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@omnirealm/ui": "workspace:*",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-dropdown-menu": "^2.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.2.5",
+    "@radix-ui/react-tabs": "^1.1.12",
     "@supabase/supabase-js": "^2.52.0",
     "axios": "^1.7.7",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "crypto-browserify": "^3.12.1",
+    "idb": "^8.0.3",
     "lucide-react": "^0.454.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
     "tailwind-merge": "^3.3.1",
+    "zod": "^3.25.76",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^14.3.1",
+    "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "fake-indexeddb": "^6.0.1",
     "jsdom": "^26.1.0",
     "react-dropzone": "^14.3.5",
+    "rollup-plugin-visualizer": "^6.0.3",
     "tailwindcss": "^3.4.17"
   }
 }

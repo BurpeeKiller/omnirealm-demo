@@ -5,6 +5,7 @@ Aide à configurer les variables d'environnement nécessaires
 """
 
 import os
+from app.utils.logger import logger
 import sys
 import secrets
 from pathlib import Path
@@ -23,8 +24,8 @@ class Color:
 
 def print_header():
     """Afficher l'en-tête"""
-    print(f"\n{Color.CYAN}{Color.BOLD}🚀 CONFIGURATION OMNISCAN{Color.END}")
-    print(f"{Color.CYAN}{'=' * 40}{Color.END}\n")
+    logger.info(f"\n{Color.CYAN}{Color.BOLD}🚀 CONFIGURATION OMNISCAN{Color.END}")
+    logger.info(f"{Color.CYAN}{'=' * 40}{Color.END}\n")
 
 
 def generate_secret_key() -> str:
@@ -45,7 +46,7 @@ def prompt_user(question: str, default: Optional[str] = None, required: bool = T
         if not value and default:
             return default
         elif not value and required:
-            print(f"{Color.RED}❌ Cette valeur est requise{Color.END}")
+            logger.info(f"{Color.RED}❌ Cette valeur est requise{Color.END}")
             continue
         elif not value and not required:
             return ""
@@ -92,7 +93,7 @@ def create_env_file(config: Dict[str, str], env_file: Path):
 
 def setup_development():
     """Configuration pour le développement"""
-    print(f"{Color.BLUE}📋 Configuration pour le développement{Color.END}\n")
+    logger.info(f"{Color.BLUE}📋 Configuration pour le développement{Color.END}\n")
     
     config = {}
     
@@ -104,12 +105,12 @@ def setup_development():
     # Clé secrète
     if prompt_boolean("Générer une nouvelle clé secrète ?"):
         config["SECRET_KEY"] = generate_secret_key()
-        print(f"{Color.GREEN}✅ Clé secrète générée{Color.END}")
+        logger.info(f"{Color.GREEN}✅ Clé secrète générée{Color.END}")
     else:
         config["SECRET_KEY"] = prompt_user("Clé secrète")
     
     # Supabase
-    print(f"\n{Color.YELLOW}🔐 Configuration Supabase{Color.END}")
+    logger.info(f"\n{Color.YELLOW}🔐 Configuration Supabase{Color.END}")
     config["SUPABASE_URL"] = prompt_user("URL Supabase (ex: https://xxx.supabase.co)")
     config["SUPABASE_ANON_KEY"] = prompt_user("Clé anonyme Supabase")
     
@@ -117,7 +118,7 @@ def setup_development():
         config["SUPABASE_SERVICE_KEY"] = prompt_user("Clé de service Supabase", required=False)
     
     # OpenAI
-    print(f"\n{Color.YELLOW}🤖 Configuration OpenAI{Color.END}")
+    logger.info(f"\n{Color.YELLOW}🤖 Configuration OpenAI{Color.END}")
     config["OPENAI_API_KEY"] = prompt_user("Clé API OpenAI (sk-...)")
     config["OPENAI_MODEL"] = prompt_user("Modèle OpenAI", "gpt-4o-mini")
     
@@ -136,9 +137,9 @@ def setup_development():
 
 def setup_production():
     """Configuration pour la production"""
-    print(f"{Color.RED}🏭 Configuration pour la production{Color.END}\n")
-    print(f"{Color.YELLOW}⚠️  En production, utilisez les variables d'environnement système{Color.END}")
-    print(f"{Color.YELLOW}⚠️  Ne stockez JAMAIS de secrets dans un fichier .env{Color.END}\n")
+    logger.info(f"{Color.RED}🏭 Configuration pour la production{Color.END}\n")
+    logger.info(f"{Color.YELLOW}⚠️  En production, utilisez les variables d'environnement système{Color.END}")
+    logger.info(f"{Color.YELLOW}⚠️  Ne stockez JAMAIS de secrets dans un fichier .env{Color.END}\n")
     
     config = {}
     
@@ -146,8 +147,8 @@ def setup_production():
     config["DEBUG"] = "false"
     config["SECRET_KEY"] = generate_secret_key()
     
-    print(f"{Color.GREEN}✅ Clé secrète générée: {config['SECRET_KEY'][:16]}...{Color.END}")
-    print(f"{Color.YELLOW}💾 Sauvegardez cette clé dans votre gestionnaire de secrets{Color.END}\n")
+    logger.info(f"{Color.GREEN}✅ Clé secrète générée: {config['SECRET_KEY'][:16]}...{Color.END}")
+    logger.info(f"{Color.YELLOW}💾 Sauvegardez cette clé dans votre gestionnaire de secrets{Color.END}\n")
     
     # Le reste doit être configuré via variables d'environnement
     config["SUPABASE_URL"] = "# À configurer via variable d'environnement"
@@ -167,16 +168,16 @@ def main():
     
     # Vérifier si .env existe déjà
     if env_file.exists():
-        print(f"{Color.YELLOW}⚠️  Le fichier .env existe déjà{Color.END}")
+        logger.info(f"{Color.YELLOW}⚠️  Le fichier .env existe déjà{Color.END}")
         if not prompt_boolean("Voulez-vous le remplacer ?"):
-            print(f"{Color.BLUE}ℹ️  Configuration annulée{Color.END}")
+            logger.info(f"{Color.BLUE}ℹ️  Configuration annulée{Color.END}")
             return
     
     # Choix du type d'environnement
-    print("Quel type d'environnement voulez-vous configurer ?\n")
-    print("1. 🧪 Développement (recommandé)")
-    print("2. 🏭 Production")
-    print("3. 📋 Copier depuis .env.example")
+    logger.info("Quel type d'environnement voulez-vous configurer ?\n")
+    logger.info("1. 🧪 Développement (recommandé)")
+    logger.info("2. 🏭 Production")
+    logger.info("3. 📋 Copier depuis .env.example")
     
     choice = input("\nVotre choix [1]: ").strip() or "1"
     
@@ -188,29 +189,29 @@ def main():
         if env_example.exists():
             import shutil
             shutil.copy(env_example, env_file)
-            print(f"{Color.GREEN}✅ Fichier .env créé depuis .env.example{Color.END}")
-            print(f"{Color.YELLOW}📝 Modifiez {env_file} avec vos valeurs{Color.END}")
+            logger.info(f"{Color.GREEN}✅ Fichier .env créé depuis .env.example{Color.END}")
+            logger.info(f"{Color.YELLOW}📝 Modifiez {env_file} avec vos valeurs{Color.END}")
             return
         else:
-            print(f"{Color.RED}❌ Fichier .env.example introuvable{Color.END}")
+            logger.info(f"{Color.RED}❌ Fichier .env.example introuvable{Color.END}")
             return
     else:
-        print(f"{Color.RED}❌ Choix invalide{Color.END}")
+        logger.info(f"{Color.RED}❌ Choix invalide{Color.END}")
         return
     
     # Créer le fichier .env
     try:
         create_env_file(config, env_file)
-        print(f"\n{Color.GREEN}🎉 Configuration terminée !{Color.END}")
-        print(f"{Color.GREEN}✅ Fichier .env créé: {env_file}{Color.END}")
+        logger.info(f"\n{Color.GREEN}🎉 Configuration terminée !{Color.END}")
+        logger.info(f"{Color.GREEN}✅ Fichier .env créé: {env_file}{Color.END}")
         
         # Proposer de valider
         if prompt_boolean("Voulez-vous valider la configuration ?"):
-            print(f"\n{Color.BLUE}🔍 Validation de l'environnement...{Color.END}")
+            logger.info(f"\n{Color.BLUE}🔍 Validation de l'environnement...{Color.END}")
             os.system(f"cd {backend_dir} && python scripts/validate_env.py")
         
     except Exception as e:
-        print(f"{Color.RED}❌ Erreur lors de la création du fichier: {e}{Color.END}")
+        logger.info(f"{Color.RED}❌ Erreur lors de la création du fichier: {e}{Color.END}")
         sys.exit(1)
 
 

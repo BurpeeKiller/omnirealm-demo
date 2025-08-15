@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Download, Upload, FileJson, AlertCircle, CheckCircle, Settings, Clock } from 'lucide-react';
+import { Download, Upload, FileJson, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { exportToJSON, importFromJSON } from '@/db/queries';
 import { backupService } from '@/services/backup';
+import { logger } from '@/utils/logger';
 
 export default function DataManagement() {
   const [importing, setImporting] = useState(false);
@@ -24,7 +25,7 @@ export default function DataManagement() {
       setMessage({ type: 'success', text: 'Export JSON réussi!' });
       setTimeout(() => setMessage(null), 3000);
     } catch (error) {
-      console.error('Erreur export JSON:', error);
+      logger.error('Erreur export JSON:', error);
       setMessage({ type: 'error', text: "Erreur lors de l'export" });
     }
   };
@@ -48,7 +49,7 @@ export default function DataManagement() {
       // Reload page to refresh data
       setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
-      console.error('Erreur import JSON:', error);
+      logger.error('Erreur import JSON:', error);
       setMessage({
         type: 'error',
         text: error instanceof Error ? error.message : "Erreur lors de l'import",
@@ -66,7 +67,7 @@ export default function DataManagement() {
       setMessage({ type: 'success', text: 'Backup téléchargé avec succès!' });
       setTimeout(() => setMessage(null), 3000);
     } catch (error) {
-      console.error('Erreur backup:', error);
+      logger.error('Erreur backup:', error);
       setMessage({ type: 'error', text: "Erreur lors du backup" });
     }
   };

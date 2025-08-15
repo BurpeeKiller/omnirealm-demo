@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 
 export interface OnboardingState {
   isCompleted: boolean;
@@ -24,11 +25,11 @@ export const useOnboarding = () => {
     try {
       const saved = localStorage.getItem(ONBOARDING_STORAGE_KEY);
       if (saved) {
-        // console.log('Loading saved onboarding state:', saved);
+        // logger.info('Loading saved onboarding state:', saved);
         return JSON.parse(saved);
       }
     } catch (error) {
-      console.warn('Failed to load onboarding state:', error);
+      logger.warn('Failed to load onboarding state:', error);
     }
     return defaultState;
   });
@@ -36,11 +37,11 @@ export const useOnboarding = () => {
   // Sauvegarder l'état dans localStorage ET mettre à jour l'état React
   const saveState = (newState: OnboardingState) => {
     try {
-      // console.log('Saving onboarding state:', newState);
+      // logger.info('Saving onboarding state:', newState);
       localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify(newState));
       setState(newState);
     } catch (error) {
-      console.warn('Failed to save onboarding state:', error);
+      logger.warn('Failed to save onboarding state:', error);
     }
   };
 
@@ -98,7 +99,7 @@ export const useOnboarding = () => {
   const shouldShowOnboarding = !state.isCompleted;
 
   // Réduire les logs - seulement sur les changements importants
-  // console.log('useOnboarding - state:', state);
+  // logger.info('useOnboarding - state:', state);
 
   return {
     state,

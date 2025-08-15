@@ -1,3 +1,5 @@
+import { logger } from '@/utils/logger';
+
 /**
  * Service de gestion des sons
  */
@@ -24,10 +26,10 @@ export function playSound(soundName: keyof typeof sounds) {
     const audio = new Audio(sounds[soundName]);
     audio.volume = 0.5; // Volume modéré
     audio.play().catch((err) => {
-      console.warn('Impossible de jouer le son:', err);
+      logger.warn('Impossible de jouer le son:', err);
     });
   } catch (error) {
-    console.warn('Erreur lors de la lecture du son:', error);
+    logger.warn('Erreur lors de la lecture du son:', error);
   }
 }
 

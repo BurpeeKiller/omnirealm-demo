@@ -19,7 +19,7 @@ try:
     redis_client = redis.from_url(REDIS_URL, decode_responses=True)
     redis_client.ping()
     USE_REDIS = True
-except:
+except (redis.RedisError, redis.ConnectionError, Exception):
     # Fallback : cache mémoire simple
     memory_cache = {}
     USE_REDIS = False

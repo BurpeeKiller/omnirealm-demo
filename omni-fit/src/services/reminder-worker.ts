@@ -120,10 +120,7 @@ export class ReminderWorkerService {
         badge: '/icon-192.png',
         tag: 'omnifit',
         requireInteraction: true,
-        actions: [
-          { action: 'complete', title: 'Fait ✓' },
-          { action: 'snooze', title: 'Plus tard' },
-        ] as NotificationAction[],
+        // Actions not supported in standard Notification API
         data: {
           exercise,
           count,

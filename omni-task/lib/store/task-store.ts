@@ -2,87 +2,11 @@ import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import type { TaskStore } from '@/lib/types'
 import { tasksApi } from '@/lib/api/tasks'
+import { projectsApi } from '@/lib/api/projects'
 
 const initialState = {
-  tasks: [
-    {
-      id: '1',
-      title: 'Configurer l\'environnement de développement',
-      description: 'Installer Node.js, pnpm et les dépendances du projet',
-      status: 'DONE' as const,
-      priority: 'HIGH' as const,
-      position: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      userId: '1',
-      tags: ['setup', 'dev']
-    },
-    {
-      id: '2',
-      title: 'Créer les composants UI de base',
-      description: 'Boutons, modals, formulaires avec Radix UI',
-      status: 'IN_PROGRESS' as const,
-      priority: 'MEDIUM' as const,
-      position: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      userId: '1',
-      estimatedHours: 4
-    },
-    {
-      id: '3',
-      title: 'Intégrer l\'authentification Supabase',
-      status: 'TODO' as const,
-      priority: 'HIGH' as const,
-      position: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      userId: '1',
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      id: '4',
-      title: 'Ajouter les tests unitaires',
-      status: 'TODO' as const,
-      priority: 'LOW' as const,
-      position: 2,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      userId: '1'
-    }
-  ],
-  projects: [
-    { 
-      id: 'a7f8d74e-2c3b-4567-89ab-cdef01234567', 
-      name: 'OmniTask MVP', 
-      icon: '🚀', 
-      color: '#3B82F6',
-      userId: '1',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isArchived: false
-    },
-    { 
-      id: 'b8e9e85f-3d4c-5678-9abc-def012345678', 
-      name: 'Marketing', 
-      icon: '📢', 
-      color: '#8B5CF6',
-      userId: '1',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isArchived: false
-    },
-    { 
-      id: 'c9f0f96a-4e5d-6789-abcd-ef0123456789', 
-      name: 'Documentation', 
-      icon: '📚', 
-      color: '#10B981',
-      userId: '1',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isArchived: false
-    }
-  ],
+  tasks: [],
+  projects: [],
   selectedProjectId: null,
   isLoading: false,
   error: null,
@@ -238,6 +162,19 @@ export const useTaskStore = create<TaskStore>()(
     selectProject: (projectId) => set((state) => {
       state.selectedProjectId = projectId
     }),
+
+    fetchProjects: async () => {
+      try {
+        const projects = await projectsApi.fetchProjects()
+        set((state) => {
+          state.projects = projects
+        })
+      } catch (error) {
+        set((state) => {
+          state.error = error instanceof Error ? error.message : 'Erreur lors du chargement des projets'
+        })
+      }
+    },
 
     clearError: () => set((state) => {
       state.error = null

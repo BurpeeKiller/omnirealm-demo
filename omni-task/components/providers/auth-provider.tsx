@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
 import { useTaskStore } from '@/lib/store/task-store'
+import { createLogger } from '@/lib/logger';
+const logger = createLogger('auth-provider.tsx');
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -18,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           await fetchTasks()
         } catch (error) {
-          console.error('Error loading tasks:', error)
+          logger.error('Error loading tasks:', error)
         }
       }
     }
@@ -32,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await fetchTasks()
         } else if (event === 'SIGNED_OUT') {
           reset()
-          router.push('/')
+          await router.push('/')
         }
       }
     )

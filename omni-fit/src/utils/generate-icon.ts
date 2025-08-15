@@ -1,3 +1,5 @@
+import { logger } from '@/utils/logger';
+
 // Générateur d'icônes avec Canvas pour PWA
 export const generateIconPNG = (size: number): Promise<Blob> => {
   return new Promise((resolve) => {
@@ -65,7 +67,7 @@ export const downloadIcon = async (size: number, filename: string) => {
 
 // Générer toutes les icônes PWA
 export const generateAllIcons = async () => {
-  console.log('Generating PWA icons...');
+  logger.info('Generating PWA icons...');
 
   // Icône 192x192
   await downloadIcon(192, 'icon-192.png');
@@ -76,5 +78,5 @@ export const generateAllIcons = async () => {
   // Favicon
   await downloadIcon(48, 'favicon.png');
 
-  console.log('✅ All icons generated and downloaded!');
+  logger.info('✅ All icons generated and downloaded!');
 };

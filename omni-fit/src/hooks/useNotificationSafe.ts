@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { logger } from '@/utils/logger';
 
 type Permission = 'granted' | 'denied' | 'default';
 
@@ -19,7 +20,7 @@ export const useNotification = () => {
         setPermission(Notification.permission as Permission);
       }
     } catch (error) {
-      console.error('Error checking notification permission:', error);
+      logger.error('Error checking notification permission:', error);
     } finally {
       setIsLoading(false);
     }
@@ -34,7 +35,7 @@ export const useNotification = () => {
         return result;
       }
     } catch (error) {
-      console.error('Error requesting notification permission:', error);
+      logger.error('Error requesting notification permission:', error);
       setPermission('denied');
       return 'denied';
     }
@@ -44,7 +45,7 @@ export const useNotification = () => {
   const showNotification = async (title: string, options?: NotificationOptions) => {
     try {
       if (permission !== 'granted') {
-        console.warn('Notifications not granted');
+        logger.warn('Notifications not granted');
         return;
       }
 
@@ -53,7 +54,7 @@ export const useNotification = () => {
         return new Notification(title, options);
       }
     } catch (error) {
-      console.error('Error showing notification:', error);
+      logger.error('Error showing notification:', error);
     }
   };
 

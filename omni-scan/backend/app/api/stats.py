@@ -1,6 +1,7 @@
 """Endpoints pour les statistiques utilisateur"""
 
 from fastapi import APIRouter, HTTPException, status
+from app.utils.logger import logger
 from datetime import datetime
 
 from app.core.database import get_supabase
@@ -85,7 +86,7 @@ async def get_user_stats(user_id: str):
         )
         
     except Exception as e:
-        print(f"Erreur récupération stats: {e}")
+        logger.info(f"Erreur récupération stats: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Erreur lors de la récupération des statistiques"

@@ -1,5 +1,6 @@
 // @ts-ignore - VitePWA virtual module
 import { registerSW } from 'virtual:pwa-register';
+import { logger } from '@/utils/logger';
 
 export const registerServiceWorker = () => {
   const updateSW = registerSW({
@@ -10,12 +11,12 @@ export const registerServiceWorker = () => {
       }
     },
     onOfflineReady() {
-      console.log('✅ App prête pour utilisation hors ligne');
+      logger.info('✅ App prête pour utilisation hors ligne');
       // Notifier l'utilisateur
       showOfflineReadyNotification();
     },
     onRegistered(r: any) {
-      console.log('✅ Service Worker enregistré');
+      logger.info('✅ Service Worker enregistré');
       // Vérification de mise à jour toutes les heures
       r && setInterval(() => {
         r.update();
@@ -28,7 +29,7 @@ export const registerServiceWorker = () => {
       registerPeriodicSync();
     },
     onRegisterError(error: any) {
-      console.error('❌ Erreur enregistrement SW:', error);
+      logger.error('❌ Erreur enregistrement SW:', error);
     },
   });
 };
@@ -39,9 +40,9 @@ async function registerBackgroundSync() {
     try {
       const registration = await navigator.serviceWorker.ready;
       await (registration as any).sync.register('fitness-sync');
-      console.log('✅ Background Sync activé');
+      logger.info('✅ Background Sync activé');
     } catch (error) {
-      console.warn('Background Sync non disponible:', error);
+      logger.warn('Background Sync non disponible:', error);
     }
   }
 }
@@ -59,10 +60,10 @@ async function registerPeriodicSync() {
         await (registration as any).periodicSync.register('omni-fit', {
           minInterval: 60 * 60 * 1000, // 1 heure
         });
-        console.log('✅ Periodic Sync activé');
+        logger.info('✅ Periodic Sync activé');
       }
     } catch (error) {
-      console.warn('Periodic Sync non disponible:', error);
+      logger.warn('Periodic Sync non disponible:', error);
     }
   }
 }
@@ -94,11 +95,11 @@ export const isPWAInstalled = () => {
 // Gestionnaire d'état online/offline
 export const setupNetworkHandlers = () => {
   window.addEventListener('online', () => {
-    console.log('✅ Connexion rétablie');
+    logger.info('✅ Connexion rétablie');
     // Possibilité de synchroniser les données ici
   });
 
   window.addEventListener('offline', () => {
-    console.log('⚠️ Mode hors ligne activé');
+    logger.info('⚠️ Mode hors ligne activé');
   });
 };

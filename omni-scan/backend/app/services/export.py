@@ -4,15 +4,14 @@ import json
 import io
 from datetime import datetime
 from typing import Dict, Any, List
-import pandas as pd
-from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.styles import Font, Alignment
 
 
 class ExportService:
@@ -46,8 +45,6 @@ class ExportService:
         ws.title = "OCR Results"
         
         # Styles
-        header_font = Font(bold=True, size=14, color="FFFFFF")
-        header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
         subheader_font = Font(bold=True, size=12)
         
         # En-tête principal

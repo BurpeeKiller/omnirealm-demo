@@ -7,6 +7,7 @@
 
 import fetch from 'node-fetch';
 import { promises as fs } from 'fs';
+import { logger } from '../src/utils/logger';
 
 const CONFIG = {
   baseUrl: 'https://frolicking-stardust-cd010f.netlify.app',
@@ -39,7 +40,7 @@ class FitnessTestSuite {
 
   log(level, message) {
     const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-    console.log(`${icons[level] || '•'} ${message}`);
+    logger.info(`${icons[level] || '•'} ${message}`);
   }
 
   addResult(testName, status, message, details = null) {
@@ -259,11 +260,11 @@ class FitnessTestSuite {
   }
 
   async runAllTests() {
-    console.log('🚀 DÉMARRAGE DES TESTS FITNESS REMINDER PWA');
-    console.log('=' .repeat(50));
-    console.log(`📅 ${new Date().toLocaleString('fr-FR')}`);
-    console.log(`🌐 ${CONFIG.baseUrl}`);
-    console.log('=' .repeat(50));
+    logger.info('🚀 DÉMARRAGE DES TESTS FITNESS REMINDER PWA');
+    logger.info('=' .repeat(50));
+    logger.info(`📅 ${new Date().toLocaleString('fr-FR')}`);
+    logger.info(`🌐 ${CONFIG.baseUrl}`);
+    logger.info('=' .repeat(50));
 
     await this.testBasicAccessibility();
     await this.testHTMLContent();
@@ -276,46 +277,46 @@ class FitnessTestSuite {
   }
 
   generateReport() {
-    console.log('\n' + '=' .repeat(50));
-    console.log('📋 RAPPORT DE TEST');
-    console.log('=' .repeat(50));
+    logger.info('\n' + '=' .repeat(50));
+    logger.info('📋 RAPPORT DE TEST');
+    logger.info('=' .repeat(50));
 
     const total = this.results.passed + this.results.failed + this.results.warnings;
     const successRate = Math.round((this.results.passed / total) * 100);
 
-    console.log(`📊 Résultats: ${this.results.passed}✅ ${this.results.failed}❌ ${this.results.warnings}⚠️`);
-    console.log(`📈 Taux de réussite: ${successRate}%`);
+    logger.info(`📊 Résultats: ${this.results.passed}✅ ${this.results.failed}❌ ${this.results.warnings}⚠️`);
+    logger.info(`📈 Taux de réussite: ${successRate}%`);
 
     if (this.results.failed > 0) {
-      console.log('\n❌ ÉCHECS:');
+      logger.info('\n❌ ÉCHECS:');
       this.results.tests
         .filter(t => t.status === 'failed')
-        .forEach(t => console.log(`  • ${t.name}: ${t.message}`));
+        .forEach(t => logger.info(`  • ${t.name}: ${t.message}`));
     }
 
     if (this.results.warnings > 0) {
-      console.log('\n⚠️ AVERTISSEMENTS:');
+      logger.info('\n⚠️ AVERTISSEMENTS:');
       this.results.tests
         .filter(t => t.status === 'warning')
-        .forEach(t => console.log(`  • ${t.name}: ${t.message}`));
+        .forEach(t => logger.info(`  • ${t.name}: ${t.message}`));
     }
 
-    console.log('\n✅ SUCCÈS:');
+    logger.info('\n✅ SUCCÈS:');
     this.results.tests
       .filter(t => t.status === 'passed')
-      .forEach(t => console.log(`  • ${t.name}: ${t.message}`));
+      .forEach(t => logger.info(`  • ${t.name}: ${t.message}`));
 
     // Recommandations
-    console.log('\n💡 RECOMMANDATIONS:');
+    logger.info('\n💡 RECOMMANDATIONS:');
     if (this.results.failed > 0) {
-      console.log('  🔥 CRITIQUE: Corriger les échecs immédiatement');
+      logger.info('  🔥 CRITIQUE: Corriger les échecs immédiatement');
     }
     if (this.results.warnings > 3) {
-      console.log('  ⚡ IMPORTANT: Traiter les avertissements de sécurité');
+      logger.info('  ⚡ IMPORTANT: Traiter les avertissements de sécurité');
     }
-    console.log('  📱 SUGGÉRÉ: Ajouter tests E2E avec Playwright');
+    logger.info('  📱 SUGGÉRÉ: Ajouter tests E2E avec Playwright');
 
-    console.log('=' .repeat(50));
+    logger.info('=' .repeat(50));
 
     // Retourner les résultats au lieu de faire process.exit
     return {
@@ -339,6 +340,6 @@ const testSuite = new FitnessTestSuite();
 testSuite.runAllTests()
   .then(() => testSuite.saveResults())
   .then(() => {
-    console.log('\n📁 Résultats sauvegardés dans fitness-test-results.json');
+    logger.info('\n📁 Résultats sauvegardés dans fitness-test-results.json');
   })
   .catch(console.error);

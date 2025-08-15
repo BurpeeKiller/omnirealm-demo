@@ -35,7 +35,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps = {}) => {
   }, [state.isCompleted, onComplete]);
 
   // Logs désactivés pour réduire la pollution de la console
-  // console.log('OnboardingFlow - currentStep:', state.currentStep);
+  // logger.info('OnboardingFlow - currentStep:', state.currentStep);
 
   if (!shouldShowOnboarding || state.isCompleted) {
     return null;

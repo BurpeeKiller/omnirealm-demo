@@ -2,13 +2,17 @@ import { Header } from '@/components/Header';
 import { ReminderTimer } from '@/components/ReminderTimer';
 import { ExerciseCard } from '@/components/ExerciseCard';
 import { DailyStats } from '@/components/Stats/DailyStats';
-import { Settings } from '@/components/Settings';
-import { Stats } from '@/components/Stats';
+import { lazy, Suspense } from 'react';
 import StreakDisplay from '@/components/StreakDisplay';
 import { BackupNotification } from '@/components/BackupNotification';
-import { SecurityModal } from '@/components/SecurityModal';
-import { UpgradePrompt, PremiumBadge } from '@/components/Premium';
-import { AICoachModal } from '@/components/AICoach';
+import { PremiumBadge } from '@/components/Premium';
+
+// Lazy load des modals lourds
+const Settings = lazy(() => import('@/components/Settings').then(module => ({ default: module.Settings })));
+const Stats = lazy(() => import('@/components/Stats').then(module => ({ default: module.Stats })));
+const SecurityModal = lazy(() => import('@/components/SecurityModal').then(module => ({ default: module.SecurityModal })));
+const UpgradePrompt = lazy(() => import('@/components/Premium').then(module => ({ default: module.UpgradePrompt })));
+const AICoachModal = lazy(() => import('@/components/AICoach').then(module => ({ default: module.AICoachModal })));
 import { useExercisesStore } from '@/stores/exercises.store';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Settings as SettingsIcon, BarChart3, Shield, Crown, LogOut, Sparkles } from 'lucide-react';
@@ -21,7 +25,7 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({ onLogout }: DashboardProps) => {
-  const { exercises } = useExercisesStore();
+  const { exerciseDefinitions } = useExercisesStore();
   const { isPremium, isInTrial } = useSubscription();
   const [showSettings, setShowSettings] = useState(false);
   const [showStats, setShowStats] = useState(false);
@@ -39,10 +43,18 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       {/* Header avec statut */}
-      <header className="sticky top-0 z-50 bg-gray-900 border-b border-gray-800">
+      <header 
+        className="sticky top-0 z-50 bg-gray-900 border-b border-gray-800"
+        role="banner"
+        aria-label="En-tête principal"
+      >
         <Header />
         {/* Bandeau de statut */}
-        <div className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 px-4 py-2">
+        <div 
+          className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 px-4 py-2"
+          role="status"
+          aria-live="polite"
+        >
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-300">
               {getWelcomeMessage()}
@@ -53,7 +65,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-20" role="main" aria-label="Contenu principal">
         <ReminderTimer />
 
         {/* Streak Display */}
@@ -62,11 +74,15 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
         </div>
 
         {/* Exercise Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4 mb-6">
-          {exercises.map((exercise, index) => (
+        <section 
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4 mb-6"
+          role="region"
+          aria-label="Exercices disponibles"
+        >
+          {exerciseDefinitions.map((exercise, index) => (
             <ExerciseCard key={exercise.type} exercise={exercise} index={index} />
           ))}
-        </div>
+        </section>
 
         {/* Daily Stats */}
         <DailyStats />
@@ -87,6 +103,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
             <button
               onClick={() => setShowUpgradePrompt(true)}
               className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+              aria-label="Ouvrir la fenêtre de mise à niveau Premium"
             >
               Découvrir Premium
             </button>
@@ -95,7 +112,11 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800">
+      <nav 
+        className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800"
+        role="navigation"
+        aria-label="Navigation principale"
+      >
         <div className="flex justify-around py-3">
           {/* Coach AI - Premium ou Trial uniquement */}
           {(isPremium || isInTrial) && (
@@ -103,6 +124,7 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
               className="flex flex-col items-center gap-1 px-4 py-2 text-gray-400 hover:text-purple-400 transition-all duration-200 group"
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowAICoach(true)}
+              aria-label="Ouvrir le coach IA"
             >
               <Sparkles className="w-6 h-6 group-hover:scale-110 transition-transform" />
               <span className="text-xs">Coach AI</span>
@@ -159,12 +181,22 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
       </nav>
 
       {/* Modals */}
-      <Settings isOpen={showSettings} onClose={() => setShowSettings(false)} />
-      <Stats isOpen={showStats} onClose={() => setShowStats(false)} />
+      <Suspense fallback={null}>
+        <Settings isOpen={showSettings} onClose={() => setShowSettings(false)} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Stats isOpen={showStats} onClose={() => setShowStats(false)} />
+      </Suspense>
       <BackupNotification />
-      <SecurityModal isOpen={showSecurityModal} onClose={() => setShowSecurityModal(false)} />
-      <UpgradePrompt isOpen={showUpgradePrompt} onClose={() => setShowUpgradePrompt(false)} />
-      <AICoachModal isOpen={showAICoach} onClose={() => setShowAICoach(false)} />
+      <Suspense fallback={null}>
+        <SecurityModal isOpen={showSecurityModal} onClose={() => setShowSecurityModal(false)} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <UpgradePrompt isOpen={showUpgradePrompt} onClose={() => setShowUpgradePrompt(false)} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <AICoachModal isOpen={showAICoach} onClose={() => setShowAICoach(false)} />
+      </Suspense>
       
       {/* Debug temporaire */}
       <DebugSubscription />

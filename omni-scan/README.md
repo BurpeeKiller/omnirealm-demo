@@ -2,6 +2,12 @@
 
 Application de numérisation et d'analyse intelligente de documents avec OCR et IA.
 
+## 🌐 Production
+
+- **Application Web** : https://scan.omnirealm.tech
+- **API Backend** : https://api.scan.omnirealm.tech
+- **Status** : ✅ En ligne
+
 ## 🚀 Démarrage rapide
 
 ```bash

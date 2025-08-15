@@ -1,5 +1,5 @@
-import { db } from '@/db';
 import { analytics } from './analytics';
+import { logger } from '@/utils/logger';
 
 export interface SyncQueueItem {
   id: string;
@@ -37,7 +37,7 @@ class SyncService {
         this.syncQueue = JSON.parse(saved);
       }
     } catch (error) {
-      console.warn('Erreur chargement queue sync:', error);
+      logger.warn('Erreur chargement queue sync:', error);
       this.syncQueue = [];
     }
   }
@@ -47,7 +47,7 @@ class SyncService {
     try {
       localStorage.setItem(this.SYNC_QUEUE_KEY, JSON.stringify(this.syncQueue));
     } catch (error) {
-      console.error('Erreur sauvegarde queue sync:', error);
+      logger.error('Erreur sauvegarde queue sync:', error);
     }
   }
 
@@ -73,13 +73,13 @@ class SyncService {
   private setupEventListeners() {
     // Synchroniser quand on repasse online
     window.addEventListener('online', () => {
-      console.log('✅ Connexion rétablie - Synchronisation...');
+      logger.info('✅ Connexion rétablie - Synchronisation...');
       this.processSyncQueue();
     });
 
     // Notification quand on passe offline
     window.addEventListener('offline', () => {
-      console.log('⚠️ Mode hors ligne - Les données seront synchronisées au retour');
+      logger.info('⚠️ Mode hors ligne - Les données seront synchronisées au retour');
     });
   }
 
@@ -89,9 +89,9 @@ class SyncService {
       try {
         const registration = await navigator.serviceWorker.ready;
         await (registration as any).sync.register('fitness-sync');
-        console.log('✅ Background Sync enregistré');
+        logger.info('✅ Background Sync enregistré');
       } catch (error) {
-        console.warn('Background Sync non disponible:', error);
+        logger.warn('Background Sync non disponible:', error);
       }
     }
   }
@@ -102,7 +102,7 @@ class SyncService {
       return;
     }
 
-    console.log(`🔄 Traitement de ${this.syncQueue.length} éléments en attente...`);
+    logger.info(`🔄 Traitement de ${this.syncQueue.length} éléments en attente...`);
     
     const itemsToProcess = [...this.syncQueue];
     const failedItems: SyncQueueItem[] = [];
@@ -113,14 +113,14 @@ class SyncService {
         // Retirer de la queue si succès
         this.syncQueue = this.syncQueue.filter(i => i.id !== item.id);
       } catch (error) {
-        console.error(`Erreur sync ${item.type}:`, error);
+        logger.error(`Erreur sync ${item.type}:`, error);
         item.retries++;
         
         if (item.retries < this.MAX_RETRIES) {
           failedItems.push(item);
         } else {
-          console.error(`Abandon après ${this.MAX_RETRIES} essais:`, item);
-          analytics.trackError('sync_failed', { item });
+          logger.error(`Abandon après ${this.MAX_RETRIES} essais:`, item);
+          logger.error('Sync failed permanently:', { item });
         }
       }
     }
@@ -130,9 +130,9 @@ class SyncService {
     this.saveSyncQueue();
 
     if (this.syncQueue.length === 0) {
-      console.log('✅ Synchronisation terminée avec succès');
+      logger.info('✅ Synchronisation terminée avec succès');
     } else {
-      console.warn(`⚠️ ${this.syncQueue.length} éléments en attente de synchronisation`);
+      logger.warn(`⚠️ ${this.syncQueue.length} éléments en attente de synchronisation`);
     }
   }
 
@@ -163,7 +163,7 @@ class SyncService {
   private async syncWorkout(item: SyncQueueItem) {
     // Ici on pourrait envoyer les données vers un serveur
     // Pour l'instant, on simule juste le succès
-    console.log('Sync workout:', item.data);
+    logger.info('Sync workout:', item.data);
     
     // Si on avait un backend:
     // await fetch('/api/workouts', {
@@ -175,17 +175,17 @@ class SyncService {
 
   // Synchroniser les stats
   private async syncStats(item: SyncQueueItem) {
-    console.log('Sync stats:', item.data);
+    logger.info('Sync stats:', item.data);
   }
 
   // Synchroniser les settings
   private async syncSettings(item: SyncQueueItem) {
-    console.log('Sync settings:', item.data);
+    logger.info('Sync settings:', item.data);
   }
 
   // Synchroniser les analytics
   private async syncAnalytics(item: SyncQueueItem) {
-    console.log('Sync analytics:', item.data);
+    logger.info('Sync analytics:', item.data);
   }
 
   // Obtenir le statut de synchronisation

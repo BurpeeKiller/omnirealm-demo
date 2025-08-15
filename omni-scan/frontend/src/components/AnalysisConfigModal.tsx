@@ -16,7 +16,7 @@ import {
   Badge,
   Alert,
   AlertDescription
-} from '@omnirealm/ui'
+} from '@/components/ui'
 import { RadioGroup, RadioGroupItem } from './RadioGroup'
 import { 
   Settings2, 

@@ -1,0 +1,24 @@
+FACTURE N°2024-INV-0847
+Date : 15 janvier 2024
+
+TechnoSolutions SARL
+123 Avenue de l'Innovation
+75008 Paris
+SIRET: 123 456 789 00012
+
+Client:
+Entreprise ABC
+456 Rue du Commerce
+69002 Lyon
+
+Désignation                    Quantité    Prix Unit.    Total HT
+Développement application web      80h        125€       10 000€
+Formation équipe                   16h        150€        2 400€
+Support technique                   1          500€          500€
+
+                                        Total HT:      12 900€
+                                        TVA 20%:        2 580€
+                                        Total TTC:     15 480€
+
+Conditions de paiement: 30 jours
+Échéance: 15 février 2024

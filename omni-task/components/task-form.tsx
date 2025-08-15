@@ -1,13 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button, Input, Label, Textarea } from '@omnirealm/ui'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select-modal'
-import { Modal, useModalContainer } from '@/components/ui/modal'
+import { Button, Input, Textarea } from '@/components/ui'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
+import { Modal } from '@/components/ui/modal'
 import { useTaskStore } from '@/lib/store/task-store'
 import { useToastStore } from '@/lib/store/toast-store'
 import type { Task, CreateTaskInput, UpdateTaskInput, TaskPriority, TaskStatus } from '@/lib/types'
 import { Loader2, Calendar, Clock, Tag } from 'lucide-react'
+import { createLogger } from '@/lib/logger';
+import { useUmami } from '@/components/UmamiProvider';
+const logger = createLogger('task-form.tsx');
 
 interface TaskFormProps {
   isOpen: boolean
@@ -19,7 +22,7 @@ interface TaskFormProps {
 export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps) {
   const { projects, addTask, updateTask, isLoading } = useTaskStore()
   const { success, error } = useToastStore()
-  const modalContainer = useModalContainer()
+  const { trackEngagement } = useUmami()
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -71,13 +74,14 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
     }
 
     try {
-      console.log('Saving task:', taskData)
+      logger.info('Saving task:', taskData)
       if (task) {
         await updateTask(task.id, taskData as UpdateTaskInput)
         success('Tâche modifiée avec succès !')
       } else {
         await addTask(taskData as CreateTaskInput)
         success('Tâche créée avec succès !')
+        trackEngagement('task_created', 'productivity')
       }
       onClose()
       // Réinitialiser le formulaire après succès
@@ -91,7 +95,7 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
         tags: ''
       })
     } catch (err) {
-      console.error('Error saving task:', err)
+      logger.error('Error saving task:', err)
       error(err instanceof Error ? err.message : 'Erreur lors de la sauvegarde')
     }
   }
@@ -113,7 +117,7 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Titre */}
         <div className="space-y-2">
-          <Label htmlFor="title">Titre *</Label>
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="title">Titre *</label>
           <Input
             id="title"
             value={formData.title}
@@ -126,7 +130,7 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
 
         {/* Description */}
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="description">Description</label>
           <Textarea
             id="description"
             value={formData.description}
@@ -139,7 +143,7 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
         {/* Priorité et Projet */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="priority">Priorité</Label>
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="priority">Priorité</label>
             <Select
               value={formData.priority}
               onValueChange={(value: string) => setFormData({ ...formData, priority: value as TaskPriority })}
@@ -147,7 +151,7 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
               <SelectTrigger id="priority">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent container={modalContainer}>
+              <SelectContent>
                 <SelectItem value="LOW">
                   <span className={priorityColors.LOW}>Faible</span>
                 </SelectItem>
@@ -165,7 +169,7 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="project">Projet</Label>
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="project">Projet</label>
             <Select
               value={formData.projectId}
               onValueChange={(value: string) => setFormData({ ...formData, projectId: value })}
@@ -173,7 +177,7 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
               <SelectTrigger id="project">
                 <SelectValue placeholder="Sans projet" />
               </SelectTrigger>
-              <SelectContent container={modalContainer}>
+              <SelectContent>
                 <SelectItem value="no-project">Sans projet</SelectItem>
                 {projects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
@@ -191,10 +195,10 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
         {/* Date et Estimation */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="dueDate">
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="dueDate">
               <Calendar className="inline h-4 w-4 mr-1" />
               Date limite
-            </Label>
+            </label>
             <Input
               id="dueDate"
               type="date"
@@ -204,10 +208,10 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="estimatedHours">
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="estimatedHours">
               <Clock className="inline h-4 w-4 mr-1" />
               Heures estimées
-            </Label>
+            </label>
             <Input
               id="estimatedHours"
               type="number"
@@ -222,10 +226,10 @@ export function TaskForm({ isOpen, onClose, task, defaultStatus }: TaskFormProps
 
         {/* Tags */}
         <div className="space-y-2">
-          <Label htmlFor="tags">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="tags">
             <Tag className="inline h-4 w-4 mr-1" />
             Tags
-          </Label>
+          </label>
           <Input
             id="tags"
             value={formData.tags}

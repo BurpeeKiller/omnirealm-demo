@@ -1,6 +1,8 @@
+import { lemonSqueezyConfig } from '../config';
+
 // Configuration LemonSqueezy
 export const LEMONSQUEEZY_CONFIG = {
-  storeId: import.meta.env.VITE_LEMONSQUEEZY_STORE_ID || '',
+  storeId: lemonSqueezyConfig.storeId,
   apiUrl: 'https://api.lemonsqueezy.com/v1',
 
   // Plans de tarification

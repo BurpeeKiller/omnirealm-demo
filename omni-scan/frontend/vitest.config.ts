@@ -1,27 +1,36 @@
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
   test: {
+    name: 'omni-scan-frontend',
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
+    // Configuration mémoire optimisée (Option A2)
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        maxForks: 6,
+        minForks: 1
+      }
+    },
+    maxConcurrency: 2,
+    isolate: true,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'src/test/',
-        '*.config.*',
-        'src/vite-env.d.ts'
-      ]
-    }
+      reporter: ['text', 'html'],
+      reportsDirectory: 'coverage',
+      thresholds: {
+        global: {
+          lines: 50,
+        },
+      },
+    },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
-    }
-  }
-})
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});

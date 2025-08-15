@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
-import type { Exercise } from '@/types';
+import type { ExerciseDefinition } from '@/types';
 import { Plus } from 'lucide-react';
 import { useExercisesStore } from '@/stores/exercises.store';
 import { useSettingsStore } from '@/stores/settings.store';
 import { useSound } from '@/utils/sound';
 
 interface ExerciseCardProps {
-  exercise: Exercise;
+  exercise: ExerciseDefinition;
   index: number;
 }
 

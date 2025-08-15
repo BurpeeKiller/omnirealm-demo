@@ -6,6 +6,7 @@ et correctement configurées.
 """
 
 import sys
+from app.utils.logger import logger
 from pathlib import Path
 from typing import List
 import httpx
@@ -32,34 +33,34 @@ class Color:
 
 def print_header():
     """Afficher l'en-tête du script"""
-    print(f"\n{Color.CYAN}{Color.BOLD}🔍 VALIDATION ENVIRONNEMENT OMNISCAN{Color.END}")
-    print(f"{Color.CYAN}{'=' * 50}{Color.END}\n")
+    logger.info(f"\n{Color.CYAN}{Color.BOLD}🔍 VALIDATION ENVIRONNEMENT OMNISCAN{Color.END}")
+    logger.info(f"{Color.CYAN}{'=' * 50}{Color.END}\n")
 
 
 def print_section(title: str):
     """Afficher une section"""
-    print(f"{Color.BLUE}{Color.BOLD}📋 {title}{Color.END}")
-    print("-" * (len(title) + 4))
+    logger.info(f"{Color.BLUE}{Color.BOLD}📋 {title}{Color.END}")
+    logger.info("-" * (len(title) + 4))
 
 
 def print_success(message: str):
     """Afficher un message de succès"""
-    print(f"  {Color.GREEN}✅ {message}{Color.END}")
+    logger.info(f"  {Color.GREEN}✅ {message}{Color.END}")
 
 
 def print_error(message: str):
     """Afficher un message d'erreur"""
-    print(f"  {Color.RED}❌ {message}{Color.END}")
+    logger.info(f"  {Color.RED}❌ {message}{Color.END}")
 
 
 def print_warning(message: str):
     """Afficher un avertissement"""
-    print(f"  {Color.YELLOW}⚠️  {message}{Color.END}")
+    logger.info(f"  {Color.YELLOW}⚠️  {message}{Color.END}")
 
 
 def print_info(message: str):
     """Afficher une information"""
-    print(f"  {Color.CYAN}ℹ️  {message}{Color.END}")
+    logger.info(f"  {Color.CYAN}ℹ️  {message}{Color.END}")
 
 
 def validate_required_variables() -> List[str]:
@@ -215,21 +216,21 @@ def validate_configuration() -> List[str]:
 
 def print_summary(all_errors: List[str]):
     """Afficher le résumé final"""
-    print(f"\n{Color.MAGENTA}{Color.BOLD}📊 RÉSUMÉ DE LA VALIDATION{Color.END}")
-    print(f"{Color.MAGENTA}{'=' * 30}{Color.END}")
+    logger.info(f"\n{Color.MAGENTA}{Color.BOLD}📊 RÉSUMÉ DE LA VALIDATION{Color.END}")
+    logger.info(f"{Color.MAGENTA}{'=' * 30}{Color.END}")
     
     if not all_errors:
-        print(f"\n{Color.GREEN}{Color.BOLD}🎉 Configuration valide !{Color.END}")
-        print(f"{Color.GREEN}✅ Tous les tests passent, OmniScan est prêt à démarrer{Color.END}")
+        logger.info(f"\n{Color.GREEN}{Color.BOLD}🎉 Configuration valide !{Color.END}")
+        logger.info(f"{Color.GREEN}✅ Tous les tests passent, OmniScan est prêt à démarrer{Color.END}")
         return True
     else:
-        print(f"\n{Color.RED}{Color.BOLD}⚠️  {len(all_errors)} erreur(s) détectée(s){Color.END}")
-        print(f"{Color.RED}❌ Veuillez corriger les problèmes suivants:{Color.END}\n")
+        logger.info(f"\n{Color.RED}{Color.BOLD}⚠️  {len(all_errors)} erreur(s) détectée(s){Color.END}")
+        logger.info(f"{Color.RED}❌ Veuillez corriger les problèmes suivants:{Color.END}\n")
         
         for i, error in enumerate(all_errors, 1):
-            print(f"{Color.RED}  {i}. {error}{Color.END}")
+            logger.info(f"{Color.RED}  {i}. {error}{Color.END}")
         
-        print(f"\n{Color.YELLOW}💡 Consultez .env.example pour la configuration complète{Color.END}")
+        logger.info(f"\n{Color.YELLOW}💡 Consultez .env.example pour la configuration complète{Color.END}")
         return False
 
 
@@ -242,19 +243,19 @@ async def main():
     try:
         # Valider les différents aspects
         all_errors.extend(validate_required_variables())
-        print()
+        logger.info()
         
         all_errors.extend(validate_environment_specific())
-        print()
+        logger.info()
         
         all_errors.extend(validate_paths())
-        print()
+        logger.info()
         
         all_errors.extend(await validate_external_services())
-        print()
+        logger.info()
         
         all_errors.extend(validate_configuration())
-        print()
+        logger.info()
         
         # Résumé final
         success = print_summary(all_errors)
@@ -264,7 +265,7 @@ async def main():
         
     except Exception as e:
         print_error(f"Erreur critique lors de la validation: {e}")
-        print(f"{Color.YELLOW}💡 Vérifiez que toutes les dépendances sont installées{Color.END}")
+        logger.info(f"{Color.YELLOW}💡 Vérifiez que toutes les dépendances sont installées{Color.END}")
         sys.exit(1)
 
 

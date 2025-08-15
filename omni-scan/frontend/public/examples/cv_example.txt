@@ -1,0 +1,15 @@
+Exemple de CV pour test OCR
+
+Jean DUPONT
+Développeur Full Stack
+jean.dupont@email.com  < /dev/null |  06 12 34 56 78
+
+EXPÉRIENCE
+2020-2025 : Lead Developer chez TechCorp
+- Architecture microservices
+- Management équipe 5 personnes
+
+COMPÉTENCES
+- React, Node.js, Python
+- Docker, Kubernetes
+- Méthodes Agiles

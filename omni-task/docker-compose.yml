@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: ${COOLIFY_CONTAINER_NAME:-omni-task}
+    image: ${DOCKER_REGISTRY_IMAGE:-omni-task}:${SOURCE_COMMIT:-latest}
+    build:
+      context: ../../../  # Remonte à la racine du monorepo
+      dockerfile: Dockerfile.omnitask
+      args:
+        # Variables passées au build pour Next.js
+        - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+        - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://task.omnirealm.tech}
+        - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+        - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - '3002:3002'
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - HOSTNAME=0.0.0.0
+      - NEXT_TELEMETRY_DISABLED=1
+      # Variables Supabase
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://task.omnirealm.tech}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      # API Keys
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # Coolify specifics
+      - COOLIFY_URL=${COOLIFY_URL:-localhost}
+      - COOLIFY_FQDN=${COOLIFY_FQDN:-localhost}
+      - COOLIFY_BRANCH=${COOLIFY_BRANCH:-main}
+      - SOURCE_COMMIT=${SOURCE_COMMIT:-latest}
+    restart: unless-stopped
