@@ -56,7 +56,7 @@ export function SuccessPage() {
         ) : (
           <button
             onClick={() => window.location.href = '/'}
-            className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+            className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
           >
             Accéder à l'application
           </button>

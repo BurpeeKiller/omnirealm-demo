@@ -1,5 +1,13 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, Lock, Database, Cloud, Key, Eye, Server } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Shield, Lock, Database, Cloud, Key, Eye, Server } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter,
+} from '@/components/ui/adaptive-dialog';
 
 interface SecurityModalProps {
   isOpen: boolean;
@@ -7,7 +15,6 @@ interface SecurityModalProps {
 }
 
 export const SecurityModal = ({ isOpen, onClose }: SecurityModalProps) => {
-  if (!isOpen) return null;
 
   const securityFeatures = [
     {
@@ -58,44 +65,16 @@ export const SecurityModal = ({ isOpen, onClose }: SecurityModalProps) => {
   ];
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-[9998]"
-            onClick={onClose}
-          />
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent hideCloseButton>
+        <DialogHeader 
+          gradient="from-green-600 to-emerald-600"
+          icon={<Shield className="w-8 h-8 text-white" />}
+        >
+          <DialogTitle>Votre Vie Privée est Protégée</DialogTitle>
+        </DialogHeader>
 
-          {/* Modal */}
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full bg-gray-900 rounded-2xl shadow-2xl z-[9999] overflow-hidden"
-            style={{ pointerEvents: 'auto' }}
-          >
-            {/* Header */}
-            <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Shield className="w-8 h-8 text-white" />
-                  <h2 className="text-2xl font-bold text-white">Votre Vie Privée est Protégée</h2>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-                >
-                  <X className="w-6 h-6 text-white" />
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
+        <DialogBody>
               {/* Section Sécurité Locale */}
               <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4 text-white">🔒 Sécurité Totale en Local</h3>
@@ -179,20 +158,17 @@ export const SecurityModal = ({ isOpen, onClose }: SecurityModalProps) => {
                   car elles passent directement entre votre appareil et OpenAI.
                 </p>
               </motion.div>
-            </div>
+        </DialogBody>
 
-            {/* Footer */}
-            <div className="bg-gray-800 px-6 py-4 border-t border-gray-700">
-              <button
-                onClick={onClose}
-                className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
-              >
-                J'ai compris - Mes données sont en sécurité
-              </button>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+        <DialogFooter>
+          <button
+            onClick={onClose}
+            className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+          >
+            J'ai compris - Mes données sont en sécurité
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };

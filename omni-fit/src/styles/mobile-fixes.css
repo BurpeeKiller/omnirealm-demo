@@ -1,0 +1,48 @@
+/* Fixes spécifiques pour mobile */
+
+/* Prevent iOS zoom on input focus */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Safe area pour les iPhones avec encoche */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Améliorer le scroll sur mobile */
+.modal-content {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Éviter que le contenu soit caché derrière le clavier */
+@supports (height: 100dvh) {
+  .modal-container {
+    min-height: 100dvh;
+    min-height: 100dvh;
+  }
+}
+
+/* Améliorer les performances des animations sur mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .modal-backdrop {
+    backdrop-filter: none;
+    background-color: rgba(0, 0, 0, 0.95);
+  }
+}

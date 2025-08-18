@@ -28,7 +28,7 @@ export function PrivacyStep() {
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="flex items-start gap-4 bg-gray-800 p-4 rounded-xl"
+          className="flex items-start gap-4 bg-gray-800 p-4 rounded-lg"
         >
           <div className="bg-blue-500/20 p-2 rounded-lg mt-1">
             <Database className="w-6 h-6 text-blue-400" />
@@ -46,7 +46,7 @@ export function PrivacyStep() {
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex items-start gap-4 bg-gray-800 p-4 rounded-xl"
+          className="flex items-start gap-4 bg-gray-800 p-4 rounded-lg"
         >
           <div className="bg-purple-500/20 p-2 rounded-lg mt-1">
             <Smartphone className="w-6 h-6 text-purple-400" />
@@ -64,7 +64,7 @@ export function PrivacyStep() {
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="flex items-start gap-4 bg-gray-800 p-4 rounded-xl"
+          className="flex items-start gap-4 bg-gray-800 p-4 rounded-lg"
         >
           <div className="bg-fuchsia-500/20 p-2 rounded-lg mt-1">
             <Cloud className="w-6 h-6 text-fuchsia-400" />
@@ -83,7 +83,7 @@ export function PrivacyStep() {
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="flex items-start gap-4 bg-gray-800 p-4 rounded-xl"
+          className="flex items-start gap-4 bg-gray-800 p-4 rounded-lg"
         >
           <div className="bg-green-500/20 p-2 rounded-lg mt-1">
             <Lock className="w-6 h-6 text-green-400" />
@@ -102,7 +102,7 @@ export function PrivacyStep() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-8"
+        className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-8"
       >
         <div className="flex items-center gap-3">
           <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -116,7 +116,7 @@ export function PrivacyStep() {
         onClick={completeWelcome}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-semibold text-lg shadow-lg"
+        className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-lg font-semibold text-lg shadow-lg"
       >
         J'ai compris, continuer
       </motion.button>

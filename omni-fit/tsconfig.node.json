@@ -2,6 +2,7 @@
   "extends": "../../../shared/config/tsconfig.node.json",
   "compilerOptions": {
     "composite": true,
+    "module": "esnext",
     "moduleResolution": "bundler"
   },
   "include": ["vite.config.ts"]

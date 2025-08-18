@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
 import { OmniFitLogo } from '@/components/Branding/OmniFitLogo';
-import { Crown, Zap, Brain, Trophy, ArrowRight, Play, Users } from 'lucide-react';
+import { Crown, Zap, Brain, Trophy, ArrowRight, Play, Users, LogIn } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useState } from 'react';
 import { UpgradePrompt } from '@/components/Premium';
+import { LoginModal } from '@/components/Auth/LoginModalShadcn';
 
 interface LandingPageProps {
   onStartFree: () => void;
@@ -13,6 +14,7 @@ interface LandingPageProps {
 export const LandingPage = ({ onStartFree }: LandingPageProps) => {
   const { startTrial } = useSubscription();
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const features = [
     {
@@ -69,6 +71,21 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
+      {/* Header avec connexion */}
+      <header className="fixed top-0 right-0 p-6 z-[90]">
+        <motion.button
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowLoginModal(true)}
+          className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-lg border border-white/20 hover:bg-white/20 transition-colors"
+        >
+          <LogIn className="w-4 h-4" />
+          Se connecter
+        </motion.button>
+      </header>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 animate-pulse" />
@@ -98,7 +115,7 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleStartPremiumTrial}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl shadow-lg flex items-center gap-2 justify-center"
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-lg shadow-lg flex items-center gap-2 justify-center"
               >
                 <Play className="w-5 h-5" />
                 Essai Gratuit 7 Jours
@@ -108,7 +125,7 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={onStartFree}
-                className="px-8 py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-700 transition-colors"
+                className="px-8 py-4 bg-gray-800 text-white font-bold rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
               >
                 Commencer Gratuitement
               </motion.button>
@@ -139,7 +156,7 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-colors"
+                className="bg-gray-800/50 bg-opacity-95 rounded-lg p-6 border border-gray-700 hover:border-purple-500 transition-colors"
               >
                 <div className="flex items-start justify-between mb-4">
                   <feature.icon className="w-8 h-8 text-purple-400" />
@@ -187,7 +204,7 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-800 rounded-xl p-6"
+                className="bg-gray-800 rounded-lg p-6"
               >
                 <div className="flex mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
@@ -211,7 +228,7 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-12"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-12"
           >
             <h2 className="text-3xl font-bold text-white mb-4">
               Prêt à transformer votre routine fitness ?
@@ -224,7 +241,7 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowUpgradePrompt(true)}
-                className="px-8 py-4 bg-white text-purple-600 font-bold rounded-xl shadow-lg flex items-center gap-2 justify-center"
+                className="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg shadow-lg flex items-center gap-2 justify-center"
               >
                 <Crown className="w-5 h-5" />
                 Voir les Plans Premium
@@ -234,7 +251,7 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={onStartFree}
-                className="px-8 py-4 bg-purple-700 text-white font-bold rounded-xl shadow-lg hover:bg-purple-800 transition-colors flex items-center gap-2 justify-center"
+                className="px-8 py-4 bg-purple-700 text-white font-bold rounded-lg shadow-lg hover:bg-purple-800 transition-colors flex items-center gap-2 justify-center"
               >
                 Démarrer Maintenant
                 <ArrowRight className="w-5 h-5" />
@@ -253,6 +270,9 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
               <span className="text-gray-400">© 2025 OmniRealm</span>
             </div>
             <div className="flex gap-6 text-sm text-gray-400">
+              <a href="/pricing" className="hover:text-white transition-colors">
+                Tarifs
+              </a>
               <a href="/privacy" className="hover:text-white transition-colors">
                 Confidentialité
               </a>
@@ -272,6 +292,9 @@ export const LandingPage = ({ onStartFree }: LandingPageProps) => {
 
       {/* Upgrade Modal */}
       <UpgradePrompt isOpen={showUpgradePrompt} onClose={() => setShowUpgradePrompt(false)} />
+      
+      {/* Login Modal */}
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </div>
   );
 };

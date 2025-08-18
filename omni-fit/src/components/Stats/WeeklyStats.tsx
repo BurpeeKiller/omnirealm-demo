@@ -7,7 +7,8 @@ import { fr } from 'date-fns/locale';
 import { logger } from '@/utils/logger';
 
 // Lazy loading des composants Chart.js
-const ChartComponents = lazy(() => import('./ChartComponents'));
+const Line = lazy(() => import('./ChartComponents').then(module => ({ default: module.Line })));
+const Bar = lazy(() => import('./ChartComponents').then(module => ({ default: module.Bar })));
 
 export const WeeklyStats = () => {
   const [weekStats, setWeekStats] = useState<DailyStatsType[]>([]);
@@ -151,7 +152,7 @@ export const WeeklyStats = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4">
         <motion.div
-          className="stat-card text-center"
+          className="stat-card text-center transition-all duration-200 hover:shadow-lg hover:border-gray-600 hover:translate-y-[-2px] cursor-default"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -161,7 +162,7 @@ export const WeeklyStats = () => {
         </motion.div>
 
         <motion.div
-          className="stat-card text-center"
+          className="stat-card text-center transition-all duration-200 hover:shadow-lg hover:border-gray-600 hover:translate-y-[-2px] cursor-default"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -171,7 +172,7 @@ export const WeeklyStats = () => {
         </motion.div>
 
         <motion.div
-          className="stat-card text-center"
+          className="stat-card text-center transition-all duration-200 hover:shadow-lg hover:border-gray-600 hover:translate-y-[-2px] cursor-default"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -184,7 +185,7 @@ export const WeeklyStats = () => {
       {/* Line Chart - Exercise Evolution */}
       <Suspense
         fallback={
-          <div className="bg-gray-800 rounded-xl p-6">
+          <div className="bg-gray-800 rounded-lg p-4">
             <div className="animate-pulse">
               <div className="h-4 w-32 bg-gray-700 rounded mb-4"></div>
               <div className="h-64 bg-gray-700 rounded"></div>
@@ -193,14 +194,14 @@ export const WeeklyStats = () => {
         }
       >
         <motion.div
-          className="bg-gray-800 rounded-xl p-6"
+          className="bg-gray-800 rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:border-gray-600 border border-transparent"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
           <h4 className="text-lg font-semibold mb-4">Évolution par exercice</h4>
           <div className="h-64">
-            <ChartComponents data={chartData} options={chartOptions} type="line" />
+            <Line data={chartData} options={chartOptions} />
           </div>
         </motion.div>
       </Suspense>
@@ -208,7 +209,7 @@ export const WeeklyStats = () => {
       {/* Bar Chart - Daily Totals */}
       <Suspense
         fallback={
-          <div className="bg-gray-800 rounded-xl p-6">
+          <div className="bg-gray-800 rounded-lg p-4">
             <div className="animate-pulse">
               <div className="h-4 w-32 bg-gray-700 rounded mb-4"></div>
               <div className="h-64 bg-gray-700 rounded"></div>
@@ -217,14 +218,14 @@ export const WeeklyStats = () => {
         }
       >
         <motion.div
-          className="bg-gray-800 rounded-xl p-6"
+          className="bg-gray-800 rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:border-gray-600 border border-transparent"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
           <h4 className="text-lg font-semibold mb-4">Total par jour</h4>
           <div className="h-64">
-            <ChartComponents data={totalChartData} options={chartOptions} type="bar" />
+            <Bar data={totalChartData} options={chartOptions} />
           </div>
         </motion.div>
       </Suspense>
@@ -240,7 +241,7 @@ export const WeeklyStats = () => {
         {dayData.map((day, index) => (
           <motion.div
             key={day.date}
-            className="bg-gray-800 rounded-xl p-4"
+            className="bg-gray-800 rounded-lg p-4 transition-all duration-200 hover:shadow-md hover:border-gray-600 border border-transparent cursor-default"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 + index * 0.05 }}

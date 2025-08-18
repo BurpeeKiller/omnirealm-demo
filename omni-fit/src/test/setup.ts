@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
 // Mock TextEncoder/TextDecoder pour éviter les problèmes avec esbuild
+import { TextEncoder, TextDecoder } from 'util'
+
 if (typeof global.TextEncoder === 'undefined') {
-  const { TextEncoder, TextDecoder } = require('util')
-  global.TextEncoder = TextEncoder
-  global.TextDecoder = TextDecoder
+  global.TextEncoder = TextEncoder as any
+  global.TextDecoder = TextDecoder as any
 }
 
 // Mock localStorage

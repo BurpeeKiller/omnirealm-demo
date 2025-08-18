@@ -121,6 +121,16 @@ class SubscriptionService {
   // Vérifier si l'utilisateur est en période d'essai
   isInTrial(): boolean {
     const status = this.getSubscriptionStatus();
+    
+    // Si essai expiré, reset automatiquement
+    if (status.type === 'trial' && status.trialEnd) {
+      const now = new Date();
+      if (now > status.trialEnd) {
+        this.resetSubscription();
+        return false;
+      }
+    }
+    
     return status.type === 'trial' && status.status === 'trialing';
   }
 
@@ -153,48 +163,48 @@ class SubscriptionService {
     }
   }
 
-  // Rediriger vers Stripe Checkout
+  // Rediriger vers Stripe Checkout via notre Edge Function
   async redirectToCheckout(priceId: string): Promise<void> {
-    const stripe = await this.initializeStripe();
-    if (!stripe) {
-      logger.error('Stripe non initialisé');
-      return;
-    }
-
-    const sessionId = await this.createCheckoutSession(priceId);
-    if (!sessionId) {
-      logger.error('Impossible de créer la session checkout');
-      return;
-    }
-
-    const { error } = await stripe.redirectToCheckout({ sessionId });
-    if (error) {
+    try {
+      // Utiliser notre service Stripe avec Edge Functions
+      const { stripeService } = await import('./stripe');
+      
+      // Déterminer le plan basé sur le priceId
+      const plan = PRICING_PLANS.find(p => p.stripePriceId === priceId);
+      if (!plan) {
+        logger.error('Plan invalide pour priceId:', priceId);
+        return;
+      }
+      
+      // Créer la session et rediriger - géré automatiquement par le service
+      await stripeService.createCheckoutSession(
+        plan.interval === 'month' ? 'monthly' : 'yearly'
+      );
+    } catch (error) {
       logger.error('Erreur redirection checkout:', error);
+      // Afficher une notification d'erreur à l'utilisateur
+      const event = new CustomEvent('omnifit:error', {
+        detail: { message: 'Impossible de lancer le paiement. Veuillez réessayer.' }
+      });
+      window.dispatchEvent(event);
     }
   }
 
   // Gérer le portail client Stripe (pour gérer l'abonnement)
   async redirectToCustomerPortal(): Promise<void> {
     try {
-      // Récupérer le customer ID depuis le localStorage
-      const customerId = localStorage.getItem('omnifit_stripe_customer_id');
-      if (!customerId) {
-        logger.error('Aucun customer ID trouvé');
-        return;
-      }
-
-      const result = await apiService.createPortalSession(customerId);
+      // Utiliser notre service Stripe
+      const { stripeService } = await import('./stripe');
       
-      if (result.error) {
-        logger.error('Erreur API:', result.error);
-        return;
-      }
-
-      if (result.data?.url) {
-        window.location.href = result.data.url;
-      }
+      // Ouvrir le portail client - géré automatiquement par le service
+      await stripeService.openCustomerPortal();
     } catch (error) {
-      logger.error('Erreur création portail client:', error);
+      logger.error('Erreur ouverture portail client:', error);
+      // Afficher une notification d'erreur
+      const event = new CustomEvent('omnifit:error', {
+        detail: { message: 'Impossible d\'accéder au portail. Veuillez réessayer.' }
+      });
+      window.dispatchEvent(event);
     }
   }
 

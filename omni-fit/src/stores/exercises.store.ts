@@ -5,6 +5,22 @@ import { analytics } from '@/services/analytics';
 import { syncService } from '@/services/sync';
 import { logger } from '@/utils/logger';
 
+interface ProgramExercise {
+  type: string;
+  sets: number;
+  reps: number;
+  rest: number;
+}
+
+interface ActiveProgram {
+  id: string;
+  name: string;
+  exercises: ProgramExercise[];
+  currentExerciseIndex: number;
+  completedExercises: number;
+  startedAt: string;
+}
+
 interface ExercisesState {
   exerciseDefinitions: ExerciseDefinition[];
   exercises: Exercise[];
@@ -20,6 +36,7 @@ interface ExercisesState {
     average: number;
     days: number;
   };
+  activeProgram: ActiveProgram | null;
   incrementExercise: (type: ExerciseType) => Promise<void>;
   addExercise: (name: string, count: number) => Promise<void>;
   deleteExercise: (id: string) => Promise<void>;
@@ -27,9 +44,14 @@ interface ExercisesState {
   loadWeeklyStats: () => Promise<void>;
   resetDaily: () => void;
   reset: () => Promise<void>;
+  // Programme methods
+  startProgram: (program: Omit<ActiveProgram, 'currentExerciseIndex' | 'completedExercises' | 'startedAt'>) => void;
+  completeCurrentProgramExercise: () => void;
+  cancelProgram: () => void;
 }
 
 export const useExercisesStore = create<ExercisesState>((set, get) => ({
+  activeProgram: null,
   exerciseDefinitions: [
     {
       type: 'burpees',
@@ -49,6 +71,27 @@ export const useExercisesStore = create<ExercisesState>((set, get) => ({
       type: 'squats',
       name: 'Squats',
       emoji: '🦵',
+      count: 0,
+      increment: 10,
+    },
+    {
+      type: 'plank',
+      name: 'Planche',
+      emoji: '🏋️',
+      count: 0,
+      increment: 30, // en secondes
+    },
+    {
+      type: 'jumping-jacks',
+      name: 'Jumping Jacks',
+      emoji: '⭐',
+      count: 0,
+      increment: 20,
+    },
+    {
+      type: 'lunges',
+      name: 'Fentes',
+      emoji: '🚶',
       count: 0,
       increment: 10,
     },
@@ -279,5 +322,63 @@ export const useExercisesStore = create<ExercisesState>((set, get) => ({
     } catch (error) {
       logger.error('Error resetting exercises:', error);
     }
+  },
+
+  // Programme methods
+  startProgram: (program) => {
+    set({
+      activeProgram: {
+        ...program,
+        currentExerciseIndex: 0,
+        completedExercises: 0,
+        startedAt: new Date().toISOString(),
+      },
+    });
+    
+    logger.info('Started program:', program.name);
+  },
+
+  completeCurrentProgramExercise: () => {
+    const { activeProgram } = get();
+    if (!activeProgram) return;
+
+    const newCompletedExercises = activeProgram.completedExercises + 1;
+    const newCurrentExerciseIndex = activeProgram.currentExerciseIndex + 1;
+
+    if (newCurrentExerciseIndex >= activeProgram.exercises.length) {
+      // Programme terminé
+      analytics.trackEvent('program_completed', {
+        program_id: activeProgram.id,
+        program_name: activeProgram.name,
+        duration: Date.now() - new Date(activeProgram.startedAt).getTime(),
+      });
+      
+      set({ activeProgram: null });
+      logger.info('Program completed:', activeProgram.name);
+    } else {
+      // Passer à l'exercice suivant
+      set({
+        activeProgram: {
+          ...activeProgram,
+          currentExerciseIndex: newCurrentExerciseIndex,
+          completedExercises: newCompletedExercises,
+        },
+      });
+    }
+  },
+
+  cancelProgram: () => {
+    const { activeProgram } = get();
+    if (activeProgram) {
+      analytics.trackEvent('program_cancelled', {
+        program_id: activeProgram.id,
+        program_name: activeProgram.name,
+        progress: `${activeProgram.completedExercises}/${activeProgram.exercises.length}`,
+      });
+      
+      logger.info('Program cancelled:', activeProgram.name);
+    }
+    
+    set({ activeProgram: null });
   },
 }));

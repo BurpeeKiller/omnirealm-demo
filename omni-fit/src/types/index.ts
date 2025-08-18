@@ -1,4 +1,4 @@
-export type ExerciseType = 'burpees' | 'pushups' | 'squats';
+export type ExerciseType = 'burpees' | 'pushups' | 'squats' | 'plank' | 'jumping-jacks' | 'lunges';
 
 export interface ExerciseDefinition {
   type: ExerciseType;
@@ -31,6 +31,9 @@ export interface DailyStats {
   burpees: number;
   pushups: number;
   squats: number;
+  plank: number;
+  'jumping-jacks': number;
+  lunges: number;
   total: number;
 }
 
@@ -43,6 +46,9 @@ export interface ReminderSettings {
     burpees: number;
     pushups: number;
     squats: number;
+    plank: number;
+    'jumping-jacks': number;
+    lunges: number;
   };
   activeDays: string[];
   soundEnabled: boolean;

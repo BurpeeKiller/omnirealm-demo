@@ -1,9 +1,9 @@
 // Import optimisé - la configuration est déjà faite dans chart-setup.ts
-import { Line, Bar } from 'react-chartjs-2';
+import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { lineChartOptions, barChartOptions } from '@/config/chart-setup';
 
 // Export direct des composants pour le lazy loading
-export { Line, Bar };
+export { Line, Bar, Doughnut };
 export { lineChartOptions, barChartOptions };
 
 // Export des options de configuration communes

@@ -88,7 +88,11 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps = {}) => {
         </div>
 
         {/* Contenu de l'étape */}
-        <AnimatePresence mode="wait">{stepComponents[state.currentStep]}</AnimatePresence>
+        <AnimatePresence mode="wait">
+          <div key={`step-${state.currentStep}`}>
+            {stepComponents[state.currentStep]}
+          </div>
+        </AnimatePresence>
       </div>
     </motion.div>
   );

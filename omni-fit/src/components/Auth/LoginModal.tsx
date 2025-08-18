@@ -48,21 +48,22 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50"
+            className="fixed inset-0 bg-black/80 z-[100]"
             onClick={onClose}
           />
 
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          >
-            <div className="bg-gray-800 rounded-2xl p-8 max-w-md w-full">
+          {/* Modal centrée */}
+          <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-gray-800 rounded-xl p-6 sm:p-8 max-w-md w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-200">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-200">
                   {mode === 'login' ? 'Connexion' : 'Inscription'}
                 </h2>
                 <button
@@ -88,8 +89,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full pl-10 pr-3 py-3 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                      className="w-full pl-10 pr-3 py-3 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-400 text-base"
                       placeholder="votre@email.com"
+                      autoComplete="email"
                     />
                   </div>
                 </div>
@@ -111,80 +113,71 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
-                      className="w-full pl-10 pr-12 py-3 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                      className="w-full pl-10 pr-10 py-3 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-400 text-base"
                       placeholder="••••••••"
+                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-400"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
                 </div>
 
-                {/* Error */}
+                {/* Error message */}
                 {error && (
-                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
-                    {error}
+                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <p className="text-red-400 text-sm">{error}</p>
                   </div>
                 )}
 
-                {/* Submit */}
+                {/* Submit button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-gradient-to-r from-primary-400 to-secondary-400 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-gradient-to-r from-primary-400 to-primary-500 text-white font-semibold rounded-lg hover:from-primary-500 hover:to-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading ? (
-                    'Chargement...'
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  ) : mode === 'login' ? (
+                    <>
+                      <LogIn className="w-5 h-5" />
+                      Se connecter
+                    </>
                   ) : (
                     <>
-                      {mode === 'login' ? (
-                        <LogIn className="w-5 h-5" />
-                      ) : (
-                        <UserPlus className="w-5 h-5" />
-                      )}
-                      {mode === 'login' ? 'Se connecter' : "S'inscrire"}
+                      <UserPlus className="w-5 h-5" />
+                      S'inscrire
                     </>
                   )}
                 </button>
+
+                {/* Switch mode */}
+                <div className="text-center pt-4 border-t border-gray-700">
+                  <p className="text-gray-400 text-sm">
+                    {mode === 'login'
+                      ? "Pas encore de compte ?"
+                      : "Déjà un compte ?"}
+                    {' '}
+                    <button
+                      type="button"
+                      onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+                      className="text-primary-400 hover:text-primary-300 font-medium"
+                    >
+                      {mode === 'login' ? "S'inscrire" : "Se connecter"}
+                    </button>
+                  </p>
+                </div>
               </form>
-
-              {/* Toggle mode */}
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-400">
-                  {mode === 'login' ? 'Pas encore de compte ?' : 'Déjà inscrit ?'}
-                  <button
-                    onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-                    className="ml-1 text-primary-400 hover:text-primary-300 font-medium"
-                  >
-                    {mode === 'login' ? "S'inscrire" : 'Se connecter'}
-                  </button>
-                </p>
-              </div>
-
-              {/* Benefits */}
-              <div className="mt-6 pt-6 border-t border-gray-700">
-                <p className="text-sm text-gray-500 text-center mb-3">Avantages d'un compte :</p>
-                <ul className="space-y-2 text-sm text-gray-400">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-400">✓</span>
-                    Synchronisation multi-appareils
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-400">✓</span>
-                    Sauvegarde cloud automatique
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-400">✓</span>
-                    Statistiques avancées (Pro)
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

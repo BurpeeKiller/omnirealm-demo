@@ -1,10 +1,23 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, TrendingUp, Calendar, BarChart3, History, Brain } from 'lucide-react';
+import { TrendingUp, Calendar, BarChart3, History, Brain, Lock } from 'lucide-react';
 import { DailyStats } from './DailyStats';
 import { WeeklyStats } from './WeeklyStats';
 import { HistoryStats } from './HistoryStats';
 import { AnalyticsView } from '@/components/Analytics';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/hooks/useAuth';
+import { lazy, Suspense } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from '@/components/ui/adaptive-dialog';
+import { DialogTabs } from '@/components/ui/dialog-tabs';
+
+const UpgradePrompt = lazy(() => import('@/components/Premium').then(module => ({ default: module.UpgradePrompt })));
 
 interface StatsProps {
   isOpen: boolean;
@@ -13,85 +26,46 @@ interface StatsProps {
 
 export const Stats = ({ isOpen, onClose }: StatsProps) => {
   const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'history' | 'analytics'>('daily');
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const { isPremium } = useSubscription();
+  const { isPremium: isPremiumAuth } = useAuth();
+  const isReallyPremium = isPremium || isPremiumAuth;
 
   const tabs = [
-    { id: 'daily', label: 'Aujourd\'hui', icon: Calendar },
-    { id: 'weekly', label: 'Semaine', icon: BarChart3 },
-    { id: 'history', label: 'Historique', icon: History },
-    { id: 'analytics', label: 'Analyse', icon: Brain },
+    { id: 'daily', label: 'Aujourd\'hui', icon: Calendar, premium: false },
+    { id: 'weekly', label: 'Semaine', icon: BarChart3, premium: false },
+    { id: 'history', label: 'Historique', icon: History, premium: false },
+    { id: 'analytics', label: 'Analyse', icon: Brain, premium: true },
   ] as const;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-50"
-            onClick={onClose}
+    <>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent hideCloseButton>
+          <DialogHeader
+            gradient="from-purple-600 to-pink-600"
+            icon={<TrendingUp className="w-8 h-8 text-white" />}
+            subtitle="Suivez vos progrès et restez motivé"
+          >
+            Statistiques
+          </DialogHeader>
+
+          <DialogTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={(tab) => {
+              const tabInfo = tabs.find(t => t.id === tab);
+              if (tabInfo?.premium && !isReallyPremium) {
+                setShowUpgradePrompt(true);
+              } else {
+                setActiveTab(tab as any);
+              }
+            }}
+            isPremium={isReallyPremium}
+            activeColor="purple"
           />
 
-          {/* Modal optimisé pour mobile */}
-          <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 h-[85vh] md:h-auto md:max-h-[90vh] md:inset-x-4 md:inset-y-auto md:top-[5%] md:bottom-[5%] md:max-w-4xl md:mx-auto bg-white dark:bg-gray-900 rounded-t-3xl md:rounded-3xl shadow-2xl z-50 flex flex-col overflow-hidden"
-          >
-            {/* Header avec gradient */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <TrendingUp className="w-8 h-8" />
-                  Statistiques
-                </h2>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-                >
-                  <X className="w-6 h-6 text-white" />
-                </motion.button>
-              </div>
-              <p className="text-purple-100">Suivez vos progrès et restez motivé</p>
-            </div>
-
-            {/* Tabs avec design moderne */}
-            <div className="bg-gray-50 dark:bg-gray-800 px-2 py-2">
-              <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  
-                  return (
-                    <motion.button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`
-                        flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg
-                        font-medium transition-all duration-200
-                        ${isActive 
-                          ? 'bg-white dark:bg-gray-900 text-purple-600 dark:text-purple-400 shadow-sm' 
-                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                        }
-                      `}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Icon className={`w-5 h-5 ${isActive ? 'text-purple-600' : ''}`} />
-                      <span className="hidden sm:inline">{tab.label}</span>
-                    </motion.button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Content avec animations fluides */}
-            <div className="flex-1 overflow-hidden bg-gray-50 dark:bg-gray-800">
+          <DialogBody>
               <AnimatePresence mode="wait">
                 {activeTab === 'daily' && (
                   <motion.div
@@ -150,10 +124,9 @@ export const Stats = ({ isOpen, onClose }: StatsProps) => {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+          </DialogBody>
 
-            {/* Footer avec résumé rapide */}
-            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4">
+          <DialogFooter>
               <div className="flex justify-around text-center">
                 <div>
                   <p className="text-2xl font-bold text-purple-600">12</p>
@@ -170,10 +143,18 @@ export const Stats = ({ isOpen, onClose }: StatsProps) => {
                   <p className="text-xs text-gray-600 dark:text-gray-400">Total cette semaine</p>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Upgrade Prompt Modal */}
+      <Suspense fallback={null}>
+        <UpgradePrompt 
+          isOpen={showUpgradePrompt} 
+          onClose={() => setShowUpgradePrompt(false)}
+          feature="les analytics avancées"
+        />
+      </Suspense>
+    </>
   );
 };

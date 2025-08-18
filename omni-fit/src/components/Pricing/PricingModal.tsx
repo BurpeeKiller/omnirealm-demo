@@ -1,7 +1,10 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Zap, Users, Star } from 'lucide-react';
+import { Check, Zap, Users, Star } from 'lucide-react';
 import { LEMONSQUEEZY_CONFIG } from '@/lib/lemonsqueezy/config';
 import { useAuth } from '@/hooks/useAuth';
+import {
+  Dialog,
+  DialogContent,
+} from '@/components/ui/dialog';
 
 interface PricingModalProps {
   isOpen: boolean;
@@ -32,45 +35,20 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50"
-            onClick={onClose}
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
-          >
-            <div className="bg-gray-900 rounded-2xl p-8 max-w-5xl w-full my-8">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-200 mb-2">Choisissez votre plan</h2>
-                  <p className="text-gray-400">Débloquez tout le potentiel d'OmniFit</p>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="bg-gray-900 max-w-5xl max-h-[90vh] overflow-y-auto">
+        <div className="p-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-200 mb-2">Choisissez votre plan</h2>
+            <p className="text-gray-400">Débloquez tout le potentiel d'OmniFit</p>
+          </div>
 
               {/* Plans */}
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Free Plan */}
                 <div
-                  className={`relative rounded-2xl p-6 ${
+                  className={`relative rounded-xl p-6 ${
                     plan === 'free' ? 'bg-gray-800 ring-2 ring-primary-400' : 'bg-gray-800/50'
                   }`}
                 >
@@ -107,7 +85,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
 
                 {/* Pro Plan */}
                 <div
-                  className={`relative rounded-2xl p-6 ${
+                  className={`relative rounded-xl p-6 ${
                     plan === 'pro'
                       ? 'bg-gray-800 ring-2 ring-primary-400'
                       : 'bg-gradient-to-b from-primary-900/20 to-gray-800'
@@ -165,7 +143,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
 
                 {/* Team Plan */}
                 <div
-                  className={`relative rounded-2xl p-6 ${
+                  className={`relative rounded-xl p-6 ${
                     plan === 'team' ? 'bg-gray-800 ring-2 ring-primary-400' : 'bg-gray-800/50'
                   }`}
                 >
@@ -212,16 +190,14 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="mt-8 text-center">
-                <p className="text-sm text-gray-500">
-                  🔒 Paiement sécurisé par LemonSqueezy • Annulation à tout moment
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          {/* Footer */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-500">
+              🔒 Paiement sécurisé par LemonSqueezy • Annulation à tout moment
+            </p>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

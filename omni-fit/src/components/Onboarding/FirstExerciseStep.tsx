@@ -89,7 +89,7 @@ export const FirstExerciseStep = ({ onNext }: FirstExerciseStepProps) => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="bg-gray-800 rounded-2xl p-8"
+      className="bg-gray-800 rounded-lg p-8"
     >
       {/* En-tête */}
       <motion.div
@@ -119,10 +119,10 @@ export const FirstExerciseStep = ({ onNext }: FirstExerciseStepProps) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + index * 0.1 }}
                 onClick={() => setSelectedExercise(exercise.type)}
-                className={`w-full p-4 rounded-xl border-2 transition-all ${
+                className={`w-full p-4 rounded-lg border-2 transition-all duration-200 ${
                   selectedExercise === exercise.type
                     ? 'border-primary-400 bg-primary-400/10'
-                    : 'border-gray-600 bg-gray-700/50 hover:border-gray-500'
+                    : 'border-gray-600 bg-gray-700/50 hover:border-gray-500 hover:shadow-lg hover:translate-y-[-2px]'
                 }`}
               >
                 <div className="flex items-center gap-4">

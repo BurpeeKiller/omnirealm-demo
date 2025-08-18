@@ -129,13 +129,13 @@ export function AIChat() {
             <div className="flex flex-wrap gap-2 justify-center">
               <button
                 onClick={() => handleQuickAction('workout')}
-                className="px-4 py-2 bg-primary-500/20 text-primary-400 rounded-lg hover:bg-primary-500/30 transition-colors text-sm"
+                className="px-4 py-2 bg-gray-800 text-gray-100 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all duration-200 text-sm font-medium"
               >
                 📋 Programme du jour
               </button>
               <button
                 onClick={() => handleQuickAction('motivation')}
-                className="px-4 py-2 bg-primary-500/20 text-primary-400 rounded-lg hover:bg-primary-500/30 transition-colors text-sm"
+                className="px-4 py-2 bg-gray-800 text-gray-100 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all duration-200 text-sm font-medium"
               >
                 💪 Motivation
               </button>
@@ -151,22 +151,22 @@ export function AIChat() {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-3"
             >
-              {/* Message utilisateur */}
+              {/* Message utilisateur - Meilleur contraste avec bg-primary-600 */}
               <div className="flex justify-end">
-                <div className="max-w-[80%] px-4 py-2 bg-primary-500 text-white rounded-2xl rounded-br-sm">
+                <div className="max-w-[80%] px-4 py-2 bg-primary-600 text-white rounded-lg rounded-br-sm shadow-md">
                   {item.message}
                 </div>
               </div>
 
-              {/* Réponse AI */}
+              {/* Réponse AI - Amélioration du contraste */}
               <div className="flex justify-start">
                 <div className="max-w-[80%]">
-                  <div className="px-4 py-2 bg-gray-800 text-gray-100 rounded-2xl rounded-bl-sm border border-gray-700">
+                  <div className="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg rounded-bl-sm border border-gray-600 shadow-md">
                     <div className="whitespace-pre-wrap leading-relaxed">
                       {item.response}
                     </div>
                   </div>
-                  <div className="text-xs text-gray-500 mt-1 px-2">
+                  <div className="text-xs text-gray-400 mt-1 px-2">
                     {item.provider} • {item.latency}ms
                     {item.cost > 0 && ` • $${item.cost.toFixed(4)}`}
                   </div>
@@ -208,7 +208,7 @@ export function AIChat() {
               <button
                 key={index}
                 onClick={() => handleSuggestion(suggestion)}
-                className="px-3 py-1.5 bg-gray-800 text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-700 transition-colors"
+                className="px-3 py-1.5 bg-gray-700 text-gray-100 border border-gray-600 rounded-full text-sm whitespace-nowrap hover:bg-gray-600 transition-all duration-200"
               >
                 {suggestion}
               </button>
@@ -227,13 +227,13 @@ export function AIChat() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Pose ta question..."
             disabled={isLoading}
-            className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50"
+            className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-full placeholder-gray-500 focus:border-primary-400 focus:ring-1 focus:ring-primary-400/20 focus:outline-none disabled:opacity-50 transition-all duration-200"
           />
           <motion.button
             type="submit"
             disabled={isLoading || !input.trim()}
             whileTap={{ scale: 0.95 }}
-            className="p-2 bg-primary-500 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-600 transition-colors"
+            className="p-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-full shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <Send className="w-5 h-5" />
           </motion.button>

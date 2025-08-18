@@ -7,8 +7,11 @@ const OnboardingFlow = lazy(() => import('@/components/Onboarding').then(module 
 const Privacy = lazy(() => import('@/pages/Privacy').then(module => ({ default: module.Privacy })));
 const Terms = lazy(() => import('@/pages/Terms').then(module => ({ default: module.Terms })));
 const CGV = lazy(() => import('@/pages/CGV').then(module => ({ default: module.CGV })));
+const Pricing = lazy(() => import('@/pages/Pricing').then(module => ({ default: module.Pricing })));
+const AuthCallback = lazy(() => import('@/pages/auth/callback').then(module => ({ default: module.AuthCallback })));
 import CookieBanner from '@/components/legal/CookieBanner';
 import { UmamiProvider } from '@/components/UmamiProvider';
+import { ErrorNotification } from '@/components/ErrorNotification';
 import { useAppState } from '@/hooks/useAppState';
 import { useExercisesStore } from '@/stores/exercises.store';
 import { useReminderTimer } from '@/hooks/useReminderTimer';
@@ -23,19 +26,21 @@ function App() {
   const { loadTodayStats } = useExercisesStore();
   const { requestPermission } = useNotification();
 
-  // Simple routing for legal pages
+  // Simple routing for legal and auth pages
   const path = window.location.pathname;
   const isLegalPage = ['/privacy', '/terms', '/cgv'].includes(path);
+  const isPricingPage = path === '/pricing';
+  const isAuthPage = path.startsWith('/auth/');
 
   // Gérer le timer de rappel avec cleanup approprié
-  useReminderTimer(currentView === 'dashboard' && !isLegalPage);
+  useReminderTimer(currentView === 'dashboard' && !isLegalPage && !isPricingPage);
 
   useEffect(() => {
     let mounted = true;
     let timer: NodeJS.Timeout | undefined;
     
     // Initialiser les services uniquement sur le dashboard
-    if (currentView === 'dashboard' && mounted && !isLegalPage) {
+    if (currentView === 'dashboard' && mounted && !isLegalPage && !isPricingPage) {
       // Délai pour éviter le double déclenchement
       timer = setTimeout(() => {
         if (!mounted) return;
@@ -53,12 +58,12 @@ function App() {
         clearTimeout(timer);
       }
     };
-  }, [currentView, loadTodayStats, requestPermission, isLegalPage]);
+  }, [currentView, loadTodayStats, requestPermission, isLegalPage, isPricingPage]);
 
   return (
     <UmamiProvider 
-      websiteId="TODO-REPLACE-WITH-UMAMI-WEBSITE-ID"
-      enabled={import.meta.env.PROD}
+      websiteId={import.meta.env.VITE_UMAMI_WEBSITE_ID || '3397bfec-f292-4173-bad6-f60a588a022c'}
+      enabled={import.meta.env.PROD && !!import.meta.env.VITE_UMAMI_WEBSITE_ID}
     >
       {/* Legal pages routing */}
       {isLegalPage && (
@@ -68,9 +73,23 @@ function App() {
           {path === '/cgv' && <CGV />}
         </Suspense>
       )}
+      
+      {/* Pricing page */}
+      {isPricingPage && (
+        <Suspense fallback={<LoadingSpinner />}>
+          <Pricing />
+        </Suspense>
+      )}
+      
+      {/* Auth pages routing */}
+      {isAuthPage && (
+        <Suspense fallback={<LoadingSpinner />}>
+          {path === '/auth/callback' && <AuthCallback />}
+        </Suspense>
+      )}
 
       {/* Main app */}
-      {!isLegalPage && (
+      {!isLegalPage && !isPricingPage && !isAuthPage && (
         <AnimatePresence mode="wait">
           {currentView === 'landing' && (
             <motion.div
@@ -118,6 +137,7 @@ function App() {
       )}
       
       <CookieBanner />
+      <ErrorNotification />
     </UmamiProvider>
   );
 }

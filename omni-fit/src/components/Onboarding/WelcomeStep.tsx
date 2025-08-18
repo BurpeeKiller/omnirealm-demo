@@ -29,7 +29,7 @@ export const WelcomeStep = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="bg-gray-800 rounded-2xl p-8 text-center"
+      className="bg-gray-800 rounded-lg p-8 text-center"
     >
       {/* En-tête */}
       <motion.div

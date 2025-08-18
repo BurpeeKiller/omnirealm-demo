@@ -1,5 +1,6 @@
 import { useSubscription } from '@/hooks/useSubscription';
 import { subscriptionService } from '@/services/subscription';
+import { isDevelopment } from '@/lib/config';
 
 export function DebugSubscription() {
   const { isPremium, isInTrial, subscriptionStatus } = useSubscription();
@@ -18,6 +19,9 @@ export function DebugSubscription() {
     subscriptionService.mockPremiumSubscription();
     window.location.reload();
   };
+
+  // Afficher seulement en développement
+  if (!isDevelopment) return null;
 
   return (
     <div className="fixed bottom-20 right-4 bg-gray-800 p-4 rounded-lg shadow-lg text-xs max-w-xs">

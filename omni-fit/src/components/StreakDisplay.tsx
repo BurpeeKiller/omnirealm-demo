@@ -4,6 +4,7 @@ import { getStreakStats } from '@/db/queries';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { logger } from '@/utils/logger';
+import { useGamificationStore } from '@/stores/gamification.store';
 
 interface StreakStats {
   currentStreak: number;
@@ -14,6 +15,7 @@ interface StreakStats {
 export default function StreakDisplay() {
   const [stats, setStats] = useState<StreakStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const { updateStreak } = useGamificationStore();
 
   useEffect(() => {
     loadStreakStats();
@@ -23,6 +25,11 @@ export default function StreakDisplay() {
     try {
       const streakData = await getStreakStats();
       setStats(streakData);
+      
+      // Mettre à jour la gamification
+      if (streakData) {
+        updateStreak(streakData.currentStreak);
+      }
     } catch (error) {
       logger.error('Erreur chargement streaks:', error);
     } finally {
@@ -39,7 +46,7 @@ export default function StreakDisplay() {
   return (
     <div className="grid grid-cols-2 gap-4">
       {/* Current Streak */}
-      <div className="bg-gradient-to-br from-orange-500 to-pink-600 p-4 rounded-xl text-white shadow-lg backdrop-blur-sm border border-white/10">
+      <div className="bg-gradient-to-br from-orange-500 to-pink-600 p-4 rounded-lg text-white shadow-lg bg-opacity-95 border border-white/10 transition-all duration-200 hover:shadow-xl hover:translate-y-[-2px] cursor-default">
         <div className="flex items-center justify-between mb-2">
           <Flame className="w-8 h-8" />
           <span className="text-2xl font-bold">{stats.currentStreak}</span>
@@ -51,7 +58,7 @@ export default function StreakDisplay() {
       </div>
 
       {/* Longest Streak */}
-      <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-4 rounded-xl text-white shadow-lg backdrop-blur-sm border border-white/10">
+      <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-4 rounded-lg text-white shadow-lg bg-opacity-95 border border-white/10 transition-all duration-200 hover:shadow-xl hover:translate-y-[-2px] cursor-default">
         <div className="flex items-center justify-between mb-2">
           <Trophy className="w-8 h-8" />
           <span className="text-2xl font-bold">{stats.longestStreak}</span>
@@ -64,7 +71,7 @@ export default function StreakDisplay() {
 
       {/* Last Workout */}
       {stats.lastWorkoutDate && (
-        <div className="col-span-2 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+        <div className="col-span-2 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg transition-all duration-200 hover:shadow-lg hover:border-gray-600 border border-transparent cursor-default">
           <div className="flex items-center gap-3">
             <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             <div>

@@ -1,118 +1,132 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase/client';
-import type { User, Session } from '@supabase/supabase-js';
-import { logger } from '@/utils/logger';
+import { useState, useEffect } from 'react';
+import { User } from '@supabase/supabase-js';
+import { authService, supabase } from '@/services/auth/auth.service';
 
-interface AuthState {
+interface UseAuthReturn {
   user: User | null;
-  session: Session | null;
-  loading: boolean;
-  plan: 'free' | 'pro' | 'team';
+  isAuthenticated: boolean;
+  isPremium: boolean;
+  isLoading: boolean;
+  signIn: (email: string, password: string) => Promise<{ error?: string }>;
+  signUp: (email: string, password: string) => Promise<{ error?: string }>;
+  signOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<{ error?: string }>;
+  signInWithGithub: () => Promise<{ error?: string }>;
+  resetPassword: (email: string) => Promise<{ error?: string }>;
 }
 
-export function useAuth() {
-  const [authState, setAuthState] = useState<AuthState>({
-    user: null,
-    session: null,
-    loading: true,
-    plan: 'free',
-  });
+export function useAuth(): UseAuthReturn {
+  const [user, setUser] = useState<User | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Récupérer la session initiale
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuthState((prev) => ({
-        ...prev,
-        session,
-        user: session?.user ?? null,
-        loading: false,
-      }));
-
-      // Si connecté, récupérer le plan
+    const initAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+      
       if (session?.user) {
-        fetchUserPlan(session.user.id);
+        await checkPremiumStatus(session.user.id);
       }
-    });
+      
+      setIsLoading(false);
+    };
+
+    initAuth();
 
     // Écouter les changements d'auth
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAuthState((prev) => ({
-        ...prev,
-        session,
-        user: session?.user ?? null,
-      }));
-
-      // Mettre à jour le plan si connecté
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user || null);
+      
       if (session?.user) {
-        fetchUserPlan(session.user.id);
+        await checkPremiumStatus(session.user.id);
       } else {
-        setAuthState((prev) => ({ ...prev, plan: 'free' }));
+        setIsPremium(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
-  const fetchUserPlan = async (userId: string) => {
+  const checkPremiumStatus = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', userId)
+        .from('omnifit.subscriptions')
+        .select('plan, status')
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(1)
         .single();
 
       if (!error && data) {
-        setAuthState((prev) => ({ ...prev, plan: data.plan }));
+        setIsPremium(data.plan === 'premium' || data.plan === 'premium_yearly');
+      } else {
+        setIsPremium(false);
       }
     } catch (error) {
-      logger.error('Error fetching user plan:', error);
+      console.error('Error checking premium status:', error);
+      setIsPremium(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { data, error };
+    const result = await authService.signIn(email, password);
+    if (result.error) {
+      return { error: result.error.message };
+    }
+    return {};
   };
 
   const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    return { data, error };
+    const result = await authService.signUp(email, password);
+    if (result.error) {
+      return { error: result.error.message };
+    }
+    return {};
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    await authService.signOut();
+  };
+
+  const signInWithGoogle = async () => {
+    const result = await authService.signInWithProvider('google');
+    if (result.error) {
+      return { error: result.error.message };
+    }
+    return {};
+  };
+
+  const signInWithGithub = async () => {
+    const result = await authService.signInWithProvider('github');
+    if (result.error) {
+      return { error: result.error.message };
+    }
+    return {};
   };
 
   const resetPassword = async (email: string) => {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
-    });
-    return { data, error };
+    const result = await authService.resetPassword(email);
+    if (result.error) {
+      return { error: result.error.message };
+    }
+    return {};
   };
 
   return {
-    user: authState.user,
-    session: authState.session,
-    loading: authState.loading,
-    plan: authState.plan,
-    isAuthenticated: !!authState.user,
-    isPro: authState.plan === 'pro' || authState.plan === 'team',
-    isTeam: authState.plan === 'team',
+    user,
+    isAuthenticated: !!user,
+    isPremium,
+    isLoading,
     signIn,
     signUp,
     signOut,
+    signInWithGoogle,
+    signInWithGithub,
     resetPassword,
   };
 }

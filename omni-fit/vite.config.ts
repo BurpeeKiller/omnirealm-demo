@@ -11,19 +11,18 @@ export default defineConfig({
     cors: true,
     hmr: {
       overlay: false,
-      clientPort: 443,
-      host: 'localhost',
+      port: 3003,
     },
     strictPort: false,
     allowedHosts: ['.ngrok-free.app', '.ngrok.io', 'localhost'],
     headers: {
       'Content-Security-Policy': [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io https://js.stripe.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com",
         "img-src 'self' data: blob: https:",
-        "connect-src 'self' https://plausible.io https://*.supabase.co wss://*.supabase.co https://checkout.stripe.com",
+        "connect-src 'self' ws://localhost:* wss://localhost:* https://plausible.io https://*.supabase.co wss://*.supabase.co https://api.supabase.omnirealm.tech https://checkout.stripe.com https://api.stripe.com",
         "media-src 'self' blob:",
         "worker-src 'self' blob:",
         "manifest-src 'self'",

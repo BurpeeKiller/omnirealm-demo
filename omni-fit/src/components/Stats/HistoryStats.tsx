@@ -8,7 +8,8 @@ import { fr } from 'date-fns/locale';
 import { logger } from '@/utils/logger';
 
 // Lazy load chart components
-const ChartComponents = lazy(() => import('./ChartComponents'));
+const Line = lazy(() => import('./ChartComponents').then(module => ({ default: module.Line })));
+const Doughnut = lazy(() => import('./ChartComponents').then(module => ({ default: module.Doughnut })));
 
 export const HistoryStats = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -114,14 +115,6 @@ export const HistoryStats = () => {
     ],
   };
 
-  const [ChartsLoaded, setChartsLoaded] = useState<any>(null);
-
-  // Load charts dynamically when needed
-  useEffect(() => {
-    import('./ChartComponents').then((module) => {
-      setChartsLoaded(module);
-    });
-  }, []);
 
   if (loading) {
     return (
@@ -191,7 +184,7 @@ export const HistoryStats = () => {
 
       {/* All-time Stats */}
       <motion.div
-        className="bg-gradient-to-br from-primary-500/20 to-secondary-500/20 rounded-xl p-6"
+        className="bg-gradient-to-br from-primary-500/20 to-secondary-500/20 rounded-lg p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -223,7 +216,7 @@ export const HistoryStats = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Doughnut Chart */}
         <motion.div
-          className="bg-gray-800 rounded-xl p-6"
+          className="bg-gray-800 rounded-lg p-6"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
@@ -231,9 +224,7 @@ export const HistoryStats = () => {
           <h4 className="text-lg font-semibold mb-4">Répartition par exercice</h4>
           <div className="h-64">
             <Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div></div>}>
-              {ChartsLoaded && (
-                <ChartsLoaded.Doughnut data={doughnutData} options={ChartsLoaded.getDoughnutChartOptions()} />
-              )}
+              <Doughnut data={doughnutData} />
             </Suspense>
           </div>
         </motion.div>
@@ -241,7 +232,7 @@ export const HistoryStats = () => {
         {/* Line Chart for Year */}
         {selectedPeriod === 'year' && (
           <motion.div
-            className="bg-gray-800 rounded-xl p-6"
+            className="bg-gray-800 rounded-lg p-6"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
@@ -249,9 +240,7 @@ export const HistoryStats = () => {
             <h4 className="text-lg font-semibold mb-4">Évolution {selectedYear}</h4>
             <div className="h-64">
               <Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div></div>}>
-                {ChartsLoaded && (
-                  <ChartsLoaded.Line data={lineData} options={ChartsLoaded.getLineChartOptions()} />
-                )}
+                <Line data={lineData} />
               </Suspense>
             </div>
           </motion.div>
@@ -261,7 +250,7 @@ export const HistoryStats = () => {
       {/* Year Summary */}
       {selectedPeriod === 'year' && (
         <motion.div
-          className="bg-gray-800 rounded-xl p-6"
+          className="bg-gray-800 rounded-lg p-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
@@ -286,7 +275,7 @@ export const HistoryStats = () => {
 
       {/* Records */}
       <motion.div
-        className="bg-gray-800 rounded-xl p-6"
+        className="bg-gray-800 rounded-lg p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}

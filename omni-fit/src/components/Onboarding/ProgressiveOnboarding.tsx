@@ -32,14 +32,14 @@ export const ProgressiveOnboarding = ({
       id: 'welcome',
       title: 'Bienvenue dans OmniFit',
       description: 'Transformez votre routine quotidienne avec des exercices simples et efficaces',
-      icon: <Zap className="w-8 h-8 text-primary-400" />,
+      icon: <Zap className="w-16 h-16 text-primary-400" />,
       skippable: false,
     },
     {
       id: 'notifications',
       title: 'Restez motivé',
       description: 'Activez les rappels pour ne jamais manquer vos exercices (optionnel)',
-      icon: <Bell className="w-8 h-8 text-blue-400" />,
+      icon: <Bell className="w-16 h-16 text-blue-400" />,
       action: requestNotifications,
       skippable: true,
     },
@@ -47,7 +47,7 @@ export const ProgressiveOnboarding = ({
       id: 'tracking',
       title: 'Suivez vos progrès',
       description: 'Vos données restent privées et locales sur votre appareil',
-      icon: <TrendingUp className="w-8 h-8 text-green-400" />,
+      icon: <TrendingUp className="w-16 h-16 text-green-400" />,
       skippable: true,
     },
   ];
@@ -148,27 +148,27 @@ export const ProgressiveOnboarding = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center p-4"
           onClick={handleClose}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="relative w-full max-w-md mx-auto"
+            className="relative w-full max-w-lg mx-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Bouton fermer */}
             <button
               onClick={handleClose}
-              className="absolute -top-2 -right-2 z-10 w-8 h-8 bg-gray-800 hover:bg-gray-700 text-white rounded-full flex items-center justify-center transition-colors"
+              className="absolute -top-3 -right-3 z-10 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
               aria-label="Fermer"
             >
-              <X className="w-4 h-4" />
+              <X className="w-6 h-6" />
             </button>
 
             {/* Contenu */}
-            <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
+            <div className="bg-gray-900 border-2 border-gray-600 rounded-2xl p-8 shadow-2xl">
               {/* Indicateur de progression */}
               <div className="flex gap-2 mb-6">
                 {steps.map((_, index) => (
@@ -194,30 +194,30 @@ export const ProgressiveOnboarding = ({
                 className="text-center"
               >
                 {/* Icône */}
-                <div className="flex justify-center mb-4">{step.icon}</div>
+                <div className="flex justify-center mb-6">{step.icon}</div>
 
                 {/* Titre */}
-                <h2 className="text-xl font-bold text-white mb-3">{step.title}</h2>
+                <h2 className="text-3xl font-bold text-white mb-4">{step.title}</h2>
 
                 {/* Description */}
-                <p className="text-gray-300 mb-8 leading-relaxed">{step.description}</p>
+                <p className="text-xl text-gray-300 mb-10 leading-relaxed">{step.description}</p>
 
                 {/* Actions */}
                 <div className="space-y-3">
                   <button
                     onClick={handleNext}
                     disabled={isClosing}
-                    className="w-full py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-4 text-lg bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-3 disabled:opacity-50 shadow-lg"
                   >
                     {isLastStep ? 'Commencer' : 'Continuer'}
-                    {!isLastStep && <ChevronRight className="w-4 h-4" />}
+                    {!isLastStep && <ChevronRight className="w-5 h-5" />}
                   </button>
 
                   {step.skippable && (
                     <button
                       onClick={handleSkip}
                       disabled={isClosing}
-                      className="w-full py-2 text-gray-400 hover:text-gray-300 transition-colors disabled:opacity-50"
+                      className="w-full py-3 text-lg text-gray-400 hover:text-gray-200 transition-colors disabled:opacity-50 underline"
                     >
                       {isLastStep ? 'Passer cette étape' : 'Ignorer'}
                     </button>
@@ -227,7 +227,7 @@ export const ProgressiveOnboarding = ({
 
               {/* Note de confidentialité */}
               <div className="mt-6 pt-4 border-t border-gray-700">
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-sm text-gray-400 text-center">
                   🔒 Vos workouts restent sur votre appareil, votre compte est protégé dans le cloud
                 </p>
               </div>
