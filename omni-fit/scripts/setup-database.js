@@ -39,7 +39,14 @@ async function runMigration() {
     const { Pool } = await import('pg');
     
     // Parser l'URL de la base de données
-    const dbUrl = process.env.DATABASE_URL || 'postgresql://postgres:IkqCgMegJ0trMddR0ZrTO0rmBGK6jTn2@91.108.113.252:5432/postgres';
+    const dbUrl = process.env.DATABASE_URL;
+    
+    if (!dbUrl) {
+      console.error('❌ DATABASE_URL non définie');
+      console.log('Utilisez: DATABASE_URL=postgresql://user:password@host:port/database node scripts/setup-database.js');
+      console.log('Exemple: DATABASE_URL=postgresql://postgres:your_password@91.108.113.252:5432/postgres');
+      process.exit(1);
+    }
     
     const pool = new Pool({
       connectionString: dbUrl,

@@ -3,6 +3,19 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 
+// Mock du Dashboard component
+vi.mock('../pages/Dashboard', () => ({
+  default: () => (
+    <div>
+      <div data-testid="exercise-card-burpees">Burpees</div>
+      <div data-testid="exercise-card-pushups">Pompes</div>
+      <div data-testid="exercise-card-squats">Squats</div>
+      <div>Réglages</div>
+      <div>Stats</div>
+    </div>
+  ),
+}));
+
 // Mock des stores
 vi.mock('../stores/exercises.store', () => ({
   useExercisesStore: () => ({
@@ -56,6 +69,15 @@ vi.mock('../hooks/useOnboarding', () => ({
   }),
 }));
 
+vi.mock('../hooks/useAppState', () => ({
+  useAppState: () => ({
+    currentView: 'dashboard',
+    startApp: vi.fn(),
+    completeOnboarding: vi.fn(),
+    resetApp: vi.fn(),
+  }),
+}));
+
 describe('App', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -77,8 +99,13 @@ describe('App', () => {
     });
   });
 
-  it('renders the main application', () => {
+  it('renders the main application', async () => {
     render(<App />);
+
+    // Attendre que le contenu se charge (Suspense)
+    await waitFor(() => {
+      expect(screen.getByText('Burpees')).toBeInTheDocument();
+    });
 
     // Vérifier que les exercices sont présents
     expect(screen.getByText('Burpees')).toBeInTheDocument();

@@ -51,6 +51,18 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
     return "Version Gratuite";
   };
 
+  // Écouter l'événement pour afficher l'écran d'upgrade
+  useEffect(() => {
+    const handleUpgradePrompt = (event: CustomEvent) => {
+      setShowUpgradePrompt(true);
+    };
+    
+    window.addEventListener('show-upgrade-prompt', handleUpgradePrompt as EventListener);
+    return () => {
+      window.removeEventListener('show-upgrade-prompt', handleUpgradePrompt as EventListener);
+    };
+  }, []);
+
   // Gérer la visibilité de la navigation au scroll
   useEffect(() => {
     const handleScroll = () => {

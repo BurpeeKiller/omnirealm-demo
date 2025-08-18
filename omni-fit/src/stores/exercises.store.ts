@@ -111,9 +111,22 @@ export const useExercisesStore = create<ExercisesState>((set, get) => ({
   },
 
   incrementExercise: async (type: ExerciseType) => {
-    const { exerciseDefinitions } = get();
+    const { exerciseDefinitions, todayStats } = get();
     const exerciseDef = exerciseDefinitions.find((e) => e.type === type);
     if (!exerciseDef) return;
+
+    // Vérifier la limite pour les utilisateurs gratuits
+    const { useSubscription } = await import('@/hooks/useSubscription');
+    const { isPremium } = useSubscription.getState();
+    
+    if (!isPremium && todayStats.exercises >= 3) {
+      // Afficher un message ou déclencher l'écran d'upgrade
+      const event = new CustomEvent('show-upgrade-prompt', { 
+        detail: { reason: 'exercise_limit' } 
+      });
+      window.dispatchEvent(event);
+      return;
+    }
 
     set({ loading: true });
 
@@ -199,6 +212,21 @@ export const useExercisesStore = create<ExercisesState>((set, get) => ({
 
   addExercise: async (name: string, count: number) => {
     const { db } = await import('@/db');
+    const { todayStats } = get();
+    
+    // Vérifier la limite pour les utilisateurs gratuits
+    const { useSubscription } = await import('@/hooks/useSubscription');
+    const { isPremium } = useSubscription.getState();
+    
+    if (!isPremium && todayStats.exercises >= 3) {
+      // Afficher un message ou déclencher l'écran d'upgrade
+      const event = new CustomEvent('show-upgrade-prompt', { 
+        detail: { reason: 'exercise_limit' } 
+      });
+      window.dispatchEvent(event);
+      return;
+    }
+    
     set({ loading: true });
 
     try {

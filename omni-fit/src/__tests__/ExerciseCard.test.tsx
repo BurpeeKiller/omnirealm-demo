@@ -48,7 +48,8 @@ describe('ExerciseCard', () => {
     const mockIncrementExercise = vi.fn();
 
     // Mock du store avec la fonction
-    vi.mocked(require('../stores/exercises.store').useExercisesStore).mockReturnValue({
+    const { useExercisesStore } = await import('../stores/exercises.store');
+    vi.mocked(useExercisesStore).mockReturnValue({
       incrementExercise: mockIncrementExercise,
       loading: false,
     });
@@ -79,9 +80,10 @@ describe('ExerciseCard', () => {
     expect(screen.getByText('999')).toBeInTheDocument();
   });
 
-  it('disables interaction when loading', () => {
+  it('disables interaction when loading', async () => {
     // Mock du store en état de chargement
-    vi.mocked(require('../stores/exercises.store').useExercisesStore).mockReturnValue({
+    const { useExercisesStore } = await import('../stores/exercises.store');
+    vi.mocked(useExercisesStore).mockReturnValue({
       incrementExercise: vi.fn(),
       loading: true,
     });

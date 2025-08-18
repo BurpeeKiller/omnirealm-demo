@@ -4,25 +4,42 @@ import { useExercisesStore } from '../../stores/exercises.store';
 import { db } from '../../db';
 import type { Exercise } from '../../types';
 
+// Helper to create where clause mock
+const createWhereMock = (returnValue: any = null) => {
+  const equalsResult = {
+    first: vi.fn(() => Promise.resolve(returnValue)),
+    modify: vi.fn(() => Promise.resolve()),
+    delete: vi.fn(() => Promise.resolve()),
+  };
+  
+  const whereResult = {
+    equals: vi.fn(() => equalsResult),
+    first: vi.fn(() => Promise.resolve(returnValue)),
+    modify: vi.fn(() => Promise.resolve()),
+    toArray: vi.fn(() => Promise.resolve([])),
+    count: vi.fn(() => Promise.resolve(0)),
+    delete: vi.fn(() => Promise.resolve()),
+    aboveOrEqual: vi.fn(() => ({
+      toArray: vi.fn(() => Promise.resolve([])),
+    })),
+  };
+  
+  return vi.fn(() => whereResult);
+};
+
 // Mock the database
 vi.mock('../../db', () => ({
   db: {
     exercises: {
-      add: vi.fn(),
-      where: vi.fn(() => ({
-        toArray: vi.fn(),
-        count: vi.fn(),
-        delete: vi.fn(),
-      })),
-      toArray: vi.fn(),
-      clear: vi.fn(),
+      add: vi.fn(() => Promise.resolve('1')),
+      where: createWhereMock(),
+      toArray: vi.fn(() => Promise.resolve([])),
+      clear: vi.fn(() => Promise.resolve()),
     },
     exerciseStats: {
-      where: vi.fn(() => ({
-        first: vi.fn(),
-        modify: vi.fn(),
-      })),
-      add: vi.fn(),
+      where: createWhereMock(),
+      add: vi.fn(() => Promise.resolve()),
+      clear: vi.fn(() => Promise.resolve()),
     },
   },
 }));
