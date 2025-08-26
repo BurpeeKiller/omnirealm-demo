@@ -1,1 +1,83 @@
-<!-- PNG placeholder for favicon (48x48) -->
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Gradients adaptés à la nouvelle palette -->
+  <defs>
+    <linearGradient id="omnifit-mint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D9B1" />
+      <stop offset="100%" stop-color="#00B89F" />
+    </linearGradient>
+    <linearGradient id="omnifit-mint-light" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D9B1" opacity="0.6" />
+      <stop offset="100%" stop-color="#74B9FF" opacity="0.6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Cercle externe -->
+  <circle
+    cx="32"
+    cy="32"
+    r="30"
+    fill="#FFFFFF"
+    stroke="url(#omnifit-mint)"
+    stroke-width="2"
+  />
+  
+  <!-- Cercle interne décoratif -->
+  <circle
+    cx="32"
+    cy="32"
+    r="22"
+    stroke="url(#omnifit-mint-light)"
+    stroke-width="1"
+    fill="none"
+    stroke-dasharray="3 3"
+  />
+  
+  <!-- Haltère central stylisé -->
+  <g transform="translate(32, 32)">
+    <!-- Barre centrale -->
+    <rect
+      x="-14"
+      y="-3"
+      width="28"
+      height="6"
+      rx="3"
+      fill="url(#omnifit-mint)"
+    />
+    
+    <!-- Poids gauche -->
+    <rect
+      x="-20"
+      y="-8"
+      width="10"
+      height="16"
+      rx="5"
+      fill="url(#omnifit-mint)"
+    />
+    
+    <!-- Poids droit -->
+    <rect
+      x="10"
+      y="-8"
+      width="10"
+      height="16"
+      rx="5"
+      fill="url(#omnifit-mint)"
+    />
+    
+    <!-- Détails décoratifs sur les poids -->
+    <rect x="-18" y="-2" width="2" height="4" rx="1" fill="#FFFFFF" opacity="0.7" />
+    <rect x="16" y="-2" width="2" height="4" rx="1" fill="#FFFFFF" opacity="0.7" />
+  </g>
+  
+  <!-- Points orbitaux statiques -->
+  <circle cx="32" cy="6" r="3.5" fill="#00D9B1" />
+  <circle cx="58" cy="32" r="3" fill="#74B9FF" opacity="0.8" />
+  <circle cx="32" cy="58" r="2.5" fill="#00B894" opacity="0.7" />
+  <circle cx="6" cy="32" r="2" fill="#FDCB6E" opacity="0.6" />
+</svg>

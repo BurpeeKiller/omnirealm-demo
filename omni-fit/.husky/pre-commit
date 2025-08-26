@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+# Exécuter lint-staged pour les fichiers modifiés
+pnpm exec lint-staged

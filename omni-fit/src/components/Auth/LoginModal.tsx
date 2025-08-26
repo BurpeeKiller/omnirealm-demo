@@ -1,21 +1,25 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+"use client";
+
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { LogIn, UserPlus, Mail, Lock } from "lucide-react";
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function LoginModal({ isOpen, onClose }: LoginModalProps) {
-  const { signIn, signUp } = useAuth();
-  const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,163 +27,181 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setLoading(true);
 
     try {
-      if (mode === 'login') {
-        const { error } = await signIn(email, password);
-        if (error) throw error;
-      } else {
-        const { error } = await signUp(email, password);
-        if (error) throw error;
-      }
+      if (mode === "login") {
+        console.log("🔐 Tentative de connexion NextAuth...");
 
-      onClose();
+        const result = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        console.log("📊 Résultat NextAuth:", result);
+
+        if (result?.error) {
+          setError("Email ou mot de passe incorrect");
+        } else if (result?.ok) {
+          console.log("✅ Connexion réussie !");
+          onSuccess?.();
+          onClose();
+        }
+      } else {
+        // Mode inscription
+        console.log("📝 Tentative d'inscription...");
+
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, name }),
+        });
+
+        if (response.ok) {
+          console.log("✅ Inscription réussie !");
+          // Connexion automatique après inscription
+          const loginResult = await signIn("credentials", {
+            email,
+            password,
+            redirect: false,
+          });
+
+          if (loginResult?.ok) {
+            onSuccess?.();
+            onClose();
+          }
+        } else {
+          const data = await response.json();
+          setError(data.error || "Erreur lors de l'inscription");
+        }
+      }
     } catch (err: any) {
-      setError(err.message || 'Une erreur est survenue');
+      console.error("💥 Erreur auth:", err);
+      setError("Une erreur est survenue");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 z-[100]"
-            onClick={onClose}
-          />
-
-          {/* Modal centrée */}
-          <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-gray-800 rounded-xl p-6 sm:p-8 max-w-md w-full shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-200">
-                  {mode === 'login' ? 'Connexion' : 'Inscription'}
-                </h2>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Email */}
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">
-                    Email
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="w-full pl-10 pr-3 py-3 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-400 text-base"
-                      placeholder="votre@email.com"
-                      autoComplete="email"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-400 mb-1"
-                  >
-                    Mot de passe
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                    <input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      minLength={6}
-                      className="w-full pl-10 pr-10 py-3 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-400 text-base"
-                      placeholder="••••••••"
-                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Error message */}
-                {error && (
-                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                    <p className="text-red-400 text-sm">{error}</p>
-                  </div>
-                )}
-
-                {/* Submit button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3 bg-gradient-to-r from-primary-400 to-primary-500 text-white font-semibold rounded-lg hover:from-primary-500 hover:to-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  ) : mode === 'login' ? (
-                    <>
-                      <LogIn className="w-5 h-5" />
-                      Se connecter
-                    </>
-                  ) : (
-                    <>
-                      <UserPlus className="w-5 h-5" />
-                      S'inscrire
-                    </>
-                  )}
-                </button>
-
-                {/* Switch mode */}
-                <div className="text-center pt-4 border-t border-gray-700">
-                  <p className="text-gray-400 text-sm">
-                    {mode === 'login'
-                      ? "Pas encore de compte ?"
-                      : "Déjà un compte ?"}
-                    {' '}
-                    <button
-                      type="button"
-                      onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-                      className="text-primary-400 hover:text-primary-300 font-medium"
-                    >
-                      {mode === 'login' ? "S'inscrire" : "Se connecter"}
-                    </button>
-                  </p>
-                </div>
-              </form>
-            </motion.div>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl border border-gray-100">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-[#00D9B1] to-[#00B89F] rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-lg">O</span>
+            </div>
+            <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00D9B1] to-[#00B89F]">
+              OmniFit
+            </h1>
           </div>
-        </>
-      )}
-    </AnimatePresence>
+          <h2 className="text-2xl font-bold text-[#2D3436] mb-2">
+            {mode === "login" ? "Connexion" : "Inscription"}
+          </h2>
+          <p className="text-gray-600">
+            {mode === "login"
+              ? "Reprends ton entraînement où tu l'as laissé"
+              : "Commence ton parcours fitness dès aujourd'hui"}
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {mode === "register" && (
+            <div>
+              <label className="block text-sm font-medium mb-2 text-[#2D3436]">Nom complet</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00D9B1] focus:border-[#00D9B1] outline-none transition-colors bg-gray-50 focus:bg-white text-[#2D3436] placeholder:text-gray-400"
+                  placeholder="Jean Dupont"
+                  required={mode === "register"}
+                />
+                <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[#2D3436]">Email</label>
+            <div className="relative">
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00D9B1] focus:border-[#00D9B1] outline-none transition-colors bg-gray-50 focus:bg-white text-[#2D3436] placeholder:text-gray-400"
+                placeholder="votre@email.com"
+                required
+              />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[#2D3436]">Mot de passe</label>
+            <div className="relative">
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00D9B1] focus:border-[#00D9B1] outline-none transition-colors bg-gray-50 focus:bg-white text-[#2D3436] placeholder:text-gray-400"
+                placeholder="••••••••"
+                required
+                minLength={6}
+              />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            </div>
+          </div>
+
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-red-600 text-sm font-medium">{error}</p>
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-[#00D9B1] to-[#00B89F] hover:from-[#00B89F] hover:to-[#00D9B1] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          >
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            ) : mode === "login" ? (
+              <>
+                <LogIn className="w-4 h-4 mr-2" />
+                Se connecter
+              </>
+            ) : (
+              <>
+                <UserPlus className="w-4 h-4 mr-2" />
+                S'inscrire
+              </>
+            )}
+          </Button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600 text-sm">
+            {mode === "login" ? "Pas encore de compte ?" : "Déjà un compte ?"}{" "}
+            <button
+              type="button"
+              onClick={() => setMode(mode === "login" ? "register" : "login")}
+              className="text-[#00D9B1] hover:text-[#00B89F] font-medium underline transition-colors"
+            >
+              {mode === "login" ? "S'inscrire" : "Se connecter"}
+            </button>
+          </p>
+        </div>
+
+        <div className="mt-6">
+          <Button
+            onClick={onClose}
+            variant="outline"
+            className="w-full border-gray-200 hover:border-[#00D9B1] hover:text-[#00D9B1] py-3 rounded-xl transition-colors"
+          >
+            Fermer
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

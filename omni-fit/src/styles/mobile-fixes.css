@@ -1,4 +1,4 @@
-/* Fixes spécifiques pour mobile */
+/* Fixes spécifiques pour mobile - OmniFit Focus Mode */
 
 /* Prevent iOS zoom on input focus */
 @media (max-width: 768px) {
@@ -35,14 +35,73 @@
   }
 }
 
-/* Améliorer les performances des animations sur mobile */
+/* Focus Mode - Optimisations mobile spécifiques */
 @media (max-width: 768px) {
+  /* Désactiver highlight sur tap pour performance */
   * {
     -webkit-tap-highlight-color: transparent;
   }
-  
+
+  /* Désactiver backdrop-filter sur mobile pour performance */
   .modal-backdrop {
     backdrop-filter: none;
     background-color: rgba(0, 0, 0, 0.95);
+  }
+
+  /* Optimiser les animations sur mobile */
+  .btn-primary,
+  .btn-secondary {
+    transform: none !important;
+    transition: background-color 0.2s ease;
+  }
+
+  /* Empêcher le zoom accidentel sur les boutons */
+  button {
+    touch-action: manipulation;
+  }
+
+  /* Optimiser les gradients sur mobile */
+  .bg-gradient-to-r {
+    background-attachment: fixed;
+  }
+}
+
+/* Optimisations spécifiques iPhone */
+@supports (-webkit-touch-callout: none) {
+  /* Fix pour le timer circulaire sur iOS */
+  .timer-circle svg {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Améliorer les performances des animations sur iOS */
+  .animate-spin {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Focus Mode - Navigation bottom avec safe area */
+.nav-bottom-focus {
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+}
+
+/* Optimisation du rendu pour le mode Focus */
+.focus-mode {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* Améliorer la lisibilité du timer sur petits écrans */
+@media (max-width: 400px) {
+  .timer-display {
+    font-size: 1.5rem;
+  }
+
+  .timer-circle {
+    width: 180px;
+    height: 180px;
   }
 }

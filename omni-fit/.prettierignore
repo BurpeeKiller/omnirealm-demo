@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.git/
+.env*
+*.log
+coverage/
+public/
+prisma/migrations/
+*.md
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

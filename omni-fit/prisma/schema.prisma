@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth required tables
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// App tables
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  password      String?   // For email/password auth
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  subscriptions Subscription[]
+  workouts      Workout[]
+  analyticsEvents AnalyticsEvent[]
+  dailyStats    DailyStats[]
+  goals         Goal[]
+  achievements  Achievement[]
+}
+
+model Profile {
+  id     String @id @default(cuid())
+  userId String @unique
+  
+  // Profile data
+  fullName    String?
+  age         Int?
+  height      Float? // in cm
+  weight      Float? // in kg
+  fitnessGoal String?
+  level       String? // beginner, intermediate, advanced
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id     String @id @default(cuid())
+  userId String
+  
+  // Subscription data
+  plan      String   // free, premium, premium_yearly
+  status    String   // active, inactive, canceled
+  startDate DateTime @default(now())
+  endDate   DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Analytics & Fitness tables
+model Workout {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String?
+  duration  Int?     // Duration in seconds
+  intensity Int?     // 1-10 scale
+  calories  Int?     // Estimated calories burned
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  exercises WorkoutExercise[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WorkoutExercise {
+  id        String @id @default(cuid())
+  workoutId String
+  name      String
+  reps      Int?
+  sets      Int?
+  weight    Float?
+  duration  Int?   // Duration in seconds for time-based exercises
+  distance  Float? // Distance in meters for cardio
+  
+  createdAt DateTime @default(now())
+  
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+}
+
+model ExerciseTemplate {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  emoji         String
+  description   String
+  category      String
+  difficulty    String
+  targetArea    String
+  isPremium     Boolean  @default(false)
+  duration      Int
+  restDuration  Int
+  sets          Int
+  reps          Int?
+  
+  instructions  String[]
+  tips          String[]
+  benefits      String[]
+  muscles       String[]
+  equipment     String[]
+  
+  basePoints    Int
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  event     String   // event name (workout_start, exercise_complete, etc.)
+  data      Json     // event payload
+  timestamp DateTime @default(now())
+  sessionId String?  // session identifier
+  
+  // Device info
+  userAgent String?
+  ip        String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, event])
+  @@index([timestamp])
+}
+
+// Daily aggregated stats for performance
+model DailyStats {
+  id     String @id @default(cuid())
+  userId String
+  date   DateTime // Date of the stats (truncated to day)
+  
+  // Workout stats
+  totalWorkouts     Int @default(0)
+  totalExercises    Int @default(0)
+  totalDuration     Int @default(0) // in seconds
+  totalCalories     Int @default(0)
+  averageIntensity  Float @default(0)
+  
+  // Streak information
+  streak            Int @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+// Goals and achievements
+model Goal {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // daily, weekly, monthly, custom
+  target      Int      // target value
+  current     Int      @default(0)
+  metric      String   // exercises, calories, duration, etc.
+  isCompleted Boolean  @default(false)
+  dueDate     DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, type])
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // milestone, streak, challenge, etc.
+  name        String
+  description String?
+  icon        String?  // emoji or icon name
+  unlockedAt  DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}

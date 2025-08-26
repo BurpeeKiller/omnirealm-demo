@@ -1,6 +1,0 @@
-{
-  "extends": "../../../shared/config/eslint-base.json",
-  "rules": {
-    "react/display-name": "off"
-  }
-}

@@ -1,182 +1,160 @@
-# 🚀 OmniFit - Roadmap d'Améliorations
+# 🗺️ OmniFit Roadmap 2025
 
-**Version actuelle** : 1.0.0  
-**Objectif** : Production-ready selon les 13 Golden Rules OmniRealm  
-**Timeline** : 3h total pour perfection absolue
-
-## 📋 Phase 1 : Foundation (30 min)
-
-### ✅ Backup & Sécurité
-
-- [x] Backup complet créé (tar.gz sans node_modules)
-- [ ] Roadmap créée (ce fichier)
-
-### 🧪 Tests Vitest (Règle  - Best Practices)
-
-**Priority** : HIGH | **Time** : 30 min | **Impact** : Stabilité production
-
-```bash
-# Installation
-pnpm add -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
-
-# Tests à créer
-- src/__tests__/App.test.tsx
-- src/__tests__/ExerciseCard.test.tsx
-- src/__tests__/stores/exercises.test.ts
-- src/__tests__/utils/sound.test.ts
-```
-
-**Coverage target** : >80% sur composants critiques
+## 📍 Où on en est
+- ✅ Next.js 15 + TypeScript
+- ✅ PostgreSQL sur Coolify
+- ✅ Authentification fonctionnelle
+- ✅ Landing page
+- ✅ Emails de contact (Resend)
+- ⏳ Dashboard basique
 
 ---
 
-## 📊 Phase 2 : Analytics & Mesure (45 min)
+## 🎯 Phase 1 : MVP (2 semaines)
+**Objectif : App fonctionnelle pour 100 premiers utilisateurs**
 
-### 📈 Analytics Locales (Règle  - Mesure)
+### Semaine 1
+- [ ] **Dashboard complet**
+  - [ ] Header avec salutation contextuelle
+  - [ ] Cards de stats (streak, minutes, niveau)
+  - [ ] Gros bouton CTA "Commencer ma pause"
+  - [ ] Widget pauses rapides (1, 2, 3, 5 min)
+  - [ ] Graphique hebdomadaire
+  - [ ] Défis du jour
 
-**Priority** : HIGH | **Time** : 45 min | **Impact** : Data-driven decisions
+- [ ] **Système d'exercices**
+  - [ ] 15 exercices de base (5 dos, 5 nuque, 5 général)
+  - [ ] GIFs animés pour chaque exercice
+  - [ ] Structure JSON complète (durée, difficulté, bénéfices)
+  - [ ] Système de progression adaptatif
 
-```typescript
-// src/services/analytics.ts
-interface Analytics {
-  sessions: number;
-  exercisesPerDay: number;
-  retention: number;
-  favoriteExercise: string;
-  streakRecord: number;
-}
-```
+- [ ] **Flow d'exercices**
+  - [ ] Écran préparation (compte à rebours 5s)
+  - [ ] Timer visuel par exercice
+  - [ ] Transitions entre exercices
+  - [ ] Écran de fin avec points gagnés
+  - [ ] Boutons pause/skip/info
 
-**Features** :
+- [ ] **Onboarding initial**
+  - [ ] Quiz douleurs/objectifs
+  - [ ] Configuration horaires
+  - [ ] Personnalisation niveau
 
-- Tracking local (IndexedDB)
-- Dashboard analytics in-app
-- Export métrics CSV
-- Respect RGPD (100% local)
+### Semaine 2
+- [ ] **Statistiques utilisateur**
+  - [ ] Tracking complet (exercices, temps, streak, heures)
+  - [ ] Score de régularité
+  - [ ] Graphiques détaillés (jour/semaine/mois)
+  - [ ] Export données personnelles
 
----
+- [ ] **Système de rappels**
+  - [ ] Notifications push web (avec permission)
+  - [ ] Sons personnalisables
+  - [ ] Mode ne pas déranger
+  - [ ] Intégration calendrier basique
+  - [ ] Rappels intelligents selon usage
 
-## 🎯 Phase 3 : UX Optimization (60 min)
+- [ ] **Settings complets**
+  - [ ] Gestion notifications
+  - [ ] Niveau de difficulté
+  - [ ] Durée des pauses
+  - [ ] Focus zones douloureuses
 
-### 🚀 Onboarding 3 Étapes (Règle  - Immédiat)
-
-**Priority** : HIGH | **Time** : 60 min | **Impact** : User adoption
-
-```
-Étape 1: "Quand vous entraîner ?" → Horaires (9h-18h)
-Étape 2: "À quelle fréquence ?" → Intervalles (30min)
-Étape 3: "C'est parti !" → Activation immédiate
-```
-
-**Components** :
-
-- `src/components/Onboarding/Welcome.tsx`
-- `src/components/Onboarding/TimeSetup.tsx`
-- `src/components/Onboarding/FrequencySetup.tsx`
-- `src/components/Onboarding/Ready.tsx`
-
----
-
-## 🤖 Phase 4 : Automation (30 min)
-
-### 💾 Auto-backup Hebdomadaire (Règle  - Automate)
-
-**Priority** : MEDIUM | **Time** : 30 min | **Impact** : Data safety
-
-```typescript
-// Service Worker enhancement
-- Auto-export JSON weekly
-- Smart backup rotation (keep 4 weeks)
-- Background sync ready
-- Notification backup completed
-```
+- [ ] **Finalisation**
+  - [ ] Gestion edge cases (offline, interruptions)
+  - [ ] Pages légales mises à jour
+  - [ ] Tests utilisateurs (10 beta testeurs)
+  - [ ] Corrections bugs
 
 ---
 
-## 🌐 Phase 5 : Production (15 min)
+## 🚀 Phase 2 : Growth (1 mois)
+**Objectif : 1000 utilisateurs actifs**
 
-### 🚀 Déploiement Production (Règle  - Ship Fast)
+### Semaine 3-4
+- [ ] **Gamification**
+  - [ ] Badges de progression
+  - [ ] Niveaux (débutant → expert)
+  - [ ] Points d'expérience
+  - [ ] Tableau des leaders mensuel
 
-**Priority** : HIGH | **Time** : 15 min | **Impact** : Go-live immediate
+- [ ] **Programmes personnalisés**
+  - [ ] Quiz initial (douleurs, objectifs)
+  - [ ] 3 programmes types (dos, nuque, général)
+  - [ ] Progression adaptative
 
-**Options** (par priorité) :
+### Semaine 5-6
+- [ ] **PWA (Progressive Web App)**
+  - [ ] Installation mobile
+  - [ ] Icône sur écran d'accueil
+  - [ ] Notifications push
+  - [ ] Mode plein écran
 
-1. **Vercel** : `vercel --prod` (15 min)
-2. **Cloudflare Pages** : drag & drop build (10 min)
-3. **VPS Hostinger** : rsync vers /var/www (20 min)
-
-**URL Target** : omni-fit.vercel.app
-
----
-
-## 📈 Métriques de Succès
-
-### 🎯 RICE+ Score Evolution
-
-- **Actuel** : 3600 (Excellent)
-- **Post-améliorations** : 4500+ (Perfect)
-
-### 📊 KPIs
-
-- **Tests Coverage** : 0% → 80%
-- **Bundle Size** : <500KB (PWA optimized)
-- **Load Time** : <2s (Règle 1 Scale Ready)
-- **User Onboarding** : 3 clics max
-- **Data Security** : 100% local (RGPD compliant)
+- [ ] **Intégration Stripe**
+  - [ ] Plan gratuit (3 exercices/jour)
+  - [ ] Plan Pro (illimité + stats avancées)
+  - [ ] Gestion abonnements
 
 ---
 
-## 🔄 Timeline Détaillé
+## 💎 Phase 3 : Premium (1 mois)
+**Objectif : 5000 utilisateurs, 500 payants**
 
-```
-T+0h00 : ✅ Backup créé + Roadmap
-T+0h30 : 🧪 Tests Vitest implémentés
-T+1h15 : 📊 Analytics locales ready
-T+2h15 : 🎯 Onboarding 3 étapes done
-T+2h45 : 🤖 Auto-backup functional
-T+3h00 : 🚀 PRODUCTION LIVE!
-```
+### Semaine 7-8
+- [ ] **Mode équipe/entreprise**
+  - [ ] Création d'équipes
+  - [ ] Défis collectifs
+  - [ ] Dashboard manager
+  - [ ] Facturation entreprise
 
----
+- [ ] **IA Coach (optionnel)**
+  - [ ] Recommandations personnalisées
+  - [ ] Analyse de posture (webcam)
+  - [ ] Chat motivationnel
 
-## 🏆 Post-Production (Optionnel)
+### Semaine 9-10
+- [ ] **Mode offline**
+  - [ ] Service Worker
+  - [ ] Synchronisation données
+  - [ ] Cache intelligent
+  - [ ] Fonctionnement sans connexion
 
-### V1.1 - Gamification (1 semaine)
-
-- Achievements/badges system
-- Weekly challenges
-- Social sharing streaks
-
-### V1.2 - Advanced Features (2 semaines)
-
-- Custom exercises
-- Apple Watch integration
-- Multi-language support
-
-### V1.3 - Business Model (1 mois)
-
-- Premium features
-- Team challenges
-- Corporate wellness
+- [ ] **Intégrations**
+  - [ ] Google Calendar (bloquer les pauses)
+  - [ ] Slack (rappels équipe)
+  - [ ] Export vers apps santé
 
 ---
 
-## 🎯 Success Criteria
+## 🌟 Phase 4 : Scale (2 mois)
+**Objectif : 10k+ utilisateurs**
 
-**Definition of Done** :
-
-- [ ] All 13 Golden Rules applied
-- [ ] Tests passing (>80% coverage)
-- [ ] Analytics tracking
-- [ ] 3-step onboarding
-- [ ] Auto-backup working
-- [ ] Production deployed
-- [ ] Load time <2s
-- [ ] PWA score >90
-
-**Go/No-Go** : Si score RICE+ final >4000 → SHIP!
+- [ ] **App mobile native** (Capacitor)
+- [ ] **API publique** pour entreprises
+- [ ] **Multi-langue** (EN, ES, DE)
+- [ ] **Marketplace** d'exercices
+- [ ] **Certificat bien-être** entreprise
 
 ---
 
-_Roadmap créée selon les 13 Golden Rules OmniRealm_  
-_Next update : Post chaque phase completion_
+## 📊 Métriques de succès
+
+| Phase | Utilisateurs | ARR | NPS |
+|-------|--------------|-----|-----|
+| MVP | 100 | 0€ | >50 |
+| Growth | 1,000 | 5k€ | >60 |
+| Premium | 5,000 | 25k€ | >70 |
+| Scale | 10,000+ | 50k€+ | >75 |
+
+---
+
+## ⚡ Quick Wins possibles
+- Widget Notion
+- Extension Chrome "rappel pause"
+- Template d'exercices imprimable
+- Partenariat kiné/ostéo
+
+---
+
+**Dernière MAJ : 23/08/2025**
+**Next review : 30/08/2025**

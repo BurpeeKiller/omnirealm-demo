@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
-import React from "react"
+import { cn } from "@/lib/utils";
+import React from "react";
 
 interface DialogScrollBodyProps extends React.HTMLAttributes<HTMLDivElement> {
   enableScroll?: boolean;
@@ -20,10 +20,8 @@ export const DialogScrollBody = ({
     {...props}
   >
     {/* Wrapper interne pour le padding */}
-    <div className={cn("h-full", enableScroll && "p-6")}>
-      {children}
-    </div>
+    <div className={cn("h-full", enableScroll && "p-6")}>{children}</div>
   </div>
-)
+);
 
-DialogScrollBody.displayName = "DialogScrollBody"
+DialogScrollBody.displayName = "DialogScrollBody";

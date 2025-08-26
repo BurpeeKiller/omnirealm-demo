@@ -1,76 +1,43 @@
-# Dependencies
-node_modules/
-.pnpm-store/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Build outputs
-dist/
-dist-ssr/
-build/
-*.local
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Environment files
-.env
-.env.local
-.env.*.local
+# testing
+/coverage
 
-# IDE files
-.vscode/
-!.vscode/extensions.json
-.idea/
-*.sublime-project
-*.sublime-workspace
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
 .DS_Store
-Thumbs.db
+*.pem
 
-# Test coverage
-coverage/
-*.lcov
-
-# PWA files
-dev-dist/
-sw.js
-sw.js.map
-workbox-*.js
-workbox-*.js.map
-
-# Debug logs
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+.pnpm-debug.log*
 
-# Capacitor
-ios/
-android/
-.capacitor/
+# env files (can opt-in for committing if needed)
+.env*
 
-# Temporary files
-*.tmp
-*.temp
-*.swp
-*.swo
-*~
+# vercel
+.vercel
 
-# OS files
-.DS_Store
-desktop.ini
-
-# TypeScript
+# typescript
 *.tsbuildinfo
+next-env.d.ts
 
-# Vitest
-vitest.config.*.timestamp-*
-
-# Journal local
-JOURNAL.md
-
-# Backup files
-*.backup
-*.old
-
-# Python (if any backend remains)
-__pycache__/
-*.py[cod]
-venv/
-.pytest_cache/
+/src/generated/prisma

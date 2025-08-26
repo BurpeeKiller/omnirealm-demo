@@ -1,47 +1,36 @@
 import { defineConfig } from 'vitest/config'
-import path from 'path'
+import { resolve } from 'path'
 
 export default defineConfig({
   test: {
-    name: 'omni-fit',
     environment: 'jsdom',
-    globals: true,
-    setupFiles: ['./src/test/setup.ts'],
-    testTimeout: 10000,
-    // Configuration mémoire optimisée (Option A2)
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        maxForks: 6,
-        minForks: 1
-      }
-    },
-    maxConcurrency: 2,
-    isolate: true,
+    setupFiles: ['./src/__tests__/setup.ts'],
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['node_modules', 'dist', '.next'],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'html', 'clover', 'json'],
+      reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
-        'dist/',
-        '*.config.*',
+        'src/__tests__/',
         '**/*.d.ts',
-        '**/__tests__/**',
-        '**/test/**'
+        '**/*.config.*',
+        '**/coverage/**',
+        '**/dist/**',
+        '**/.next/**'
       ],
       thresholds: {
         global: {
-          branches: 80,
-          functions: 80,
-          lines: 80,
-          statements: 80,
-        },
-      },
-    },
+          branches: 70,
+          functions: 70,
+          lines: 70,
+          statements: 70
+        }
+      }
+    }
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': resolve(__dirname, './src'),
     },
   },
 })

@@ -1,23 +1,83 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="12" fill="#1F2937"/>
-  
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Gradients adaptés à la nouvelle palette -->
   <defs>
-    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8B5CF6" />
-      <stop offset="100%" stop-color="#EC4899" />
+    <linearGradient id="omnifit-mint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D9B1" />
+      <stop offset="100%" stop-color="#00B89F" />
+    </linearGradient>
+    <linearGradient id="omnifit-mint-light" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D9B1" opacity="0.6" />
+      <stop offset="100%" stop-color="#74B9FF" opacity="0.6" />
     </linearGradient>
   </defs>
   
-  <!-- Barre centrale -->
-  <rect x="16" y="28" width="32" height="8" rx="4" fill="url(#gradient)"/>
+  <!-- Cercle externe -->
+  <circle
+    cx="32"
+    cy="32"
+    r="30"
+    fill="#FFFFFF"
+    stroke="url(#omnifit-mint)"
+    stroke-width="2"
+  />
   
-  <!-- Poids gauche -->
-  <rect x="8" y="20" width="12" height="24" rx="6" fill="url(#gradient)"/>
+  <!-- Cercle interne décoratif -->
+  <circle
+    cx="32"
+    cy="32"
+    r="22"
+    stroke="url(#omnifit-mint-light)"
+    stroke-width="1"
+    fill="none"
+    stroke-dasharray="3 3"
+  />
   
-  <!-- Poids droit -->
-  <rect x="44" y="20" width="12" height="24" rx="6" fill="url(#gradient)"/>
+  <!-- Haltère central stylisé -->
+  <g transform="translate(32, 32)">
+    <!-- Barre centrale -->
+    <rect
+      x="-14"
+      y="-3"
+      width="28"
+      height="6"
+      rx="3"
+      fill="url(#omnifit-mint)"
+    />
+    
+    <!-- Poids gauche -->
+    <rect
+      x="-20"
+      y="-8"
+      width="10"
+      height="16"
+      rx="5"
+      fill="url(#omnifit-mint)"
+    />
+    
+    <!-- Poids droit -->
+    <rect
+      x="10"
+      y="-8"
+      width="10"
+      height="16"
+      rx="5"
+      fill="url(#omnifit-mint)"
+    />
+    
+    <!-- Détails décoratifs sur les poids -->
+    <rect x="-18" y="-2" width="2" height="4" rx="1" fill="#FFFFFF" opacity="0.7" />
+    <rect x="16" y="-2" width="2" height="4" rx="1" fill="#FFFFFF" opacity="0.7" />
+  </g>
   
-  <!-- Badge AI -->
-  <circle cx="48" cy="16" r="8" fill="white" stroke="url(#gradient)" stroke-width="2"/>
-  <text x="48" y="20" text-anchor="middle" font-size="8" font-weight="bold" fill="url(#gradient)">AI</text>
+  <!-- Points orbitaux statiques -->
+  <circle cx="32" cy="6" r="3.5" fill="#00D9B1" />
+  <circle cx="58" cy="32" r="3" fill="#74B9FF" opacity="0.8" />
+  <circle cx="32" cy="58" r="2.5" fill="#00B894" opacity="0.7" />
+  <circle cx="6" cy="32" r="2" fill="#FDCB6E" opacity="0.6" />
 </svg>
